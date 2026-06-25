@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+
+  # ── Ground Station Web Server ────────────────────────────────────────────
+  ground_station:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ground_station
+    restart: unless-stopped
+
+    ports:
+      # Web UI + WebSocket
+      - "${WEB_PORT:-8000}:8000"
+      # UDP video ingest (must be UDP)
+      - "${UDP_PORT:-5000}:5000/udp"
+
+    environment:
+      HOST:                "0.0.0.0"
+      WEB_PORT:            "${WEB_PORT:-8000}"
+      UDP_PORT:            "${UDP_PORT:-5000}"
+      VIDEO_FPS_LIMIT:     "${VIDEO_FPS_LIMIT:-30}"
+      VIDEO_JPEG_QUALITY:  "${VIDEO_JPEG_QUALITY:-80}"
+      TAILSCALE_ENABLED:   "${TAILSCALE_ENABLED:-false}"
+      LOG_LEVEL:           "${LOG_LEVEL:-INFO}"
+      TELEMETRY_HZ:        "${TELEMETRY_HZ:-5.0}"
+
+    volumes:
+      # Persist logs and snapshots outside the container
+      - ./logs:/app/logs
+      - ./snapshots:/app/snapshots
+
+    # Required on Linux for UDP receive-buffer tuning (SO_RCVBUF)
+    sysctls:
+      net.core.rmem_max: 4194304
+      net.core.rmem_default: 4194304
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+# ── Named volumes (alternative to bind mounts) ──────────────────────────────
+# Uncomment if you prefer Docker-managed volumes instead of host bind mounts.
+# volumes:
+#   gs_logs:
+#   gs_snapshots:

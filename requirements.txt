@@ -1,0 +1,38 @@
+# ==================================================================
+#  UAV Ground Station - Python dependencies
+# ==================================================================
+
+# Web framework
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# Pydantic settings (env-var config)
+pydantic==2.10.3
+pydantic-settings==2.7.0
+
+# Jinja2 templating
+jinja2==3.1.4
+
+# Static-file serving
+aiofiles==24.1.0
+
+# WebSocket support (provided by uvicorn[standard])
+websockets==14.1
+
+# Computer Vision - JPEG decode / encode
+opencv-python-headless==4.11.0.86
+numpy==2.2.6
+ultralytics==8.3.55
+
+# Optional - uncomment to enable YOLO detection
+# ultralytics==8.3.55
+# torch>=2.0.0
+# torchvision>=0.15.0
+
+# Optional - uncomment to enable real MAVLink
+# pymavlink==2.4.41
+
+# Development / testing
+# pytest==8.3.3
+# pytest-asyncio==0.24.0
+# httpx==0.28.0
