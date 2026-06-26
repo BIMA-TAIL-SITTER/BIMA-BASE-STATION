@@ -60,6 +60,7 @@ yolo_detector = YOLODetector(
     iou_threshold=settings.YOLO_IOU_THRESHOLD,
     max_fps=settings.YOLO_MAX_FPS,
     device=settings.YOLO_DEVICE or None,
+    target_classes=settings.yolo_target_classes,
 ) if settings.YOLO_ENABLED else None
 
 video_manager = MultiStreamManager(
