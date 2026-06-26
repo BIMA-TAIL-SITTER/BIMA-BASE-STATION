@@ -38,6 +38,7 @@
       <select id="cam-source-1" class="cam-select">
         <option value="none">No Source</option>
       </select>
+      <input type="number" id="udp-port-1" class="cam-select" value="5000" style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
     </div>
     <div class="video-frame" id="video-container">
       <!-- Hidden video element for webcam -->
@@ -162,10 +163,11 @@
   <div class="video-panel" id="right-panel">
     <!-- Camera source selector -->
     <div class="cam-selector">
-      <label for="cam-source-2">📷 Source:</label>
+      <label for="cam-source-2" style="color: #666;">📷 Source:</label>
       <select id="cam-source-2" class="cam-select">
         <option value="none">No Source</option>
       </select>
+      <input type="number" id="udp-port-2" class="cam-select" value="5001" style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
     </div>
     <div class="video-frame" id="video-container-2">
       <!-- Hidden video element for webcam -->
@@ -173,6 +175,17 @@
       <!-- Secondary video canvas -->
       <canvas id="video-canvas-2"></canvas>
       <canvas class="hud-canvas-secondary" id="hud-canvas-2"></canvas>
+
+      <!-- Top-left info overlay -->
+      <div id="hud-tl-2" class="hud-overlay hud-tl">
+        <span style="color:#D5FF40;font-size:11px;font-weight:700;">CH02 / CAM-1</span>
+        <span style="color:#D5FF40;font-size:11px;" id="hud-time-2">--:--:--.--</span>
+      </div>
+
+      <!-- Bottom-left FPS -->
+      <div id="hud-bl-2" class="hud-overlay hud-bl">
+        <span style="color:#D5FF40;font-size:11px;" id="hud-fps-2">-- FPS</span>
+      </div>
 
       <!-- No signal overlay for second camera -->
       <div id="no-signal-2" class="no-signal-overlay">

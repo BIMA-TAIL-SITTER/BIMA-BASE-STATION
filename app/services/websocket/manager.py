@@ -13,7 +13,7 @@ Thread-safety: asyncio-safe (all operations run in the event loop).
 
 import asyncio
 import logging
-from typing import Set
+from typing import Set, Dict
 
 from fastapi import WebSocket
 
@@ -24,17 +24,20 @@ class WebSocketManager:
     """Manages sets of connected WebSocket clients per channel."""
 
     def __init__(self) -> None:
-        self._video_clients: Set[WebSocket] = set()
+        self._video_clients: Dict[int, Set[WebSocket]] = {}
         self._telemetry_clients: Set[WebSocket] = set()
         self._system_clients: Set[WebSocket] = set()
 
     # ─── Connection Management ────────────────────────────────────
 
-    async def connect_video(self, ws: WebSocket) -> None:
+    async def connect_video(self, ws: WebSocket, port: int) -> None:
         await ws.accept()
-        self._video_clients.add(ws)
+        if port not in self._video_clients:
+            self._video_clients[port] = set()
+        self._video_clients[port].add(ws)
         logger.info(
-            "Video client connected — total: %d", len(self._video_clients)
+            "Video client connected to port %d — total for port: %d", 
+            port, len(self._video_clients[port])
         )
 
     async def connect_telemetry(self, ws: WebSocket) -> None:
@@ -51,11 +54,16 @@ class WebSocketManager:
             "System client connected — total: %d", len(self._system_clients)
         )
 
-    def disconnect_video(self, ws: WebSocket) -> None:
-        self._video_clients.discard(ws)
-        logger.info(
-            "Video client disconnected — remaining: %d", len(self._video_clients)
-        )
+    def disconnect_video(self, ws: WebSocket, port: int) -> None:
+        if port in self._video_clients:
+            self._video_clients[port].discard(ws)
+            logger.info(
+                "Video client disconnected from port %d — remaining for port: %d", 
+                port, len(self._video_clients[port])
+            )
+            # Cleanup empty sets
+            if not self._video_clients[port]:
+                del self._video_clients[port]
 
     def disconnect_telemetry(self, ws: WebSocket) -> None:
         self._telemetry_clients.discard(ws)
@@ -72,9 +80,10 @@ class WebSocketManager:
 
     # ─── Broadcast Helpers ────────────────────────────────────────
 
-    async def broadcast_video(self, data: bytes) -> None:
-        """Send a raw binary JPEG payload to all video clients."""
-        await self._broadcast_bytes(self._video_clients, data)
+    async def broadcast_video(self, data: bytes, port: int) -> None:
+        """Send a raw binary JPEG payload to all video clients for a specific port."""
+        if port in self._video_clients:
+            await self._broadcast_bytes(self._video_clients[port], data)
 
     async def broadcast_telemetry(self, payload: str) -> None:
         """Send a JSON string to all telemetry clients."""
@@ -84,13 +93,15 @@ class WebSocketManager:
         """Send a JSON string to all system-event clients."""
         await self._broadcast_text(self._system_clients, payload)
 
-    async def broadcast_video_detections(self, payload: str) -> None:
-        """Send JSON detections string to all video clients."""
-        await self._broadcast_text(self._video_clients, payload)
+    async def broadcast_video_detections(self, payload: str, port: int) -> None:
+        """Send JSON detections string to all video clients for a specific port."""
+        if port in self._video_clients:
+            await self._broadcast_text(self._video_clients[port], payload)
+
     # ─── Status ───────────────────────────────────────────────────
 
-    def has_video_clients(self) -> bool:
-        return bool(self._video_clients)
+    def has_video_clients(self, port: int) -> bool:
+        return port in self._video_clients and bool(self._video_clients[port])
 
     def has_telemetry_clients(self) -> bool:
         return bool(self._telemetry_clients)
@@ -99,8 +110,9 @@ class WebSocketManager:
         return bool(self._system_clients)
 
     def client_count(self) -> dict:
+        video_counts = {port: len(clients) for port, clients in self._video_clients.items()}
         return {
-            "video": len(self._video_clients),
+            "video": video_counts,
             "telemetry": len(self._telemetry_clients),
             "system": len(self._system_clients),
         }

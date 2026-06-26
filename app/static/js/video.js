@@ -31,6 +31,11 @@
   const detFpsEl = document.getElementById('det-fps'); // optional, ok if absent
   const detCountEl = document.getElementById('det-count'); // optional, ok if absent
 
+  // Panel 2 HUD elements
+  const hudFpsEl2 = document.getElementById('hud-fps-2');
+  const hudTimeEl2 = document.getElementById('hud-time-2');
+  const vidFpsEl2 = document.getElementById('vid-fps-2');
+
   let showCrosshair = true;
   let showHUD = true;
   let showDetections = true;
@@ -39,6 +44,11 @@
   let frameCount = 0;
   let fps = 0;
   let lastFpsTime = performance.now();
+
+  // Panel 2 FPS counter (independent)
+  let frameCount2 = 0;
+  let fps2 = 0;
+  let lastFpsTime2 = performance.now();
 
   function measureFps() {
     frameCount++;
@@ -51,6 +61,28 @@
       if (hudFpsEl) hudFpsEl.textContent = fps + ' FPS';
       if (vidFpsEl) vidFpsEl.textContent = fps;
     }
+  }
+
+  function measureFps2() {
+    frameCount2++;
+    const now = performance.now();
+    const elapsed = now - lastFpsTime2;
+    if (elapsed >= 1000) {
+      fps2 = Math.round(frameCount2 / (elapsed / 1000));
+      frameCount2 = 0;
+      lastFpsTime2 = now;
+      if (hudFpsEl2) hudFpsEl2.textContent = fps2 + ' FPS';
+      if (vidFpsEl2) vidFpsEl2.textContent = fps2;
+    }
+  }
+
+  function updateHudTime2() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    const ms = String(Math.floor(now.getMilliseconds() / 10)).padStart(2, '0');
+    if (hudTimeEl2) hudTimeEl2.textContent = `${hh}:${mm}:${ss}.${ms}`;
   }
 
   // ─── Canvas resize ───────────────────────────────────────────────────────
@@ -248,6 +280,61 @@
     });
   }
 
+  // --- Multi-panel rendering helper ---
+  function renderFrameToPanel(panelId, blob) {
+    const vc = panelId === 1 ? videoCanvas : document.getElementById('video-canvas-2');
+    const hc = panelId === 1 ? hudCanvas : document.getElementById('hud-canvas-2');
+    if (!vc || !hc) return;
+
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
+    img.onload = () => {
+      // Re-check source just in case it changed while decoding
+      if (window.GS_camSource[panelId] !== 'udp') {
+        URL.revokeObjectURL(url);
+        return;
+      }
+
+      // Sync canvas size to container (prevents blurry rendering)
+      const container = vc.parentElement;
+      if (container) {
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+        if (vc.width !== cw || vc.height !== ch) {
+          vc.width = cw;
+          vc.height = ch;
+          hc.width = cw;
+          hc.height = ch;
+        }
+      }
+
+      const cw = vc.width;
+      const ch = vc.height;
+      const scale = Math.min(cw / img.width, ch / img.height);
+      const dw = img.width * scale;
+      const dh = img.height * scale;
+      const dx = (cw - dw) / 2;
+      const dy = (ch - dh) / 2;
+
+      const vCtx2 = vc.getContext('2d', { alpha: false });
+      vCtx2.fillStyle = '#0a0a08';
+      vCtx2.fillRect(0, 0, cw, ch);
+      vCtx2.drawImage(img, dx, dy, dw, dh);
+      URL.revokeObjectURL(url);
+
+      if (panelId === 1) {
+        lastDraw = { dx, dy, dw, dh, cw, ch };
+        drawHUD(dx, dy, dw, dh, cw, ch);
+        measureFps();
+      } else {
+        measureFps2();
+        updateHudTime2();
+      }
+    };
+    img.onerror = () => URL.revokeObjectURL(url);
+    img.src = url;
+  }
+
   /**
    * Public hook — kept for compatibility with any other caller that wants
    * to push detections in image/canvas coordinates directly (bypassing the
@@ -292,56 +379,83 @@
     drawHUD(lastDraw.dx, lastDraw.dy, lastDraw.dw, lastDraw.dh, lastDraw.cw, lastDraw.ch);
   }
 
-  // ─── WebSocket Connection ─────────────────────────────────────────────────
-  const WS_URL = `${window.GS_CONFIG.wsProto}://${window.GS_CONFIG.wsHost}/ws/video`;
-  let ws = null;
-  let backoff = 1000;
-  let connected = false;
-  let hasFrame = false;
-
-  function connect() {
-    ws = new WebSocket(WS_URL);
+  // ─── WebSocket Connections (by Port) ────────────────────────────────────
+  const websockets = {};
+  
+  function connectPort(port) {
+    if (websockets[port]) return;
+    
+    const url = `${window.GS_CONFIG.wsProto}://${window.GS_CONFIG.wsHost}/ws/video/${port}`;
+    const ws = new WebSocket(url);
     ws.binaryType = 'blob';
-
+    
+    let backoff = 1000;
+    
     ws.onopen = () => {
-      console.log('[video] WebSocket connected');
+      console.log(`[video] WebSocket connected to port ${port}`);
       backoff = 1000;
-      connected = true;
-      window.GS_log('event', 'video', 'Video WebSocket connected');
+      window.GS_log('event', 'video', `Video WebSocket connected (port ${port})`);
     };
-
+    
     ws.onmessage = (ev) => {
-      // Only render UDP frames on panel 1 if it's set to UDP source
       if (ev.data instanceof Blob) {
-        const src = window.GS_camSource ? window.GS_camSource[1] : 'udp';
-        if (src !== 'udp') return;
-        if (!hasFrame) {
-          hasFrame = true;
-          noSignalEl && noSignalEl.classList.add('hidden');
-        }
-        renderFrame(ev.data);
+        // Hide no-signal if this is the first frame
+        [1, 2].forEach(pId => {
+          if (window.GS_camSource[pId] === 'udp' && window.GS_udpPorts[pId] === port) {
+             const ns = document.getElementById(pId === 1 ? 'no-signal' : 'no-signal-2');
+             if (ns) ns.classList.add('hidden');
+             renderFrameToPanel(pId, ev.data);
+          }
+        });
       } else if (typeof ev.data === 'string') {
-        // YOLO detection JSON rides the same channel as text messages
         handleDetectionMessage(ev.data);
       }
     };
-
+    
     ws.onclose = () => {
-      connected = false;
-      hasFrame = false;
-      detections = [];
-      if (noSignalEl) noSignalEl.classList.remove('hidden');
-      window.GS_log('warning', 'video', `Video WebSocket closed — reconnecting in ${backoff / 1000}s`);
-      setTimeout(connect, backoff);
+      console.warn(`[video] WebSocket closed (port ${port}), reconnecting...`);
+      [1, 2].forEach(pId => {
+         if (window.GS_camSource[pId] === 'udp' && window.GS_udpPorts[pId] === port) {
+             const ns = document.getElementById(pId === 1 ? 'no-signal' : 'no-signal-2');
+             if (ns) ns.classList.remove('hidden');
+         }
+      });
+      delete websockets[port];
+      setTimeout(() => connectPort(port), backoff);
       backoff = Math.min(backoff * 2, 16000);
     };
-
-    ws.onerror = (e) => {
-      console.warn('[video] WebSocket error', e);
-    };
+    
+    websockets[port] = ws;
+  }
+  
+  function disconnectPort(port) {
+    if (websockets[port]) {
+      websockets[port].onclose = null; // prevent reconnect
+      websockets[port].close();
+      delete websockets[port];
+    }
   }
 
-  connect();
+  // Listen to camera.js events
+  window.addEventListener('gs-source-change', (e) => {
+    const { panelId, source, port } = e.detail;
+    
+    // Evaluate needed ports
+    const neededPorts = new Set();
+    if (window.GS_camSource[1] === 'udp') neededPorts.add(window.GS_udpPorts[1]);
+    if (window.GS_camSource[2] === 'udp') neededPorts.add(window.GS_udpPorts[2]);
+    
+    // Connect new ones
+    neededPorts.forEach(p => {
+      if (!websockets[p]) connectPort(p);
+    });
+    
+    // Disconnect old ones
+    Object.keys(websockets).forEach(pStr => {
+      const p = parseInt(pStr);
+      if (!neededPorts.has(p)) disconnectPort(p);
+    });
+  });
 
   // ─── Button wiring ───────────────────────────────────────────────────────
   document.getElementById('btn-fullscreen')?.addEventListener('click', () => {

@@ -15,8 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config.settings import settings
-from app.services.video.receiver import VideoReceiver
-from app.services.video.manager import VideoManager
+from app.services.video.manager import MultiStreamManager
 from app.services.telemetry.generator import TelemetryGenerator
 from app.services.websocket.manager import WebSocketManager
 from app.services.yolo.detector import YOLODetector
@@ -50,17 +49,11 @@ logger = logging.getLogger(__name__)
 
 # ─── Global Service Instances ──────────────────────────────────────
 ws_manager = WebSocketManager()
-video_receiver = VideoReceiver(
-    source="udp",
-    host="0.0.0.0",
-    port=settings.UDP_PORT,
-)
 
 # YOLO detector — disabled automatically if `ultralytics` isn't installed
 # or YOLO_ENABLED=false in settings. Reads frames straight from the
 # receiver, independent of the video broadcast loop.
 yolo_detector = YOLODetector(
-    receiver=video_receiver,
     ws_manager=ws_manager,
     model_path=settings.YOLO_MODEL_PATH,
     conf_threshold=settings.YOLO_CONF_THRESHOLD,
@@ -69,8 +62,7 @@ yolo_detector = YOLODetector(
     device=settings.YOLO_DEVICE or None,
 ) if settings.YOLO_ENABLED else None
 
-video_manager = VideoManager(
-    receiver=video_receiver,
+video_manager = MultiStreamManager(
     ws_manager=ws_manager,
     fps_limit=settings.VIDEO_FPS_LIMIT,
     detector=yolo_detector,
@@ -84,7 +76,6 @@ async def lifespan(app: FastAPI):
     """Start background services on startup, stop them on shutdown."""
     logger.info("═══════════════════════════════════════════")
     logger.info("  UAV Ground Station starting up")
-    logger.info("  UDP  port : %d", settings.UDP_PORT)
     logger.info("  Web  port : %d", settings.WEB_PORT)
     logger.info("  Host      : %s", settings.HOST)
     logger.info("  YOLO      : %s", "enabled" if settings.YOLO_ENABLED else "disabled")
@@ -100,10 +91,6 @@ async def lifespan(app: FastAPI):
     telemetry.ws_manager_instance = ws_manager
     system.ws_manager_instance = ws_manager
 
-    # Start UDP receiver in background thread (blocking I/O)
-    video_receiver.start()
-    logger.info("VideoReceiver started on UDP port %d", settings.UDP_PORT)
-
     # Start YOLO detector in its own background thread (blocking inference)
     if yolo_detector is not None:
         yolo_detector.start()
@@ -113,7 +100,6 @@ async def lifespan(app: FastAPI):
             logger.warning("YOLODetector requested but unavailable — check ultralytics install")
 
     # Start async broadcast loops
-    video_task = asyncio.create_task(video_manager.broadcast_loop())
     telemetry_task = asyncio.create_task(telemetry_generator.broadcast_loop())
 
     logger.info("Ground Station ready — open http://%s:%d", settings.HOST, settings.WEB_PORT)
@@ -122,9 +108,8 @@ async def lifespan(app: FastAPI):
 
     # ─── Shutdown ──────────────────────────────────────────────────
     logger.info("Ground Station shutting down…")
-    video_task.cancel()
     telemetry_task.cancel()
-    video_receiver.stop()
+    video_manager.stop_all()
     if yolo_detector is not None:
         yolo_detector.stop()
     try:
@@ -180,15 +165,10 @@ async def index(request: Request):
 # ─── Health Check ─────────────────────────────────────────────────
 @app.get("/health", tags=["system"])
 async def health():
-    stats = video_receiver.get_stats()
+    video_status = video_manager.get_status()
     return {
         "status": "ok",
-        "video": {
-            "fps": stats["fps"],
-            "frames": stats["frame_count"],
-            "drops": stats["drop_count"],
-            "sender": stats["last_sender"],
-        },
+        "video": video_status,
         "yolo": {
             "enabled": yolo_detector.is_enabled if yolo_detector else False,
         },

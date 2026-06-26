@@ -25,19 +25,22 @@ ws_manager_instance = None
 yolo_detector_instance = None
 
 
-@router.websocket("/video")
-async def video_ws(websocket: WebSocket):
+@router.websocket("/video/{port}")
+async def video_ws(websocket: WebSocket, port: int):
     """
     Binary WebSocket stream of JPEG frames.
 
     The client receives raw JPEG bytes on each message.
     Each message is one complete frame — no framing protocol needed.
     """
-    if ws_manager_instance is None:
+    if ws_manager_instance is None or video_manager_instance is None:
         await websocket.close(code=1011)
         return
 
-    await ws_manager_instance.connect_video(websocket)
+    # Ensure the UDP receiver for this port is running
+    video_manager_instance.ensure_stream(port)
+    
+    await ws_manager_instance.connect_video(websocket, port)
     try:
         while True:
             # Keep the connection alive; client sends pings or nothing
@@ -45,9 +48,13 @@ async def video_ws(websocket: WebSocket):
     except WebSocketDisconnect:
         pass
     except Exception as exc:
-        logger.debug("Video WebSocket error: %s", exc)
+        logger.debug("Video WebSocket error on port %d: %s", port, exc)
     finally:
-        ws_manager_instance.disconnect_video(websocket)
+        ws_manager_instance.disconnect_video(websocket, port)
+        
+        # If no more clients are watching this port, stop the receiver to save resources
+        if not ws_manager_instance.has_video_clients(port):
+            video_manager_instance.stop_stream(port)
 
 
 # ─── REST ─────────────────────────────────────────────────────────

@@ -31,8 +31,9 @@ import json
 import logging
 import threading
 import time
+import queue
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -132,25 +133,20 @@ class YOLODetector:
     """
     Background-thread YOLO inference engine.
 
-    Contoh pemakaian untuk person detection:
-        detector = YOLODetector(receiver=video_receiver, ws_manager=ws_manager)
-        detector.start()
-        detector.print_classes()         # debug: lihat semua class yang ada di model
+    Frames are fed to the detector via the `enqueue(port, frame)` method,
+    which is called by MultiStreamManager for each active video stream.
+    Results are stored per-port and broadcast via WebSocket.
 
-    Contoh untuk model custom Roboflow (misal class "head", "person"):
-        detector = YOLODetector(
-            receiver=video_receiver,
-            ws_manager=ws_manager,
-            model_path="app/services/yolo/best.pt",
-            target_classes=["head", "person"],
-        )
+    Contoh pemakaian:
+        detector = YOLODetector(ws_manager=ws_manager)
+        detector.start()
+        detector.enqueue(5000, frame)  # feed frames to inference queue
     """
 
     def __init__(
         self,
-        receiver,
         ws_manager=None,                             # ← WebSocketManager instance
-        model_path: str = "yolo11n.pt",
+        model_path: str = "best.pt",
         conf_threshold: float = 0.4,
         iou_threshold: float = 0.45,
         max_fps: float = 10.0,
@@ -158,7 +154,6 @@ class YOLODetector:
         target_classes: Optional[List[str]] = None,
         class_ids: Optional[List[int]] = None,
     ) -> None:
-        self._receiver   = receiver
         self._ws         = ws_manager                # bisa None kalau ga mau broadcast
         self._model_path = model_path
         self._conf       = conf_threshold
@@ -166,7 +161,7 @@ class YOLODetector:
         self._min_interval = 1.0 / max(0.1, max_fps)
         self._device     = device or ""
 
-        self._target_class_names: Optional[List[str]] = target_classes or ["laptop", "person", "banana"]
+        self._target_class_names: Optional[List[str]] = target_classes or ["terpal"]
         self._class_ids: Optional[List[int]]          = class_ids
 
         self._model: Optional["YOLO"] = None
@@ -175,7 +170,8 @@ class YOLODetector:
         self._running  = False
         self._lock     = threading.Lock()
         self._inference_lock = threading.Lock()
-        self._latest:  Optional[DetectionFrame] = None
+        self._latest:  Dict[int, DetectionFrame] = {}
+        self._queue    = queue.Queue(maxsize=5)
         self._enabled  = _ULTRALYTICS_AVAILABLE
 
         # Event loop asyncio — di-grab saat start() dipanggil dari lifespan
@@ -200,9 +196,23 @@ class YOLODetector:
         return self._class_ids
 
     @property
-    def latest_detections(self) -> Optional[DetectionFrame]:
+    def latest_detections(self) -> Dict[int, DetectionFrame]:
         with self._lock:
-            return self._latest
+            return dict(self._latest)
+
+    def enqueue(self, port: int, frame: np.ndarray) -> None:
+        if not self._running:
+            return
+        try:
+            # Keep only the latest frame by flushing queue if full
+            if self._queue.full():
+                try:
+                    self._queue.get_nowait()
+                except queue.Empty:
+                    pass
+            self._queue.put_nowait((port, frame))
+        except queue.Full:
+            pass
 
     def print_classes(self) -> None:
         if not self._names:
@@ -231,21 +241,31 @@ class YOLODetector:
             self._loop = None
             logger.warning("YOLODetector.start() dipanggil di luar async context — broadcast dinonaktifkan.")
 
+        print(f"[YOLO DEBUG] >>> start() dipanggil, model={self._model_path}", flush=True)
         logger.info("Loading YOLO model: %s", self._model_path)
         try:
             self._model = YOLO(self._model_path)
         except Exception as exc:
+            print(f"[YOLO DEBUG] GAGAL load model: {exc}", flush=True)
             logger.error("Gagal load model '%s': %s", self._model_path, exc)
             self._enabled = False
             return
 
         self._names = self._model.names if isinstance(self._model.names, dict) else {}
 
+        # ── DEBUG ──────────────────────────────────────────────────────
+        print(f"[YOLO DEBUG] Model loaded: {self._model_path}", flush=True)
+        print(f"[YOLO DEBUG] Semua class di model: {self._names}", flush=True)
+        print(f"[YOLO DEBUG] Target class names: {self._target_class_names}", flush=True)
+        # ───────────────────────────────────────────────────────────────
+
         if self._target_class_names and not self._class_ids:
             resolved = []
             name_to_id = {v.lower(): k for k, v in self._names.items()}
+            print(f"[YOLO DEBUG] name_to_id map: {name_to_id}", flush=True)
             for name in self._target_class_names:
                 cid = name_to_id.get(name.lower())
+                print(f"[YOLO DEBUG] Mencari '{name.lower()}' → {'ID ' + str(cid) if cid is not None else 'TIDAK KETEMU!'}", flush=True)
                 if cid is not None:
                     resolved.append(cid)
                     logger.info("Class '%s' → ID %d", name, cid)
@@ -255,6 +275,7 @@ class YOLODetector:
                         name, list(self._names.values()),
                     )
             self._class_ids = resolved if resolved else None
+            print(f"[YOLO DEBUG] Final class_ids: {self._class_ids}", flush=True)
 
         self._running = True
         self._thread = threading.Thread(
@@ -297,13 +318,12 @@ class YOLODetector:
                 time.sleep(wait)
                 continue
 
-            last_run = time.monotonic()
-
-            frame = self._receiver.latest_frame
-            if frame is None:
-                logger.debug("latest_frame masih None, menunggu stream...")
-                time.sleep(0.05)
+            try:
+                port, frame = self._queue.get(timeout=0.1)
+            except queue.Empty:
                 continue
+
+            last_run = time.monotonic()
 
             if not isinstance(frame, np.ndarray):
                 logger.warning(
@@ -314,12 +334,12 @@ class YOLODetector:
                 continue
 
             try:
-                self._infer(frame)
+                self._infer(frame, port)
             except Exception:
                 logger.exception("Error saat YOLO inference:")
                 time.sleep(0.2)
 
-    def _infer(self, frame: np.ndarray) -> None:
+    def _infer(self, frame: np.ndarray, port: int) -> None:
         t0 = time.monotonic()
         h, w = frame.shape[:2]
 
@@ -380,13 +400,12 @@ class YOLODetector:
         )
 
         with self._lock:
-            self._latest = frame_result
+            self._latest[port] = frame_result
 
         # ─── Broadcast ke /ws/video ──────────────────────────────
         if self._ws and self._loop and self._loop.is_running():
             payload = json.dumps(frame_result.to_dict())
-            logger.info("Sending detections: %s", payload)  # sementara, hapus kalau udah jalan
             asyncio.run_coroutine_threadsafe(
-                self._ws.broadcast_video_detections(payload),
+                self._ws.broadcast_video_detections(payload, port),
                 self._loop,
             )

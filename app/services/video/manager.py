@@ -34,32 +34,29 @@ logger = logging.getLogger(__name__)
 _ENCODE_PARAMS = [cv2.IMWRITE_JPEG_QUALITY, settings.VIDEO_JPEG_QUALITY]
 
 
-class VideoManager:
+class MultiStreamManager:
     """
-    Bridges the UDP receiver to the WebSocket layer.
-
-    Only the *latest* available frame is sent; there is no queue, so
-    under-performing clients receive a lower effective frame rate but
-    never accumulate unbounded backlog.
+    Manages multiple VideoReceivers dynamically based on WebSocket client connections.
     """
 
     def __init__(
         self,
-        receiver: VideoReceiver,
         ws_manager: WebSocketManager,
         fps_limit: int = 30,
         detector: Optional[YOLODetector] = None,
     ) -> None:
-        self._receiver = receiver
         self._ws = ws_manager
         self._fps_limit = max(1, fps_limit)
         self._frame_interval = 1.0 / self._fps_limit
-        self._last_frame_hash: Optional[int] = None
-        self._broadcast_count = 0
         self._detector = detector
-        self._last_sent_detection_ts: float = 0.0
+        
+        self._receivers: dict[int, VideoReceiver] = {}
+        self._tasks: dict[int, asyncio.Task] = {}
+        self._broadcast_counts: dict[int, int] = {}
+        self._last_sent_detection_ts: dict[int, float] = {}
+        
         logger.info(
-            "VideoManager ready (fps_limit=%d, jpeg_quality=%d, yolo=%s)",
+            "MultiStreamManager ready (fps_limit=%d, jpeg_quality=%d, yolo=%s)",
             fps_limit,
             settings.VIDEO_JPEG_QUALITY,
             "enabled" if (detector and detector.is_enabled) else "disabled",
@@ -67,14 +64,44 @@ class VideoManager:
 
     # ─── Public ───────────────────────────────────────────────────
 
-    async def broadcast_loop(self) -> None:
+    def ensure_stream(self, port: int) -> None:
+        """Ensure a VideoReceiver and broadcast loop are running for the given port."""
+        if port not in self._receivers:
+            logger.info("Starting new VideoReceiver for port %d", port)
+            receiver = VideoReceiver(source="udp", host="0.0.0.0", port=port)
+            receiver.start()
+            self._receivers[port] = receiver
+            self._broadcast_counts[port] = 0
+            self._last_sent_detection_ts[port] = 0.0
+            
+            task = asyncio.create_task(self._broadcast_loop(port, receiver))
+            self._tasks[port] = task
+
+    def stop_stream(self, port: int) -> None:
+        """Stop the VideoReceiver and broadcast loop for the given port."""
+        if port in self._receivers:
+            logger.info("Stopping VideoReceiver for port %d", port)
+            self._receivers[port].stop()
+            del self._receivers[port]
+        if port in self._tasks:
+            self._tasks[port].cancel()
+            del self._tasks[port]
+        if port in self._broadcast_counts:
+            del self._broadcast_counts[port]
+        if port in self._last_sent_detection_ts:
+            del self._last_sent_detection_ts[port]
+
+    def stop_all(self) -> None:
+        """Stop all streams."""
+        ports = list(self._receivers.keys())
+        for port in ports:
+            self.stop_stream(port)
+
+    async def _broadcast_loop(self, port: int, receiver: VideoReceiver) -> None:
         """
-        Coroutine that runs forever, sampling frames at up to `fps_limit` Hz
-        and pushing them to all /ws/video clients as raw binary WebSocket messages.
-        Detection results (if a detector is attached) ride along as JSON
-        text messages on the same channel.
+        Coroutine that runs forever for a specific port.
         """
-        logger.info("VideoManager broadcast loop started")
+        logger.info("Broadcast loop started for port %d", port)
         next_send = time.monotonic()
 
         while True:
@@ -84,62 +111,67 @@ class VideoManager:
                 await asyncio.sleep(sleep_time)
             next_send = time.monotonic() + self._frame_interval
 
-            # Only broadcast if there are clients
-            if not self._ws.has_video_clients():
+            # Only broadcast if there are clients for this port
+            if not self._ws.has_video_clients(port):
                 await asyncio.sleep(0.1)
                 continue
 
-            frame = self._receiver.latest_frame
+            frame = receiver.latest_frame
             if frame is None:
                 # No signal — send a "no signal" placeholder at low rate
-                if self._broadcast_count % (self._fps_limit * 2) == 0:
+                if self._broadcast_counts[port] % (self._fps_limit * 2) == 0:
                     placeholder = self._make_no_signal_jpeg()
                     if placeholder is not None:
-                        await self._ws.broadcast_video(placeholder)
-                self._broadcast_count += 1
+                        await self._ws.broadcast_video(placeholder, port)
+                self._broadcast_counts[port] += 1
                 continue
 
             jpeg_bytes = self._encode_frame(frame)
             if jpeg_bytes is None:
                 continue
+                
+            if self._detector and self._detector.is_enabled:
+                self._detector.enqueue(port, frame)
 
-            await self._ws.broadcast_video(jpeg_bytes)
-            self._broadcast_count += 1
+            await self._ws.broadcast_video(jpeg_bytes, port)
+            self._broadcast_counts[port] += 1
 
-            await self._maybe_broadcast_detections()
+            await self._maybe_broadcast_detections(port)
 
     def get_status(self) -> dict:
-        stats = self._receiver.get_stats()
-        status = {
-            "receiving": self._receiver.is_receiving(),
-            "fps": stats["fps"],
-            "drops": stats["drop_count"],
-            "frames": stats["frame_count"],
-            "sender": stats["last_sender"],
-            "avg_packet_bytes": stats["avg_packet_size"],
-        }
+        status = {"streams": {}}
+        for port, receiver in self._receivers.items():
+            stats = receiver.get_stats()
+            status["streams"][port] = {
+                "receiving": receiver.is_receiving(),
+                "fps": stats["fps"],
+                "drops": stats["drop_count"],
+                "frames": stats["frame_count"],
+                "sender": stats["last_sender"],
+                "avg_packet_bytes": stats["avg_packet_size"],
+            }
         if self._detector is not None:
             status["yolo_enabled"] = self._detector.is_enabled
         return status
 
     # ─── Internals ────────────────────────────────────────────────
 
-    async def _maybe_broadcast_detections(self) -> None:
-        """Push the latest YOLO detection frame as a JSON text message,
-        but only when it's a new result (avoid resending stale data)."""
+    async def _maybe_broadcast_detections(self, port: int) -> None:
+        """Push the latest YOLO detection frame as a JSON text message."""
         if self._detector is None or not self._detector.is_enabled:
             return
 
-        det_frame = self._detector.latest_detections
-        if det_frame is None or det_frame.timestamp <= self._last_sent_detection_ts:
+        all_detections = self._detector.latest_detections
+        det_frame = all_detections.get(port)
+        if det_frame is None or det_frame.timestamp <= self._last_sent_detection_ts.get(port, 0.0):
             return
 
-        self._last_sent_detection_ts = det_frame.timestamp
+        self._last_sent_detection_ts[port] = det_frame.timestamp
         try:
             payload = json.dumps(det_frame.to_dict())
-            await self._ws.broadcast_video_text(payload)
+            await self._ws.broadcast_video_detections(payload, port)
         except Exception as exc:
-            logger.debug("Detection broadcast error: %s", exc)
+            logger.debug("Detection broadcast error for port %d: %s", port, exc)
 
     @staticmethod
     def _encode_frame(frame: np.ndarray) -> Optional[bytes]:
