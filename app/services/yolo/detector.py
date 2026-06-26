@@ -146,7 +146,7 @@ class YOLODetector:
     def __init__(
         self,
         ws_manager=None,                             # ← WebSocketManager instance
-        model_path: str = "best.pt",
+        model_path: str = "yolo11n.pt",
         conf_threshold: float = 0.4,
         iou_threshold: float = 0.45,
         max_fps: float = 10.0,
@@ -161,7 +161,7 @@ class YOLODetector:
         self._min_interval = 1.0 / max(0.1, max_fps)
         self._device     = device or ""
 
-        self._target_class_names: Optional[List[str]] = target_classes or ["terpal"]
+        self._target_class_names: Optional[List[str]] = target_classes or ["laptop", "person", "banana"]
         self._class_ids: Optional[List[int]]          = class_ids
 
         self._model: Optional["YOLO"] = None

@@ -159,74 +159,84 @@
   }
 
   // ─── HUD / Crosshair ─────────────────────────────────────────────────────
-  function drawHUD(dx, dy, dw, dh, cw, ch) {
-    hCtx.clearRect(0, 0, cw, ch);
+  const panelState = {
+    1: { detections: [], detFrameW: 0, detFrameH: 0, lastDraw: { dx: 0, dy: 0, dw: 0, dh: 0, cw: 0, ch: 0 } },
+    2: { detections: [], detFrameW: 0, detFrameH: 0, lastDraw: { dx: 0, dy: 0, dw: 0, dh: 0, cw: 0, ch: 0 } }
+  };
+
+  function drawHUD(panelId, dx, dy, dw, dh, cw, ch) {
+    const ctx = panelId === 1 ? hCtx : document.getElementById('hud-canvas-2').getContext('2d');
+    if (!ctx) return;
+    
+    ctx.clearRect(0, 0, cw, ch);
     if (!showHUD) return;
     
-    const src = window.GS_camSource ? window.GS_camSource[1] : 'udp';
+    const src = window.GS_camSource ? window.GS_camSource[panelId] : 'udp';
     if (src === 'none') return;
 
     const cx = dx + dw / 2;
     const cy = dy + dh / 2;
 
-    if (showCrosshair) drawCrosshair(cx, cy);
-    drawCornerBrackets(dx, dy, dw, dh);
-    if (showDetections) drawDetections(dx, dy, dw, dh);
-    updateHudTime();
+    if (showCrosshair) drawCrosshair(ctx, cx, cy);
+    drawCornerBrackets(ctx, dx, dy, dw, dh);
+    if (showDetections) drawDetections(panelId, ctx, dx, dy, dw, dh);
+    
+    if (panelId === 1) updateHudTime();
+    else updateHudTime2();
   }
 
-  function drawCrosshair(cx, cy) {
+  function drawCrosshair(ctx, cx, cy) {
     const len = 16;
     const gap = 6;
     const col = '#D5FF40';
 
-    hCtx.strokeStyle = col;
-    hCtx.lineWidth = 1;
-    hCtx.globalAlpha = 0.8;
-    hCtx.beginPath();
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.8;
+    ctx.beginPath();
     // horizontal
-    hCtx.moveTo(cx - len - gap, cy);
-    hCtx.lineTo(cx - gap, cy);
-    hCtx.moveTo(cx + gap, cy);
-    hCtx.lineTo(cx + len + gap, cy);
+    ctx.moveTo(cx - len - gap, cy);
+    ctx.lineTo(cx - gap, cy);
+    ctx.moveTo(cx + gap, cy);
+    ctx.lineTo(cx + len + gap, cy);
     // vertical
-    hCtx.moveTo(cx, cy - len - gap);
-    hCtx.lineTo(cx, cy - gap);
-    hCtx.moveTo(cx, cy + gap);
-    hCtx.lineTo(cx, cy + len + gap);
-    hCtx.stroke();
+    ctx.moveTo(cx, cy - len - gap);
+    ctx.lineTo(cx, cy - gap);
+    ctx.moveTo(cx, cy + gap);
+    ctx.lineTo(cx, cy + len + gap);
+    ctx.stroke();
     // center dot
-    hCtx.globalAlpha = 0.6;
-    hCtx.fillStyle = col;
-    hCtx.beginPath();
-    hCtx.arc(cx, cy, 2, 0, Math.PI * 2);
-    hCtx.fill();
-    hCtx.globalAlpha = 1;
+    ctx.globalAlpha = 0.6;
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
   }
 
-  function drawCornerBrackets(x, y, w, h) {
+  function drawCornerBrackets(ctx, x, y, w, h) {
     const len = 14;
     const col = 'rgba(213,255,64,0.5)';
-    hCtx.strokeStyle = col;
-    hCtx.lineWidth = 1.5;
-    hCtx.beginPath();
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
     // TL
-    hCtx.moveTo(x + len, y);
-    hCtx.lineTo(x, y);
-    hCtx.lineTo(x, y + len);
+    ctx.moveTo(x + len, y);
+    ctx.lineTo(x, y);
+    ctx.lineTo(x, y + len);
     // TR
-    hCtx.moveTo(x + w - len, y);
-    hCtx.lineTo(x + w, y);
-    hCtx.lineTo(x + w, y + len);
+    ctx.moveTo(x + w - len, y);
+    ctx.lineTo(x + w, y);
+    ctx.lineTo(x + w, y + len);
     // BL
-    hCtx.moveTo(x, y + h - len);
-    hCtx.lineTo(x, y + h);
-    hCtx.lineTo(x + len, y + h);
+    ctx.moveTo(x, y + h - len);
+    ctx.lineTo(x, y + h);
+    ctx.lineTo(x + len, y + h);
     // BR
-    hCtx.moveTo(x + w - len, y + h);
-    hCtx.lineTo(x + w, y + h);
-    hCtx.lineTo(x + w, y + h - len);
-    hCtx.stroke();
+    ctx.moveTo(x + w - len, y + h);
+    ctx.lineTo(x + w, y + h);
+    ctx.lineTo(x + w, y + h - len);
+    ctx.stroke();
   }
 
   function updateHudTime() {
@@ -239,22 +249,18 @@
   }
 
   // ─── YOLO bounding-box overlay ───────────────────────────────────────────
-  // Populated from the JSON "detections" messages on /ws/video; drawn as
-  // part of every drawHUD() pass so boxes stay aligned with the current frame.
-  let detections = [];
-  let detFrameW = 0;
-  let detFrameH = 0;
   let lastDetFps = 0;
   let detMsgCount = 0;
   let lastDetFpsT = performance.now();
 
-  function drawDetections(dx, dy, dw, dh) {
-    if (!detections.length || !detFrameW || !detFrameH) return;
+  function drawDetections(panelId, ctx, dx, dy, dw, dh) {
+    const state = panelState[panelId];
+    if (!state.detections.length || !state.detFrameW || !state.detFrameH) return;
 
-    const scaleX = dw / detFrameW;
-    const scaleY = dh / detFrameH;
+    const scaleX = dw / state.detFrameW;
+    const scaleY = dh / state.detFrameH;
 
-    detections.forEach((det) => {
+    state.detections.forEach((det) => {
       const { x1, y1, x2, y2, label, conf, color } = det;
       const px1 = dx + x1 * scaleX;
       const py1 = dy + y1 * scaleY;
@@ -262,21 +268,21 @@
       const ph = (y2 - y1) * scaleY;
       const col = color || '#D5FF40';
 
-      hCtx.strokeStyle = col;
-      hCtx.lineWidth = 1.5;
-      hCtx.strokeRect(px1, py1, pw, ph);
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(px1, py1, pw, ph);
 
       const text = `${label} ${Math.round(conf * 100)}%`;
-      hCtx.font = "bold 10px 'JetBrains Mono', monospace";
-      const textW = hCtx.measureText(text).width;
+      ctx.font = "bold 10px 'JetBrains Mono', monospace";
+      const textW = ctx.measureText(text).width;
 
-      hCtx.fillStyle = col;
-      hCtx.globalAlpha = 0.85;
-      hCtx.fillRect(px1, py1 - 13, textW + 6, 13);
-      hCtx.globalAlpha = 1;
+      ctx.fillStyle = col;
+      ctx.globalAlpha = 0.85;
+      ctx.fillRect(px1, py1 - 13, textW + 6, 13);
+      ctx.globalAlpha = 1;
 
-      hCtx.fillStyle = '#0a0a08';
-      hCtx.fillText(text, px1 + 3, py1 - 3);
+      ctx.fillStyle = '#0a0a08';
+      ctx.fillText(text, px1 + 3, py1 - 3);
     });
   }
 
@@ -322,9 +328,10 @@
       vCtx2.drawImage(img, dx, dy, dw, dh);
       URL.revokeObjectURL(url);
 
+      panelState[panelId].lastDraw = { dx, dy, dw, dh, cw, ch };
+      drawHUD(panelId, dx, dy, dw, dh, cw, ch);
+      
       if (panelId === 1) {
-        lastDraw = { dx, dy, dw, dh, cw, ch };
-        drawHUD(dx, dy, dw, dh, cw, ch);
         measureFps();
       } else {
         measureFps2();
@@ -342,13 +349,15 @@
    * via the /ws/video text messages handled below.
    */
   window.GS_setDetections = function (dets, frameW, frameH) {
-    detections = dets || [];
-    detFrameW = frameW || 0;
-    detFrameH = frameH || 0;
-    drawHUD(lastDraw.dx, lastDraw.dy, lastDraw.dw, lastDraw.dh, lastDraw.cw, lastDraw.ch);
+    // Legacy support, default to panel 1
+    panelState[1].detections = dets || [];
+    panelState[1].detFrameW = frameW || 0;
+    panelState[1].detFrameH = frameH || 0;
+    const ld = panelState[1].lastDraw;
+    drawHUD(1, ld.dx, ld.dy, ld.dw, ld.dh, ld.cw, ld.ch);
   };
 
-  function handleDetectionMessage(json) {
+  function handleDetectionMessage(port, json) {
     console.log('YOLO MSG:', json);
     let msg;
     try {
@@ -359,12 +368,24 @@
     console.log('PARSED:', msg);
     if (!msg || msg.type !== 'detections') return;
 
-    detections = msg.detections || [];
-    detFrameW = msg.frame_width || 0;
-    detFrameH = msg.frame_height || 0;
+    const incomingDetections = msg.detections || [];
+    const incomingFrameW = msg.frame_width || 0;
+    const incomingFrameH = msg.frame_height || 0;
 
-    if (detCountEl) detCountEl.textContent = detections.length;
+    [1, 2].forEach(pId => {
+      if (window.GS_camSource[pId] === 'udp' && window.GS_udpPorts[pId] === port) {
+        panelState[pId].detections = incomingDetections;
+        panelState[pId].detFrameW = incomingFrameW;
+        panelState[pId].detFrameH = incomingFrameH;
+        
+        if (pId === 1 && detCountEl) detCountEl.textContent = incomingDetections.length;
+        
+        const ld = panelState[pId].lastDraw;
+        drawHUD(pId, ld.dx, ld.dy, ld.dw, ld.dh, ld.cw, ld.ch);
+      }
+    });
 
+    // Update global YOLO FPS
     detMsgCount++;
     const now = performance.now();
     const elapsed = now - lastDetFpsT;
@@ -374,9 +395,6 @@
       lastDetFpsT = now;
       if (detFpsEl) detFpsEl.textContent = lastDetFps + ' FPS';
     }
-
-    // Redraw immediately so boxes don't lag behind a detection-only update.
-    drawHUD(lastDraw.dx, lastDraw.dy, lastDraw.dw, lastDraw.dh, lastDraw.cw, lastDraw.ch);
   }
 
   // ─── WebSocket Connections (by Port) ────────────────────────────────────
@@ -408,7 +426,7 @@
           }
         });
       } else if (typeof ev.data === 'string') {
-        handleDetectionMessage(ev.data);
+        handleDetectionMessage(port, ev.data);
       }
     };
     
@@ -513,7 +531,10 @@
   document.getElementById('btn-detections')?.addEventListener('click', () => {
     showDetections = !showDetections;
     window.GS_log('info', 'video', `YOLO overlay ${showDetections ? 'enabled' : 'disabled'}`);
-    drawHUD(lastDraw.dx, lastDraw.dy, lastDraw.dw, lastDraw.dh, lastDraw.cw, lastDraw.ch);
+    [1, 2].forEach(pId => {
+      const ld = panelState[pId].lastDraw;
+      drawHUD(pId, ld.dx, ld.dy, ld.dw, ld.dh, ld.cw, ld.ch);
+    });
   });
 
   // ─── Poll video REST stats every 5s ──────────────────────────────────────

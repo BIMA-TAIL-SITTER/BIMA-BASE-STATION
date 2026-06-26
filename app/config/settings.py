@@ -55,7 +55,7 @@ class Settings(BaseSettings):
         description="Master switch for YOLO object detection",
     )
     YOLO_MODEL_PATH: str = Field(
-        default="best.pt",
+        default="yolo11n.pt",
         description=(
             "Path atau nama model YOLO. "
             "'yolo11n.pt' akan auto-download saat pertama kali dipakai. "

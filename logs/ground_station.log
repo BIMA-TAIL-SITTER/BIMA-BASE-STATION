@@ -2777,3 +2777,329 @@
 2026-06-26 15:22:54 [INFO    ] app.main — Ground Station shutting down…
 2026-06-26 15:22:54 [INFO    ] app.services.yolo.detector — YOLODetector stopped | total_inferences=18885 | total_detections=6109
 2026-06-26 15:22:54 [INFO    ] app.main — Ground Station stopped.
+2026-06-26 17:48:45 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80, yolo=enabled)
+2026-06-26 17:48:45 [INFO    ] app.services.telemetry.generator — TelemetryGenerator ready (5.0 Hz)
+2026-06-26 17:48:45 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-06-26 17:48:45 [INFO    ] app.main —   UAV Ground Station starting up
+2026-06-26 17:48:45 [INFO    ] app.main —   Web  port : 8000
+2026-06-26 17:48:45 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-06-26 17:48:45 [INFO    ] app.main —   YOLO      : enabled
+2026-06-26 17:48:45 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-06-26 17:48:45 [INFO    ] app.services.yolo.detector — Loading YOLO model: best.pt
+2026-06-26 17:48:45 [INFO    ] app.services.yolo.detector — Class 'terpal' → ID 0
+2026-06-26 17:48:45 [INFO    ] app.services.yolo.detector — YOLODetector started | model=best.pt | conf=0.40 | iou=0.45 | max_fps=10.0 | device='auto' | filter=[0] | ws_broadcast=enabled
+2026-06-26 17:48:45 [INFO    ] app.services.yolo.detector — === Class list dari model 'best.pt' ===
+2026-06-26 17:48:45 [INFO    ] app.services.yolo.detector —   [  0] terpal ← AKTIF
+2026-06-26 17:48:45 [INFO    ] app.services.yolo.detector — Filter aktif: [0]
+2026-06-26 17:48:45 [INFO    ] app.main — YOLODetector started (model=best.pt)
+2026-06-26 17:48:45 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-06-26 17:48:45 [INFO    ] app.services.telemetry.generator — TelemetryGenerator broadcast loop started
+2026-06-26 17:48:46 [INFO    ] app.services.websocket.manager — System client connected — total: 1
+2026-06-26 17:48:46 [INFO    ] app.services.websocket.manager — Telemetry client connected — total: 1
+2026-06-26 17:48:49 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-06-26 17:48:49 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:48:49 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-06-26 17:48:49 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:48:49 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 — total for port: 1
+2026-06-26 17:48:49 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-06-26 17:48:52 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5001
+2026-06-26 17:48:52 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:48:52 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5001
+2026-06-26 17:48:52 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:48:52 [INFO    ] app.services.websocket.manager — Video client connected to port 5001 — total for port: 1
+2026-06-26 17:48:52 [INFO    ] app.services.video.manager — Broadcast loop started for port 5001
+2026-06-26 17:48:56 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5001 — remaining for port: 0
+2026-06-26 17:48:56 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5001
+2026-06-26 17:48:56 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:48:56 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5002
+2026-06-26 17:48:56 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:48:56 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5002
+2026-06-26 17:48:56 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:48:56 [INFO    ] app.services.websocket.manager — Video client connected to port 5002 — total for port: 1
+2026-06-26 17:48:56 [INFO    ] app.services.video.manager — Broadcast loop started for port 5002
+2026-06-26 17:48:57 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5002 — remaining for port: 0
+2026-06-26 17:48:57 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5002
+2026-06-26 17:48:57 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:48:58 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5004
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5004
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:48:58 [INFO    ] app.services.websocket.manager — Video client connected to port 5004 — total for port: 1
+2026-06-26 17:48:58 [INFO    ] app.services.video.manager — Broadcast loop started for port 5004
+2026-06-26 17:48:58 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5004 — remaining for port: 0
+2026-06-26 17:48:58 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5004
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:48:58 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5005
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5005
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:48:58 [INFO    ] app.services.websocket.manager — Video client connected to port 5005 — total for port: 1
+2026-06-26 17:48:58 [INFO    ] app.services.video.manager — Broadcast loop started for port 5005
+2026-06-26 17:48:58 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5005 — remaining for port: 0
+2026-06-26 17:48:58 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5005
+2026-06-26 17:48:58 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:48:59 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5009
+2026-06-26 17:48:59 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:48:59 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5009
+2026-06-26 17:48:59 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:48:59 [INFO    ] app.services.websocket.manager — Video client connected to port 5009 — total for port: 1
+2026-06-26 17:48:59 [INFO    ] app.services.video.manager — Broadcast loop started for port 5009
+2026-06-26 17:48:59 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5009 — remaining for port: 0
+2026-06-26 17:48:59 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5009
+2026-06-26 17:48:59 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:49:01 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5003
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5003
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:49:01 [INFO    ] app.services.websocket.manager — Video client connected to port 5003 — total for port: 1
+2026-06-26 17:49:01 [INFO    ] app.services.video.manager — Broadcast loop started for port 5003
+2026-06-26 17:49:01 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5003 — remaining for port: 0
+2026-06-26 17:49:01 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5003
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:49:01 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5001
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5001
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 17:49:01 [INFO    ] app.services.websocket.manager — Video client connected to port 5001 — total for port: 1
+2026-06-26 17:49:01 [INFO    ] app.services.video.manager — Broadcast loop started for port 5001
+2026-06-26 17:49:01 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5001 — remaining for port: 0
+2026-06-26 17:49:01 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5001
+2026-06-26 17:49:01 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:49:14 [INFO    ] app.services.websocket.manager — Telemetry client disconnected — remaining: 0
+2026-06-26 17:49:14 [INFO    ] app.services.websocket.manager — System client disconnected — remaining: 0
+2026-06-26 17:49:14 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 — remaining for port: 0
+2026-06-26 17:49:14 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-06-26 17:49:14 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 17:49:15 [INFO    ] app.main — Ground Station shutting down…
+2026-06-26 17:49:15 [INFO    ] app.services.yolo.detector — YOLODetector stopped | total_inferences=217 | total_detections=41
+2026-06-26 17:49:15 [INFO    ] app.main — Ground Station stopped.
+2026-06-26 18:07:46 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80, yolo=enabled)
+2026-06-26 18:07:46 [INFO    ] app.services.telemetry.generator — TelemetryGenerator ready (5.0 Hz)
+2026-06-26 18:07:46 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-06-26 18:07:46 [INFO    ] app.main —   UAV Ground Station starting up
+2026-06-26 18:07:46 [INFO    ] app.main —   Web  port : 8000
+2026-06-26 18:07:46 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-06-26 18:07:46 [INFO    ] app.main —   YOLO      : enabled
+2026-06-26 18:07:46 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector — Loading YOLO model: yolo11n.pt
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector — Class 'laptop' → ID 63
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector — Class 'person' → ID 0
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector — Class 'banana' → ID 46
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector — YOLODetector started | model=yolo11n.pt | conf=0.40 | iou=0.45 | max_fps=10.0 | device='auto' | filter=[63, 0, 46] | ws_broadcast=enabled
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector — === Class list dari model 'yolo11n.pt' ===
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  0] person ← AKTIF
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  1] bicycle
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  2] car
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  3] motorcycle
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  4] airplane
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  5] bus
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  6] train
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  7] truck
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  8] boat
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [  9] traffic light
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 10] fire hydrant
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 11] stop sign
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 12] parking meter
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 13] bench
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 14] bird
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 15] cat
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 16] dog
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 17] horse
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 18] sheep
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 19] cow
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 20] elephant
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 21] bear
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 22] zebra
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 23] giraffe
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 24] backpack
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 25] umbrella
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 26] handbag
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 27] tie
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 28] suitcase
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 29] frisbee
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 30] skis
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 31] snowboard
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 32] sports ball
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 33] kite
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 34] baseball bat
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 35] baseball glove
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 36] skateboard
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 37] surfboard
+2026-06-26 18:07:46 [INFO    ] app.services.yolo.detector —   [ 38] tennis racket
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 39] bottle
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 40] wine glass
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 41] cup
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 42] fork
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 43] knife
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 44] spoon
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 45] bowl
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 46] banana ← AKTIF
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 47] apple
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 48] sandwich
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 49] orange
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 50] broccoli
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 51] carrot
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 52] hot dog
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 53] pizza
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 54] donut
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 55] cake
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 56] chair
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 57] couch
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 58] potted plant
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 59] bed
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 60] dining table
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 61] toilet
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 62] tv
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 63] laptop ← AKTIF
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 64] mouse
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 65] remote
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 66] keyboard
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 67] cell phone
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 68] microwave
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 69] oven
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 70] toaster
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 71] sink
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 72] refrigerator
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 73] book
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 74] clock
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 75] vase
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 76] scissors
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 77] teddy bear
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 78] hair drier
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector —   [ 79] toothbrush
+2026-06-26 18:07:47 [INFO    ] app.services.yolo.detector — Filter aktif: [63, 0, 46]
+2026-06-26 18:07:47 [INFO    ] app.main — YOLODetector started (model=yolo11n.pt)
+2026-06-26 18:07:47 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-06-26 18:07:47 [INFO    ] app.services.telemetry.generator — TelemetryGenerator broadcast loop started
+2026-06-26 18:07:50 [INFO    ] app.services.websocket.manager — Telemetry client connected — total: 1
+2026-06-26 18:07:54 [INFO    ] app.services.websocket.manager — System client connected — total: 1
+2026-06-26 18:19:17 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-06-26 18:19:17 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:19:17 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-06-26 18:19:17 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:19:17 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 — total for port: 1
+2026-06-26 18:19:17 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-06-26 18:19:22 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5001
+2026-06-26 18:19:22 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:19:22 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5001
+2026-06-26 18:19:22 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:19:22 [INFO    ] app.services.websocket.manager — Video client connected to port 5001 — total for port: 1
+2026-06-26 18:19:22 [INFO    ] app.services.video.manager — Broadcast loop started for port 5001
+2026-06-26 18:22:03 [INFO    ] app.services.websocket.manager — Telemetry client disconnected — remaining: 0
+2026-06-26 18:22:03 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 — remaining for port: 0
+2026-06-26 18:22:03 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-06-26 18:22:03 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:22:03 [INFO    ] app.services.websocket.manager — System client disconnected — remaining: 0
+2026-06-26 18:22:03 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5001 — remaining for port: 0
+2026-06-26 18:22:03 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5001
+2026-06-26 18:22:03 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:22:03 [INFO    ] app.services.websocket.manager — System client connected — total: 1
+2026-06-26 18:22:03 [INFO    ] app.services.websocket.manager — Telemetry client connected — total: 1
+2026-06-26 18:22:06 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5001
+2026-06-26 18:22:06 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:22:06 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5001
+2026-06-26 18:22:06 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:22:06 [INFO    ] app.services.websocket.manager — Video client connected to port 5001 — total for port: 1
+2026-06-26 18:22:06 [INFO    ] app.services.video.manager — Broadcast loop started for port 5001
+2026-06-26 18:22:08 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-06-26 18:22:08 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:22:08 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-06-26 18:22:08 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:22:08 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 — total for port: 1
+2026-06-26 18:22:08 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-06-26 18:22:15 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5001 — remaining for port: 0
+2026-06-26 18:22:15 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5001
+2026-06-26 18:22:15 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:22:16 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5002
+2026-06-26 18:22:16 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:22:16 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5002
+2026-06-26 18:22:16 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:22:16 [INFO    ] app.services.websocket.manager — Video client connected to port 5002 — total for port: 1
+2026-06-26 18:22:16 [INFO    ] app.services.video.manager — Broadcast loop started for port 5002
+2026-06-26 18:22:16 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5002 — remaining for port: 0
+2026-06-26 18:22:16 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5002
+2026-06-26 18:22:16 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:22:56 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5001
+2026-06-26 18:22:56 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:22:56 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5001
+2026-06-26 18:22:56 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:22:56 [INFO    ] app.services.websocket.manager — Video client connected to port 5001 — total for port: 1
+2026-06-26 18:22:56 [INFO    ] app.services.video.manager — Broadcast loop started for port 5001
+2026-06-26 18:23:06 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5001 — remaining for port: 0
+2026-06-26 18:23:06 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5001
+2026-06-26 18:23:06 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:24:11 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5001
+2026-06-26 18:24:11 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:24:11 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5001
+2026-06-26 18:24:11 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:24:11 [INFO    ] app.services.websocket.manager — Video client connected to port 5001 — total for port: 1
+2026-06-26 18:24:11 [INFO    ] app.services.video.manager — Broadcast loop started for port 5001
+2026-06-26 18:24:14 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5001 — remaining for port: 0
+2026-06-26 18:24:14 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5001
+2026-06-26 18:24:14 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:24:14 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5002
+2026-06-26 18:24:14 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:24:14 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5002
+2026-06-26 18:24:14 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:24:14 [INFO    ] app.services.websocket.manager — Video client connected to port 5002 — total for port: 1
+2026-06-26 18:24:14 [INFO    ] app.services.video.manager — Broadcast loop started for port 5002
+2026-06-26 18:24:16 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5002 — remaining for port: 0
+2026-06-26 18:24:16 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5002
+2026-06-26 18:24:16 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:24:17 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 4999
+2026-06-26 18:24:17 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:24:17 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 4999
+2026-06-26 18:24:17 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:24:17 [INFO    ] app.services.websocket.manager — Video client connected to port 4999 — total for port: 1
+2026-06-26 18:24:17 [INFO    ] app.services.video.manager — Broadcast loop started for port 4999
+2026-06-26 18:24:18 [INFO    ] app.services.websocket.manager — Video client disconnected from port 4999 — remaining for port: 0
+2026-06-26 18:24:18 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 4999
+2026-06-26 18:24:18 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:24:24 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 — remaining for port: 0
+2026-06-26 18:24:24 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-06-26 18:24:24 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:24:26 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-06-26 18:24:26 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:24:26 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-06-26 18:24:26 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:24:26 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 — total for port: 1
+2026-06-26 18:24:26 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-06-26 18:24:38 [INFO    ] app.services.websocket.manager — System client disconnected — remaining: 0
+2026-06-26 18:24:38 [INFO    ] app.services.websocket.manager — Telemetry client disconnected — remaining: 0
+2026-06-26 18:24:38 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 — remaining for port: 0
+2026-06-26 18:24:38 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-06-26 18:24:38 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:24:38 [INFO    ] app.services.websocket.manager — System client connected — total: 1
+2026-06-26 18:24:38 [INFO    ] app.services.websocket.manager — Telemetry client connected — total: 1
+2026-06-26 18:24:40 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5001
+2026-06-26 18:24:40 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:24:40 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5001
+2026-06-26 18:24:40 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:24:40 [INFO    ] app.services.websocket.manager — Video client connected to port 5001 — total for port: 1
+2026-06-26 18:24:40 [INFO    ] app.services.video.manager — Broadcast loop started for port 5001
+2026-06-26 18:24:41 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5001 — remaining for port: 0
+2026-06-26 18:24:41 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5001
+2026-06-26 18:24:41 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:24:42 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-06-26 18:24:42 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:24:42 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-06-26 18:24:42 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:24:42 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 — total for port: 1
+2026-06-26 18:24:42 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-06-26 18:24:58 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 — remaining for port: 0
+2026-06-26 18:24:58 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-06-26 18:24:58 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:25:00 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-06-26 18:25:00 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-06-26 18:25:00 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-06-26 18:25:00 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-06-26 18:25:00 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 — total for port: 1
+2026-06-26 18:25:00 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-06-26 18:25:18 [INFO    ] app.services.websocket.manager — Telemetry client disconnected — remaining: 0
+2026-06-26 18:25:18 [INFO    ] app.services.websocket.manager — System client disconnected — remaining: 0
+2026-06-26 18:25:18 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 — remaining for port: 0
+2026-06-26 18:25:18 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-06-26 18:25:18 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-06-26 18:25:18 [INFO    ] app.main — Ground Station shutting down…
+2026-06-26 18:25:18 [INFO    ] app.services.yolo.detector — YOLODetector stopped | total_inferences=3232 | total_detections=3679
+2026-06-26 18:25:18 [INFO    ] app.main — Ground Station stopped.
