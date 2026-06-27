@@ -135,11 +135,15 @@ async def detect_frame(request: Request):
                         label = str(cls_id)
 
                     color = _PALETTE[cls_id % len(_PALETTE)]
+                    cx = round((xyxy[0] + xyxy[2]) / 2, 1)
+                    cy = round((xyxy[1] + xyxy[3]) / 2, 1)
                     detections.append({
                         "x1": round(xyxy[0], 1),
                         "y1": round(xyxy[1], 1),
                         "x2": round(xyxy[2], 1),
                         "y2": round(xyxy[3], 1),
+                        "cx": cx,
+                        "cy": cy,
                         "label": label,
                         "conf": round(conf, 3),
                         "class_id": cls_id,
@@ -161,3 +165,11 @@ async def detect_frame(request: Request):
             import traceback
             f.write(traceback.format_exc() + "\n")
         return JSONResponse({"error": str(exc)}, status_code=500)
+
+
+@router.post("/yolo/toggle")
+async def toggle_yolo():
+    if yolo_detector_instance is not None:
+        yolo_detector_instance.is_enabled = not yolo_detector_instance.is_enabled
+        return {"enabled": yolo_detector_instance.is_enabled}
+    return {"error": "YOLO disabled / not initialized"}

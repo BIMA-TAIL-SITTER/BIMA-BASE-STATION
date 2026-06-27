@@ -283,7 +283,66 @@
 
       ctx.fillStyle = '#0a0a08';
       ctx.fillText(text, px1 + 3, py1 - 3);
+
+      // ── Centroid dot ──────────────────────────────────────────
+      if (det.cx !== undefined && det.cy !== undefined) {
+        const pcx = dx + det.cx * scaleX;
+        const pcy = dy + det.cy * scaleY;
+        const dotR = 5;
+
+        // Filled dot
+        ctx.beginPath();
+        ctx.arc(pcx, pcy, dotR, 0, Math.PI * 2);
+        ctx.fillStyle = col;
+        ctx.globalAlpha = 0.9;
+        ctx.fill();
+
+        // Outer ring
+        ctx.beginPath();
+        ctx.arc(pcx, pcy, dotR + 2, 0, Math.PI * 2);
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.5;
+        ctx.stroke();
+
+        // Mini crosshair
+        const cLen = 10;
+        ctx.beginPath();
+        ctx.globalAlpha = 0.6;
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 0.8;
+        ctx.moveTo(pcx - cLen, pcy);
+        ctx.lineTo(pcx + cLen, pcy);
+        ctx.moveTo(pcx, pcy - cLen);
+        ctx.lineTo(pcx, pcy + cLen);
+        ctx.stroke();
+
+        ctx.globalAlpha = 1;
+      }
     });
+
+    // Update bottom stats for the first detected object (if any)
+    const cxEl = document.getElementById(panelId === 1 ? 'vid-cx' : 'vid-cx-2');
+    const cyEl = document.getElementById(panelId === 1 ? 'vid-cy' : 'vid-cy-2');
+    const distEl = document.getElementById(panelId === 1 ? 'vid-dist' : 'vid-dist-2');
+    if (cxEl && cyEl && distEl) {
+      if (state.detections[0] && state.detections[0].cx !== undefined) {
+        const cx = state.detections[0].cx;
+        const cy = state.detections[0].cy;
+        cxEl.textContent = cx.toFixed(1);
+        cyEl.textContent = cy.toFixed(1);
+
+        // Calculate distance from center of the original frame
+        const center_x = state.detFrameW / 2;
+        const center_y = state.detFrameH / 2;
+        const dist = Math.sqrt(Math.pow(cx - center_x, 2) + Math.pow(cy - center_y, 2));
+        distEl.textContent = dist.toFixed(1);
+      } else {
+        cxEl.textContent = '--';
+        cyEl.textContent = '--';
+        distEl.textContent = '--';
+      }
+    }
   }
 
   // --- Multi-panel rendering helper ---
@@ -380,6 +439,13 @@
         
         if (pId === 1 && detCountEl) detCountEl.textContent = incomingDetections.length;
         
+        // Update YOLO FPS from inference_ms
+        const yoloFpsEl = document.getElementById(pId === 1 ? 'vid-yolo-fps' : 'vid-yolo-fps-2');
+        if (yoloFpsEl && msg.inference_ms) {
+          const fpsYolo = 1000 / msg.inference_ms;
+          yoloFpsEl.textContent = fpsYolo.toFixed(1);
+        }
+
         const ld = panelState[pId].lastDraw;
         drawHUD(pId, ld.dx, ld.dy, ld.dw, ld.dh, ld.cw, ld.ch);
       }

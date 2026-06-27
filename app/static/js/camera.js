@@ -91,6 +91,18 @@
       if (sending) return; // skip if previous request still in-flight
       if (!activeStreams[panelId]) return;
 
+      const yoloToggle = document.getElementById('yolo-toggle');
+      const isYoloOn = yoloToggle ? yoloToggle.checked : true;
+      
+      if (!isYoloOn) {
+        // YOLO is OFF: clear old detections if any, and skip fetching
+        if (panelDetections[panelId] && panelDetections[panelId].length > 0) {
+          console.log(`[camera] Panel ${panelId} YOLO is OFF. Clearing detections.`);
+          panelDetections[panelId] = [];
+        }
+        return;
+      }
+
       const videoEl = panelId === 1 ? videoEl1 : videoEl2;
       if (!videoEl || videoEl.readyState < 2) return;
 
@@ -121,6 +133,13 @@
             w: data.frame_width || 0,
             h: data.frame_height || 0,
           };
+
+          // Update YOLO FPS
+          const yoloFpsEl = document.getElementById(panelId === 1 ? 'vid-yolo-fps' : 'vid-yolo-fps-2');
+          if (yoloFpsEl && data.inference_ms) {
+            const fpsYolo = 1000 / data.inference_ms;
+            yoloFpsEl.textContent = fpsYolo.toFixed(1);
+          }
         } else {
           console.warn(`[camera] Panel ${panelId} YOLO error:`, data);
           panelDetections[panelId] = { error: data.error || data.detail || 'Unknown API Error' };
@@ -131,7 +150,7 @@
       } finally {
         sending = false;
       }
-    }, 200); // ~5 FPS YOLO detection
+    }, 33); // ~5 FPS YOLO detection
   }
 
   function stopYoloForPanel(panelId) {
@@ -151,7 +170,7 @@
     // Get the correct HUD canvas for the panel
     const hudCanvas = panelId === 1 ? document.getElementById('hud-canvas') : hudCanvas2;
     if (!hudCanvas) return;
-    
+
     const hudCtx = hudCanvas.getContext('2d');
 
     if (detections.error) {
@@ -173,7 +192,7 @@
       const py1 = dy + y1 * scaleY;
       const pw = (x2 - x1) * scaleX;
       const ph = (y2 - y1) * scaleY;
-      const col = color || '#D5FF40';
+      const col = color || '#ffffff';
 
       hudCtx.strokeStyle = col;
       hudCtx.lineWidth = 1.5;
@@ -190,7 +209,67 @@
 
       hudCtx.fillStyle = '#0a0a08';
       hudCtx.fillText(text, px1 + 3, py1 - 3);
+
+      // ── Centroid dot ──────────────────────────────────────────
+      if (det.cx !== undefined && det.cy !== undefined) {
+        const pcx = dx + det.cx * scaleX;
+        const pcy = dy + det.cy * scaleY;
+        const dotR = 5;
+
+        // Filled dot
+        hudCtx.beginPath();
+        hudCtx.arc(pcx, pcy, dotR, 0, Math.PI * 2);
+        hudCtx.fillStyle = col;
+        hudCtx.globalAlpha = 0.9;
+        hudCtx.fill();
+
+        // Outer ring
+        hudCtx.beginPath();
+        hudCtx.arc(pcx, pcy, dotR + 2, 0, Math.PI * 2);
+        hudCtx.strokeStyle = col;
+        hudCtx.lineWidth = 1;
+        hudCtx.globalAlpha = 0.5;
+        hudCtx.stroke();
+
+        // Mini crosshair
+        const cLen = 10;
+        hudCtx.beginPath();
+        hudCtx.globalAlpha = 0.6;
+        hudCtx.strokeStyle = col;
+        hudCtx.lineWidth = 0.8;
+        hudCtx.moveTo(pcx - cLen, pcy);
+        hudCtx.lineTo(pcx + cLen, pcy);
+        hudCtx.moveTo(pcx, pcy - cLen);
+        hudCtx.lineTo(pcx, pcy + cLen);
+        hudCtx.stroke();
+
+        hudCtx.globalAlpha = 1;
+      }
     });
+
+    // Update bottom stats for the first detected object (if any)
+    const cxEl = document.getElementById(panelId === 1 ? 'vid-cx' : 'vid-cx-2');
+    const cyEl = document.getElementById(panelId === 1 ? 'vid-cy' : 'vid-cy-2');
+    const distEl = document.getElementById(panelId === 1 ? 'vid-dist' : 'vid-dist-2');
+    if (cxEl && cyEl && distEl) {
+      if (detections[0] && detections[0].cx !== undefined) {
+        const cx = detections[0].cx;
+        const cy = detections[0].cy;
+        cxEl.textContent = cx.toFixed(1);
+        cyEl.textContent = cy.toFixed(1);
+
+        // Calculate distance from center of the original frame
+        // (assuming frameSize.w and frameSize.h are the dimensions of the original video)
+        const center_x = frameSize.w / 2;
+        const center_y = frameSize.h / 2;
+        const dist = Math.sqrt(Math.pow(cx - center_x, 2) + Math.pow(cy - center_y, 2));
+        distEl.textContent = dist.toFixed(1);
+      } else {
+        cxEl.textContent = '--';
+        cyEl.textContent = '--';
+        distEl.textContent = '--';
+      }
+    }
   }
 
   // ─── Start webcam stream ───────────────────────────────────────────────
@@ -255,11 +334,45 @@
           ctx.drawImage(videoEl, dx, dy, dw, dh);
         }
 
-        // Draw YOLO detections
+        // Draw YOLO detections and Crosshair
         const hudCanvas = panelId === 1 ? document.getElementById('hud-canvas') : hudCanvas2;
         if (hudCanvas) {
           const hudCtx = hudCanvas.getContext('2d');
           hudCtx.clearRect(0, 0, w, h);
+
+          // ── Calculate frame center ──
+          const center_frame_x = dx + dw / 2;
+          const center_frame_y = dy + dh / 2;
+
+          // ── Draw Crosshair ──
+          const cLen = 16;
+          const gap = 6;
+          const col = '#D5FF40';
+
+          hudCtx.strokeStyle = col;
+          hudCtx.lineWidth = 1;
+          hudCtx.globalAlpha = 0.8;
+          hudCtx.beginPath();
+          // horizontal
+          hudCtx.moveTo(center_frame_x - cLen - gap, center_frame_y);
+          hudCtx.lineTo(center_frame_x - gap, center_frame_y);
+          hudCtx.moveTo(center_frame_x + gap, center_frame_y);
+          hudCtx.lineTo(center_frame_x + cLen + gap, center_frame_y);
+          // vertical
+          hudCtx.moveTo(center_frame_x, center_frame_y - cLen - gap);
+          hudCtx.lineTo(center_frame_x, center_frame_y - gap);
+          hudCtx.moveTo(center_frame_x, center_frame_y + gap);
+          hudCtx.lineTo(center_frame_x, center_frame_y + cLen + gap);
+          hudCtx.stroke();
+
+          // center dot
+          hudCtx.globalAlpha = 0.6;
+          hudCtx.fillStyle = col;
+          hudCtx.beginPath();
+          hudCtx.arc(center_frame_x, center_frame_y, 2, 0, Math.PI * 2);
+          hudCtx.fill();
+          hudCtx.globalAlpha = 1;
+
           drawWebcamDetections(panelId, dx, dy, dw, dh);
         }
 
@@ -275,7 +388,7 @@
     } catch (err) {
       console.warn('[camera] Failed to start webcam:', err);
       window.GS_log('warning', 'video', `Panel ${panelId}: Webcam error: ${err.message}`);
-      
+
       // Update the overlay to show the camera error
       if (noSignal) noSignal.classList.remove('hidden');
       if (noSignalText) noSignalText.textContent = 'CAMERA IN USE OR BLOCKED';

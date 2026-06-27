@@ -89,11 +89,14 @@ class Detection:
         return ((self.x1 + self.x2) / 2, (self.y1 + self.y2) / 2)
 
     def to_dict(self) -> dict:
+        cx, cy = self.center
         return {
             "x1":       round(self.x1, 1),
             "y1":       round(self.y1, 1),
             "x2":       round(self.x2, 1),
             "y2":       round(self.y2, 1),
+            "cx":       round(cx, 1),
+            "cy":       round(cy, 1),
             "label":    self.label,
             "conf":     round(self.conf, 3),
             "class_id": self.class_id,
@@ -145,23 +148,24 @@ class YOLODetector:
 
     def __init__(
         self,
-        ws_manager=None,                             # ← WebSocketManager instance
-        model_path: str = "yolo11n.pt",
-        conf_threshold: float = 0.4,
-        iou_threshold: float = 0.45,
-        max_fps: float = 10.0,
-        device: Optional[str] = None,
-        target_classes: Optional[List[str]] = None,
+        ws_manager=None,
+        *,                                           # ← keyword-only setelah ini
+        model_path: str,                             # dari settings.YOLO_MODEL_PATH
+        conf_threshold: float,                       # dari settings.YOLO_CONF_THRESHOLD
+        iou_threshold: float,                        # dari settings.YOLO_IOU_THRESHOLD
+        max_fps: float,                              # dari settings.YOLO_MAX_FPS
+        device: Optional[str] = None,                # dari settings.YOLO_DEVICE
+        target_classes: Optional[List[str]] = None,  # dari settings.yolo_target_classes
         class_ids: Optional[List[int]] = None,
     ) -> None:
-        self._ws         = ws_manager                # bisa None kalau ga mau broadcast
+        self._ws         = ws_manager
         self._model_path = model_path
         self._conf       = conf_threshold
         self._iou        = iou_threshold
         self._min_interval = 1.0 / max(0.1, max_fps)
         self._device     = device or ""
 
-        self._target_class_names: Optional[List[str]] = target_classes or ["laptop", "person", "banana"]
+        self._target_class_names: Optional[List[str]] = target_classes
         self._class_ids: Optional[List[int]]          = class_ids
 
         self._model: Optional["YOLO"] = None
@@ -186,6 +190,11 @@ class YOLODetector:
     @property
     def is_enabled(self) -> bool:
         return self._enabled
+
+    @is_enabled.setter
+    def is_enabled(self, value: bool) -> None:
+        self._enabled = value
+        print(f"[YOLO DEBUG] YOLO state changed to: {'ON' if value else 'OFF'}", flush=True)
 
     @property
     def class_names(self) -> Dict[int, str]:
@@ -311,6 +320,8 @@ class YOLODetector:
 
     def _run_loop(self) -> None:
         last_run = 0.0
+        was_enabled = True
+        
         while self._running:
             now = time.monotonic()
             wait = self._min_interval - (now - last_run)
@@ -324,6 +335,15 @@ class YOLODetector:
                 continue
 
             last_run = time.monotonic()
+            
+            if not self._enabled:
+                if was_enabled:
+                    # Just disabled: send one empty detection frame to clear the UI
+                    self._broadcast_empty(port, frame.shape[1], frame.shape[0])
+                    was_enabled = False
+                continue
+                
+            was_enabled = True
 
             if not isinstance(frame, np.ndarray):
                 logger.warning(
@@ -358,6 +378,7 @@ class YOLODetector:
             result = results[0]
             boxes  = result.boxes
             names  = result.names
+            self.centroid_frame = self.find_centroid(boxes)
 
             if boxes is not None and len(boxes):
                 for box in boxes:
@@ -373,12 +394,14 @@ class YOLODetector:
                         label = str(cls_id)
 
                     color = _PALETTE[cls_id % len(_PALETTE)]
-                    detections.append(Detection(
+                    det = Detection(
                         x1=xyxy[0], y1=xyxy[1],
                         x2=xyxy[2], y2=xyxy[3],
                         label=label, conf=conf,
                         class_id=cls_id, color=color,
-                    ))
+                    )
+                    detections.append(det)
+                    # print(f"[YOLO] {label} centroid=({det.center[0]:.1f}, {det.center[1]:.1f})", flush=True)
 
         self._total_inferences += 1
         self._total_detections += len(detections)
@@ -409,3 +432,32 @@ class YOLODetector:
                 self._ws.broadcast_video_detections(payload, port),
                 self._loop,
             )
+
+    def _broadcast_empty(self, port: int, w: int, h: int) -> None:
+        """Kirim deteksi kosong ke frontend untuk membersihkan UI."""
+        frame_result = DetectionFrame(
+            detections=[],
+            frame_width=w,
+            frame_height=h,
+            inference_ms=0.0,
+            timestamp=time.time(),
+            model_path=self._model_path,
+        )
+        with self._lock:
+            self._latest[port] = frame_result
+            
+        if self._ws and self._loop and self._loop.is_running():
+            payload = json.dumps(frame_result.to_dict())
+            asyncio.run_coroutine_threadsafe(
+                self._ws.broadcast_video_detections(payload, port),
+                self._loop,
+            )
+
+    def find_centroid(self, boxes):
+        centroids = []
+        for box in boxes:
+            x1, y1, x2, y2 = box.xyxy[0].tolist()
+            centroid_x = (x1 + x2) / 2
+            centroid_y = (y1 + y2) / 2
+            centroids.append((centroid_x, centroid_y))
+        return centroids

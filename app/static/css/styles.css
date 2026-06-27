@@ -96,16 +96,124 @@ canvas {
   font-weight: 600;
 }
 
+/* ── YOLO Toggle Switch ── */
+.yolo-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 20px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.yolo-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.yolo-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #babbbc;
+  transition: .3s;
+  border-radius: 20px;
+}
+
+.yolo-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.yolo-switch input:checked+.yolo-slider {
+  background-color: #20b889;
+}
+
+.yolo-switch input:checked+.yolo-slider:before {
+  transform: translateX(28px);
+}
+
+.yolo-slider:after {
+  content: 'OFF';
+  color: white;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 65%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.yolo-switch input:checked+.yolo-slider:after {
+  content: 'ON';
+  left: 35%;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    MAIN 3-COLUMN LAYOUT
    ══════════════════════════════════════════════════════════════════════════ */
 #main-content {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 0;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: min-content min-content 1fr;
+  gap: 10px 24px;
   padding: 8px 24px;
   height: calc(100vh - 80px);
   overflow: hidden;
+}
+
+#left-panel {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+}
+
+#right-panel {
+  grid-column: 3;
+  grid-row: 1 / span 3;
+}
+
+#telem-panel-1 {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: flex-start;
+  justify-self: center;
+}
+
+#telem-panel-2 {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: flex-start;
+  justify-self: center;
+}
+
+/* Mobile responsive layout */
+@media (max-width: 900px) {
+  #main-content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 24px;
+    padding: 16px;
+  }
+  #left-panel { order: 1; }
+  #telem-panel-1 { order: 2; width: 100%; max-width: 400px; align-self: center; }
+  #right-panel { order: 3; }
+  #telem-panel-2 { order: 4; width: 100%; max-width: 400px; align-self: center; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -315,16 +423,15 @@ canvas {
   margin-left: 4px;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CENTER TELEMETRY COLUMN
-   ══════════════════════════════════════════════════════════════════════════ */
-.center-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 0 14px;
-  min-width: 190px;
+@media (min-width: 1600px) {
+  #main-content {
+    grid-template-columns: minmax(0, 1fr) auto auto minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+  #left-panel { grid-column: 1; grid-row: 1; }
+  #telem-panel-1 { grid-column: 2; grid-row: 1; }
+  #telem-panel-2 { grid-column: 3; grid-row: 1; }
+  #right-panel { grid-column: 4; grid-row: 1; }
 }
 
 .telem-panel {
@@ -335,6 +442,7 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  height: fit-content;
 }
 
 .telem-row {

@@ -13,7 +13,7 @@
   // ─── DOM refs ────────────────────────────────────────────────────────────
   const udpAddrEl   = document.getElementById("udp-addr");
   const udpPortEl   = document.getElementById("udp-port");
-  const yoloStatEl  = document.getElementById("yolo-status");
+  const yoloStatEl  = document.getElementById("yolo-toggle");
 
   // ─── Log (console-only in this layout, no log feed panel) ───────────────
   let logEntries  = [];
@@ -93,10 +93,36 @@
       }
       if (yoloStatEl) {
         const yoloEnabled = data.yolo && data.yolo.enabled;
-        yoloStatEl.textContent = yoloEnabled ? "ACTIVATE" : "DEACTIVATE";
-        yoloStatEl.style.color = yoloEnabled ? "#D5FF40" : "#555540";
+        yoloStatEl.checked = yoloEnabled;
       }
     } catch (_) {}
+  }
+  
+  if (yoloStatEl) {
+    yoloStatEl.addEventListener("change", async (e) => {
+      // Temporarily disable the switch while the request is processing
+      yoloStatEl.disabled = true;
+      try {
+        const r = await fetch("/api/video/yolo/toggle", { method: "POST" });
+        const data = await r.json();
+        const yoloEnabled = data.enabled;
+        yoloStatEl.checked = yoloEnabled;
+        
+        
+        
+        if (yoloEnabled) {
+          window.GS_log("info", "system", "YOLO activated");
+        } else {
+          window.GS_log("info", "system", "YOLO deactivated");
+        }
+      } catch (err) {
+        window.GS_log("error", "system", "Failed to toggle YOLO");
+        // Revert UI state on failure
+        yoloStatEl.checked = !yoloStatEl.checked;
+      } finally {
+        yoloStatEl.disabled = false;
+      }
+    });
   }
   setInterval(pollHealth, 10000);
   pollHealth();

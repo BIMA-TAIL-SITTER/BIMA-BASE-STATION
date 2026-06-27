@@ -1,230 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ title }}</title>
-  <link rel="stylesheet" href="/static/css/styles.css" />
+  <link rel="stylesheet" href="/static/css/styles.css?v=2" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
 </head>
+
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!--  TOP HEADER BAR                                                       -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<header id="top-bar">
-  <!-- Brand -->
-  <div class="brand-title">BASE STATION</div>
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!--  TOP HEADER BAR                                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <header id="top-bar">
+    <!-- Brand -->
+    <div class="brand-title">BASE STATION</div>
 
-  <!-- Connection info -->
-  <div class="header-info">
-    <div>UDP : <span id="udp-addr">&lt;IP ADDRESS&gt;</span></div>
-    <div>Port : <span id="udp-port">&lt;PORT&gt;</span></div>
-    <div>Yolo : <span id="yolo-status">&lt;ACTIVATE/DEACTIVATE&gt;</span></div>
-  </div>
-</header>
-
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!--  MAIN 3-COLUMN LAYOUT                                                 -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<main id="main-content">
-
-  <!-- ── LEFT VIDEO PANEL ──────────────────────────────────────────────── -->
-  <div class="video-panel" id="left-panel">
-    <!-- Camera source selector -->
-    <div class="cam-selector">
-      <label for="cam-source-1">📷 Source:</label>
-      <select id="cam-source-1" class="cam-select">
-        <option value="none">No Source</option>
-      </select>
-      <input type="number" id="udp-port-1" class="cam-select" value="5000" style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
+    <!-- Connection info -->
+    <div class="header-info">
+      <div>UDP : <span id="udp-addr">&lt;IP ADDRESS&gt;</span></div>
+      <div>Port : <span id="udp-port">&lt;PORT&gt;</span></div>
+      <div style="display: flex; align-items: center;">Yolo :
+        <label class="yolo-switch">
+          <input type="checkbox" id="yolo-toggle" checked>
+          <span class="yolo-slider"></span>
+        </label>
+      </div>
     </div>
-    <div class="video-frame" id="video-container">
-      <!-- Hidden video element for webcam -->
-      <video id="webcam-video-1" autoplay playsinline muted style="display:none;"></video>
-      <!-- Main video canvas -->
-      <canvas id="video-canvas"></canvas>
-      <!-- HUD overlay canvas (crosshair, YOLO boxes, etc.) -->
-      <canvas id="hud-canvas"></canvas>
+  </header>
 
-      <!-- Top-left info overlay -->
-      <div id="hud-tl" class="hud-overlay hud-tl">
-        <span class="text-accent text-xs font-bold" style="color:#D5FF40;font-size:11px;font-weight:700;">CH01 / CAM-0</span>
-        <span style="color:#D5FF40;font-size:11px;" id="hud-time">--:--:--.--</span>
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!--  MAIN 3-COLUMN LAYOUT                                                 -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <main id="main-content">
+
+    <!-- ── LEFT VIDEO PANEL ──────────────────────────────────────────────── -->
+    <div class="video-panel" id="left-panel">
+      <!-- Camera source selector -->
+      <div class="cam-selector">
+        <label for="cam-source-1">📷 Source:</label>
+        <select id="cam-source-1" class="cam-select">
+          <option value="none">No Source</option>
+        </select>
+        <input type="number" id="udp-port-1" class="cam-select" value="5000"
+          style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
       </div>
+      <div class="video-frame" id="video-container">
+        <!-- Hidden video element for webcam -->
+        <video id="webcam-video-1" autoplay playsinline muted style="display:none;"></video>
+        <!-- Main video canvas -->
+        <canvas id="video-canvas"></canvas>
+        <!-- HUD overlay canvas (crosshair, YOLO boxes, etc.) -->
+        <canvas id="hud-canvas"></canvas>
 
-      <!-- Top-right info overlay -->
-      <div id="hud-tr" class="hud-overlay hud-tr">
-        <span class="hud-badge" id="rec-badge" style="display:none;">⬤ REC</span>
-        <span class="hud-badge" id="yolo-badge" style="display:none;">YOLO ON</span>
+        <!-- Top-left info overlay -->
+        <div id="hud-tl" class="hud-overlay hud-tl">
+          <span class="text-accent text-xs font-bold" style="color:#D5FF40;font-size:11px;font-weight:700;">CH01 /
+            CAM-0</span>
+          <span style="color:#D5FF40;font-size:11px;" id="hud-time">--:--:--.--</span>
+        </div>
+
+        <!-- Top-right info overlay -->
+        <div id="hud-tr" class="hud-overlay hud-tr">
+          <span class="hud-badge" id="rec-badge" style="display:none;">⬤ REC</span>
+          <span class="hud-badge" id="yolo-badge" style="display:none;">YOLO ON</span>
+        </div>
+
+        <!-- Bottom-left FPS -->
+        <div id="hud-bl" class="hud-overlay hud-bl">
+          <span style="color:#D5FF40;font-size:11px;" id="hud-fps">-- FPS</span>
+        </div>
+
+        <!-- No signal overlay -->
+        <div id="no-signal" class="no-signal-overlay">
+          <div class="no-signal-inner">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#555540" stroke-width="1.5">
+              <circle cx="24" cy="24" r="22" />
+              <line x1="24" y1="10" x2="14" y2="4" />
+              <line x1="24" y1="10" x2="34" y2="4" />
+              <line x1="24" y1="10" x2="24" y2="22" />
+            </svg>
+            <div style="color:#555540;font-size:12px;letter-spacing:0.15em;margin-top:8px;">NO SIGNAL</div>
+            <div id="no-signal-text-1" style="color:#555540;font-size:10px;">Waiting for UDP stream…</div>
+          </div>
+        </div>
+
+        <!-- Video controls bar (hover) -->
+        <div id="video-controls" class="video-controls">
+          <button class="vid-btn" id="btn-fullscreen" title="Fullscreen (F)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <line x1="21" y1="3" x2="14" y2="10" />
+              <line x1="3" y1="21" x2="10" y2="14" />
+            </svg>
+            FULLSCREEN
+          </button>
+          <button class="vid-btn" id="btn-snapshot" title="Snapshot (S)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M20.94 11A9 9 0 1 1 13 3.06" />
+            </svg>
+            SNAPSHOT
+          </button>
+          <button class="vid-btn" id="btn-crosshair" title="Toggle crosshair">✛ CROSSHAIR</button>
+          <button class="vid-btn" id="btn-hud" title="Toggle HUD">HUD</button>
+        </div>
       </div>
-
-      <!-- Bottom-left FPS -->
-      <div id="hud-bl" class="hud-overlay hud-bl">
-        <span style="color:#D5FF40;font-size:11px;" id="hud-fps">-- FPS</span>
+      <!-- Bottom stats -->
+      <div class="video-stats">
+        <div>fps : <span class="stat-value" id="vid-fps">--</span></div>
+        <div>pkg : <span class="stat-value" id="vid-drops">0</span></div>
+        <div>fps yolo : <span class="stat-value" id="vid-yolo-fps">---</span></div>
+        <div>cx : <span class="stat-value" id="vid-cx">--</span></div>
+        <div>cy : <span class="stat-value" id="vid-cy">--</span></div>
+        <div>dist : <span class="stat-value" id="vid-dist">--</span></div>
       </div>
+    </div>
 
-      <!-- No signal overlay -->
-      <div id="no-signal" class="no-signal-overlay">
-        <div class="no-signal-inner">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#555540" stroke-width="1.5">
-            <circle cx="24" cy="24" r="22"/>
-            <line x1="24" y1="10" x2="14" y2="4"/>
-            <line x1="24" y1="10" x2="34" y2="4"/>
-            <line x1="24" y1="10" x2="24" y2="22"/>
-          </svg>
-          <div style="color:#555540;font-size:12px;letter-spacing:0.15em;margin-top:8px;">NO SIGNAL</div>
-          <div id="no-signal-text-1" style="color:#555540;font-size:10px;">Waiting for UDP stream…</div>
+    <!-- ── CENTER TELEMETRY PANELS ───────────────────────────────────────── -->
+
+      <!-- Upper telemetry panel (UAV 1) -->
+      <div class="telem-panel" id="telem-panel-1">
+        <div class="telem-row">
+          <span class="telem-label">Lat</span>
+          <input type="text" class="telem-input" id="gps-lat" value="-7.795600123" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Lon</span>
+          <input type="text" class="telem-input" id="gps-lon" value="110.369500456" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Alt</span>
+          <input type="text" class="telem-input" id="nav-alt" value="110.5" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">WP</span>
+          <input type="text" class="telem-input" id="wp-current" value="2" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Spd</span>
+          <input type="text" class="telem-input" id="nav-gspd" value="16 m/s" readonly />
         </div>
       </div>
 
-      <!-- Video controls bar (hover) -->
-      <div id="video-controls" class="video-controls">
-        <button class="vid-btn" id="btn-fullscreen" title="Fullscreen (F)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
-            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-          </svg>
-          FULLSCREEN
-        </button>
-        <button class="vid-btn" id="btn-snapshot" title="Snapshot (S)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="4"/><path d="M20.94 11A9 9 0 1 1 13 3.06"/>
-          </svg>
-          SNAPSHOT
-        </button>
-        <button class="vid-btn" id="btn-crosshair" title="Toggle crosshair">✛ CROSSHAIR</button>
-        <button class="vid-btn" id="btn-hud" title="Toggle HUD">HUD</button>
-      </div>
-    </div>
-    <!-- Bottom stats -->
-    <div class="video-stats">
-      <div>fps : <span class="stat-value" id="vid-fps">--</span></div>
-      <div>pkg : <span class="stat-value" id="vid-drops">0</span></div>
-      <div>total fps : <span class="stat-value" id="vid-sender">---</span></div>
-    </div>
-  </div>
-
-  <!-- ── CENTER TELEMETRY COLUMN ───────────────────────────────────────── -->
-  <div class="center-column">
-
-    <!-- Upper telemetry panel (UAV 1) -->
-    <div class="telem-panel" id="telem-panel-1">
-      <div class="telem-row">
-        <span class="telem-label">Lat</span>
-        <input type="text" class="telem-input" id="gps-lat" value="-7.795600123" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">Lon</span>
-        <input type="text" class="telem-input" id="gps-lon" value="110.369500456" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">Alt</span>
-        <input type="text" class="telem-input" id="nav-alt" value="110.5" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">WP</span>
-        <input type="text" class="telem-input" id="wp-current" value="2" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">Spd</span>
-        <input type="text" class="telem-input" id="nav-gspd" value="16 m/s" readonly />
-      </div>
-    </div>
-
-    <!-- Lower telemetry panel (UAV 2) -->
-    <div class="telem-panel" id="telem-panel-2">
-      <div class="telem-row">
-        <span class="telem-label">Lat</span>
-        <input type="text" class="telem-input" id="gps-lat-2" value="-7.795600123" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">Lon</span>
-        <input type="text" class="telem-input" id="gps-lon-2" value="110.369500456" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">Alt</span>
-        <input type="text" class="telem-input" id="nav-alt-2" value="110.5" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">WP</span>
-        <input type="text" class="telem-input" id="wp-current-2" value="2" readonly />
-      </div>
-      <div class="telem-row">
-        <span class="telem-label">Spd</span>
-        <input type="text" class="telem-input" id="nav-gspd-2" value="16 m/s" readonly />
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ── RIGHT VIDEO PANEL ─────────────────────────────────────────────── -->
-  <div class="video-panel" id="right-panel">
-    <!-- Camera source selector -->
-    <div class="cam-selector">
-      <label for="cam-source-2" style="color: #666;">📷 Source:</label>
-      <select id="cam-source-2" class="cam-select">
-        <option value="none">No Source</option>
-      </select>
-      <input type="number" id="udp-port-2" class="cam-select" value="5001" style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
-    </div>
-    <div class="video-frame" id="video-container-2">
-      <!-- Hidden video element for webcam -->
-      <video id="webcam-video-2" autoplay playsinline muted style="display:none;"></video>
-      <!-- Secondary video canvas -->
-      <canvas id="video-canvas-2"></canvas>
-      <canvas class="hud-canvas-secondary" id="hud-canvas-2"></canvas>
-
-      <!-- Top-left info overlay -->
-      <div id="hud-tl-2" class="hud-overlay hud-tl">
-        <span style="color:#D5FF40;font-size:11px;font-weight:700;">CH02 / CAM-1</span>
-        <span style="color:#D5FF40;font-size:11px;" id="hud-time-2">--:--:--.--</span>
-      </div>
-
-      <!-- Bottom-left FPS -->
-      <div id="hud-bl-2" class="hud-overlay hud-bl">
-        <span style="color:#D5FF40;font-size:11px;" id="hud-fps-2">-- FPS</span>
-      </div>
-
-      <!-- No signal overlay for second camera -->
-      <div id="no-signal-2" class="no-signal-overlay">
-        <div class="no-signal-inner">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#555540" stroke-width="1.5">
-            <circle cx="24" cy="24" r="22"/>
-            <line x1="24" y1="10" x2="14" y2="4"/>
-            <line x1="24" y1="10" x2="34" y2="4"/>
-            <line x1="24" y1="10" x2="24" y2="22"/>
-          </svg>
-          <div style="color:#555540;font-size:12px;letter-spacing:0.15em;margin-top:8px;">NO SIGNAL</div>
-          <div id="no-signal-text-2" style="color:#555540;font-size:10px;">Waiting for camera...</div>
+      <!-- Lower telemetry panel (UAV 2) -->
+      <div class="telem-panel" id="telem-panel-2">
+        <div class="telem-row">
+          <span class="telem-label">Lat</span>
+          <input type="text" class="telem-input" id="gps-lat-2" value="-7.795600123" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Lon</span>
+          <input type="text" class="telem-input" id="gps-lon-2" value="110.369500456" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Alt</span>
+          <input type="text" class="telem-input" id="nav-alt-2" value="110.5" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">WP</span>
+          <input type="text" class="telem-input" id="wp-current-2" value="2" readonly />
+        </div>
+        <div class="telem-row">
+          <span class="telem-label">Spd</span>
+          <input type="text" class="telem-input" id="nav-gspd-2" value="16 m/s" readonly />
         </div>
       </div>
-    </div>
-    <!-- Bottom stats -->
-    <div class="video-stats">
-      <div>fps : <span class="stat-value" id="vid-fps-2">--</span></div>
-      <div>pkg : <span class="stat-value" id="vid-drops-2">0</span></div>
-      <div>total fps : <span class="stat-value" id="vid-sender-2">---</span></div>
-    </div>
-  </div>
 
-</main>
 
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!--  SCRIPTS                                                              -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<script>
-  // Inject server-side config into JS globals
-  window.GS_CONFIG = {
-    wsHost: "{{ ws_host }}",
-    wsProto: location.protocol === "https:" ? "wss" : "ws",
-  };
-</script>
-<script src="/static/js/system.js"></script>
-<script src="/static/js/telemetry.js"></script>
-<script src="/static/js/video.js"></script>
-<script src="/static/js/camera.js"></script>
+    <!-- ── RIGHT VIDEO PANEL ─────────────────────────────────────────────── -->
+    <div class="video-panel" id="right-panel">
+      <!-- Camera source selector -->
+      <div class="cam-selector">
+        <label for="cam-source-2" style="color: #666;">📷 Source:</label>
+        <select id="cam-source-2" class="cam-select">
+          <option value="none">No Source</option>
+        </select>
+        <input type="number" id="udp-port-2" class="cam-select" value="5001"
+          style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
+      </div>
+      <div class="video-frame" id="video-container-2">
+        <!-- Hidden video element for webcam -->
+        <video id="webcam-video-2" autoplay playsinline muted style="display:none;"></video>
+        <!-- Secondary video canvas -->
+        <canvas id="video-canvas-2"></canvas>
+        <canvas class="hud-canvas-secondary" id="hud-canvas-2"></canvas>
+
+        <!-- Top-left info overlay -->
+        <div id="hud-tl-2" class="hud-overlay hud-tl">
+          <span style="color:#D5FF40;font-size:11px;font-weight:700;">CH02 / CAM-1</span>
+          <span style="color:#D5FF40;font-size:11px;" id="hud-time-2">--:--:--.--</span>
+        </div>
+
+        <!-- Bottom-left FPS -->
+        <div id="hud-bl-2" class="hud-overlay hud-bl">
+          <span style="color:#D5FF40;font-size:11px;" id="hud-fps-2">-- FPS</span>
+        </div>
+
+        <!-- No signal overlay for second camera -->
+        <div id="no-signal-2" class="no-signal-overlay">
+          <div class="no-signal-inner">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#555540" stroke-width="1.5">
+              <circle cx="24" cy="24" r="22" />
+              <line x1="24" y1="10" x2="14" y2="4" />
+              <line x1="24" y1="10" x2="34" y2="4" />
+              <line x1="24" y1="10" x2="24" y2="22" />
+            </svg>
+            <div style="color:#555540;font-size:12px;letter-spacing:0.15em;margin-top:8px;">NO SIGNAL</div>
+            <div id="no-signal-text-2" style="color:#555540;font-size:10px;">Waiting for camera...</div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom stats -->
+      <div class="video-stats">
+        <div>fps : <span class="stat-value" id="vid-fps-2">--</span></div>
+        <div>pkg : <span class="stat-value" id="vid-drops-2">0</span></div>
+        <div>fps yolo : <span class="stat-value" id="vid-yolo-fps-2">---</span></div>
+        <div>cx : <span class="stat-value" id="vid-cx-2">--</span></div>
+        <div>cy : <span class="stat-value" id="vid-cy-2">--</span></div>
+        <div>dist : <span class="stat-value" id="vid-dist-2">--</span></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!--  SCRIPTS                                                              -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    // Inject server-side config into JS globals
+    window.GS_CONFIG = {
+      wsHost: "{{ ws_host }}",
+      wsProto: location.protocol === "https:" ? "wss" : "ws",
+    };
+  </script>
+  <script src="/static/js/system.js"></script>
+  <script src="/static/js/telemetry.js"></script>
+  <script src="/static/js/video.js?v=2"></script>
+  <script src="/static/js/camera.js?v=2"></script>
 
 </body>
+
 </html>
