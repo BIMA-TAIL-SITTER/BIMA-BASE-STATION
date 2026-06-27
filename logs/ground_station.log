@@ -6171,3 +6171,8 @@
 2026-06-27 16:40:18 [INFO    ] app.services.websocket.manager — Telemetry client disconnected — remaining: 0
 2026-06-27 16:40:18 [INFO    ] app.services.websocket.manager — System client connected — total: 1
 2026-06-27 16:40:18 [INFO    ] app.services.websocket.manager — Telemetry client connected — total: 1
+2026-06-27 16:44:03 [INFO    ] app.services.websocket.manager — System client disconnected — remaining: 0
+2026-06-27 16:44:03 [INFO    ] app.services.websocket.manager — Telemetry client disconnected — remaining: 0
+2026-06-27 16:44:03 [INFO    ] app.main — Ground Station shutting down…
+2026-06-27 16:44:03 [INFO    ] app.services.yolo.detector — YOLODetector stopped | total_inferences=0 | total_detections=0
+2026-06-27 16:44:03 [INFO    ] app.main — Ground Station stopped.
