@@ -5,14 +5,14 @@
    ══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --accent: #D5FF40;
-  --bg: #11110F;
-  --panel: #0A0A08;
-  --border: #2A2A22;
-  --muted: #555540;
-  --danger: #FF4040;
-  --warning: #FFA040;
-  --ok: #40FF80;
+  --accent: #B46A72;       
+  --bg: #2D3A47;            
+  --panel: #FFF7E6;        
+  --border: #A8B58A;        
+  --muted: #A9B7C6;         
+  --danger: #B46A72;
+  --warning: #D9A45F;
+  --ok: #A8B58A;
   --font: "JetBrains Mono", "Courier New", monospace;
 }
 
@@ -31,7 +31,7 @@ body {
   width: 100vw;
   overflow: hidden;
   background: var(--bg);
-  color: #fff;
+  color: #FFF7E6;
   font-family: var(--font);
 }
 
@@ -69,14 +69,14 @@ canvas {
   align-items: center;
   padding: 18px 32px 14px 32px;
   gap: 48px;
-  background: var(--bg);
+  background: #2D3A47;
 }
 
 .brand-title {
   font-size: 32px;
   font-weight: 900;
   letter-spacing: 0.04em;
-  color: #fff;
+  color: #FFF7E6;
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
@@ -88,11 +88,11 @@ canvas {
   gap: 1px;
   font-size: 11px;
   letter-spacing: 0.06em;
-  color: var(--muted);
+  color: #A9B7C6;
 }
 
 .header-info span {
-  color: var(--accent);
+  color: #F7C8D3;
   font-weight: 600;
 }
 
@@ -119,7 +119,7 @@ canvas {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #babbbc;
+  background-color: #A9B7C6;
   transition: .3s;
   border-radius: 20px;
 }
@@ -138,8 +138,8 @@ canvas {
 }
 
 .yolo-switch input:checked+.yolo-slider {
-  background-color: #20b889;
-}
+  background-color: #A8B58A;
+} 
 
 .yolo-switch input:checked+.yolo-slider:before {
   transform: translateX(28px);
@@ -435,7 +435,7 @@ canvas {
 }
 
 .telem-panel {
-  background: rgba(10, 10, 8, 0.6);
+  background: #2D3A47;
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 8px 10px;
@@ -455,7 +455,7 @@ canvas {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #fff;
+  color: #FFF7E6;
   min-width: 36px;
   text-align: right;
 }
@@ -469,7 +469,7 @@ canvas {
   font-family: var(--font);
   font-size: 12px;
   font-weight: 600;
-  color: #fff;
+  color: #FFF7E6;
   text-align: center;
   letter-spacing: 0.04em;
   outline: none;
@@ -528,4 +528,25 @@ canvas {
     gap: 12px;
     padding: 8px 0;
   }
+}
+
+/* Fix telemetry text visibility */
+.telem-row .telem-input {
+    background: #FFF7E6 !important;
+    color: #2D3A47 !important;
+    -webkit-text-fill-color: #2D3A47 !important;
+    opacity: 1 !important;
+}
+
+.telem-row .telem-input::placeholder {
+    color: #2D3A47 !important;
+}
+
+
+/* Kalau input disabled/read-only */
+.telem-row .telem-input:disabled,
+.telem-row .telem-input[readonly] {
+    color: #2D3A47 !important;
+    -webkit-text-fill-color: #2D3A47 !important;
+    opacity: 1 !important;
 }
