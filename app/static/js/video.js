@@ -417,14 +417,85 @@
   };
 
   function handleDetectionMessage(port, json) {
-    console.log('YOLO MSG:', json);
     let msg;
     try {
       msg = JSON.parse(json);
     } catch (_) {
       return;
     }
-    console.log('PARSED:', msg);
+    
+    // New UDP Telemetry logic
+    if (msg && msg.type === 'telemetry') {
+      [1, 2].forEach(pId => {
+        if (window.GS_camSource[pId] === 'udp' && window.GS_udpPorts[pId] === port) {
+          const fpsEl = document.getElementById(pId === 1 ? 'vid-yolo-fps' : 'vid-yolo-fps-2');
+          if (fpsEl) fpsEl.textContent = msg.fps_inference || '--';
+
+          // Telemetry Panel Elements
+          const statBox = document.getElementById(pId === 1 ? 'udp-detect-status-1' : 'udp-detect-status-2');
+          const tLat = document.getElementById(pId === 1 ? 'udp-tgt-lat-1' : 'udp-tgt-lat-2');
+          const tLon = document.getElementById(pId === 1 ? 'udp-tgt-lon-1' : 'udp-tgt-lon-2');
+          const tDist = document.getElementById(pId === 1 ? 'udp-tgt-dist-1' : 'udp-tgt-dist-2');
+          const tGsd = document.getElementById(pId === 1 ? 'udp-tgt-gsd-1' : 'udp-tgt-gsd-2');
+
+          if (msg.detection) {
+             const gsdEl = document.getElementById(pId === 1 ? 'vid-gsd' : 'vid-gsd-2');
+             const distEl = document.getElementById(pId === 1 ? 'vid-dist' : 'vid-dist-2');
+             if (gsdEl) gsdEl.textContent = msg.lokasi_target?.gsd_x?.toFixed(3) || '--';
+             if (distEl) distEl.textContent = msg.lokasi_target?.distance_m?.toFixed(1) || '--';
+             
+             const tgtEl = document.getElementById(pId === 1 ? 'vid-tgt-loc' : 'vid-tgt-loc-2');
+             if (tgtEl) {
+               if (msg.lokasi_target?.lat) {
+                 tgtEl.textContent = `${msg.lokasi_target.lat.toFixed(5)}, ${msg.lokasi_target.lon.toFixed(5)}`;
+               } else {
+                 tgtEl.textContent = 'Wait GPS Lock..';
+               }
+             }
+             
+             if (statBox) {
+                 statBox.textContent = 'TARGET DETECTED';
+                 statBox.style.backgroundColor = '#f44336'; // Red as requested
+             }
+             if (tDist) tDist.value = msg.lokasi_target?.distance_m?.toFixed(1) || '--';
+             if (tGsd) tGsd.value = msg.lokasi_target?.gsd_x?.toFixed(3) || '--';
+             if (tLat && tLon) {
+                 if (msg.lokasi_target?.lat) {
+                     tLat.value = msg.lokasi_target.lat.toFixed(5);
+                     tLon.value = msg.lokasi_target.lon.toFixed(5);
+                 } else {
+                     tLat.value = 'Wait GPS..';
+                     tLon.value = 'Wait GPS..';
+                 }
+             }
+          } else {
+             if (statBox) {
+                 statBox.textContent = 'NO TARGET';
+                 statBox.style.backgroundColor = '#555'; // Gray
+             }
+             if (tDist) tDist.value = '--';
+             if (tGsd) tGsd.value = '--';
+             if (tLat) tLat.value = '--';
+             if (tLon) tLon.value = '--';
+             
+             // Also reset bottom stats
+             const tgtEl = document.getElementById(pId === 1 ? 'vid-tgt-loc' : 'vid-tgt-loc-2');
+             if (tgtEl) tgtEl.textContent = '--';
+          }
+          
+          const uavEl = document.getElementById(pId === 1 ? 'vid-uav-loc' : 'vid-uav-loc-2');
+          if (uavEl) {
+            if (msg.lokasi_uav?.lat) {
+              uavEl.textContent = `${msg.lokasi_uav.lat.toFixed(5)}, ${msg.lokasi_uav.lon.toFixed(5)} (${msg.lokasi_uav.alt_m?.toFixed(1)}m)`;
+            } else {
+              uavEl.textContent = 'Wait GPS Lock..';
+            }
+          }
+        }
+      });
+      return; // Skip frontend bounding box rendering, backend already baked it
+    }
+
     if (!msg || msg.type !== 'detections') return;
 
     const incomingDetections = msg.detections || [];
@@ -465,13 +536,17 @@
 
   // ─── WebSocket Connections (by Port) ────────────────────────────────────
   const websockets = {};
-  
-  function connectPort(port) {
+    
+  function connectPort(port, jsonPort) {
     if (websockets[port]) return;
     
-    const url = `${window.GS_CONFIG.wsProto}://${window.GS_CONFIG.wsHost}/ws/video/${port}`;
+    let url = `${window.GS_CONFIG.wsProto}://${window.GS_CONFIG.wsHost}/ws/video/${port}`;
+    if (jsonPort) {
+      url += `?json_port=${jsonPort}`;
+    }
     const ws = new WebSocket(url);
     ws.binaryType = 'blob';
+    ws.__jsonPort = jsonPort;
     
     let backoff = 1000;
     
@@ -505,7 +580,7 @@
          }
       });
       delete websockets[port];
-      setTimeout(() => connectPort(port), backoff);
+      setTimeout(() => connectPort(port, jsonPort), backoff);
       backoff = Math.min(backoff * 2, 16000);
     };
     
@@ -522,16 +597,19 @@
 
   // Listen to camera.js events
   window.addEventListener('gs-source-change', (e) => {
-    const { panelId, source, port } = e.detail;
-    
     // Evaluate needed ports
-    const neededPorts = new Set();
-    if (window.GS_camSource[1] === 'udp') neededPorts.add(window.GS_udpPorts[1]);
-    if (window.GS_camSource[2] === 'udp') neededPorts.add(window.GS_udpPorts[2]);
+    const neededPorts = new Map();
+    if (window.GS_camSource[1] === 'udp') neededPorts.set(window.GS_udpPorts[1], window.GS_jsonPorts[1]);
+    if (window.GS_camSource[2] === 'udp') neededPorts.set(window.GS_udpPorts[2], window.GS_jsonPorts[2]);
     
-    // Connect new ones
-    neededPorts.forEach(p => {
-      if (!websockets[p]) connectPort(p);
+    // Connect new ones or reconnect if jsonPort changed
+    neededPorts.forEach((jPort, p) => {
+      if (!websockets[p]) {
+        connectPort(p, jPort);
+      } else if (websockets[p].__jsonPort !== jPort) {
+        disconnectPort(p);
+        connectPort(p, jPort);
+      }
     });
     
     // Disconnect old ones

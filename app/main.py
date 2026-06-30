@@ -7,6 +7,7 @@ import asyncio
 import logging
 import logging.handlers
 import os
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -16,7 +17,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.config.settings import settings
 from app.services.video.manager import MultiStreamManager
-from app.services.telemetry.generator import TelemetryGenerator
+from app.services.mavlink.telemetry_bridge import MavlinkTelemetryBridge
 from app.services.websocket.manager import WebSocketManager
 from app.services.yolo.detector import YOLODetector
 from app.routers import video, telemetry, system
@@ -68,7 +69,7 @@ video_manager = MultiStreamManager(
     fps_limit=settings.VIDEO_FPS_LIMIT,
     detector=yolo_detector,
 )
-telemetry_generator = TelemetryGenerator(ws_manager=ws_manager)
+telemetry_generator = MavlinkTelemetryBridge(ws_manager=ws_manager)
 
 
 # ─── Lifespan ─────────────────────────────────────────────────────
@@ -111,10 +112,12 @@ async def lifespan(app: FastAPI):
     logger.info("Ground Station shutting down…")
     telemetry_task.cancel()
     video_manager.stop_all()
+    if hasattr(telemetry_generator, 'stop'):
+        await telemetry_generator.stop()
     if yolo_detector is not None:
         yolo_detector.stop()
     try:
-        await asyncio.gather(video_task, telemetry_task, return_exceptions=True)
+        await asyncio.gather(telemetry_task, return_exceptions=True)
     except Exception:
         pass
     logger.info("Ground Station stopped.")
@@ -151,6 +154,30 @@ app.include_router(system.api_router)
 
 
 # ─── Root ─────────────────────────────────────────────────────────
+import socket
+
+def get_tailscale_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Tailscale MagicDNS IP, forces routing to use the Tailscale interface
+        s.connect(("100.100.100.100", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        if ip.startswith("100."):
+            return ip
+    except Exception:
+        pass
+    
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Fallback to general internet routing to get primary LAN IP
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
+
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
     return templates.TemplateResponse(
@@ -159,6 +186,8 @@ async def index(request: Request):
             "request": request,
             "title": "UAV Ground Station",
             "ws_host": request.headers.get("host", f"{settings.HOST}:{settings.WEB_PORT}"),
+            "tailscale_ip": get_tailscale_ip(),
+            "version": int(time.time()),
         },
     )
 

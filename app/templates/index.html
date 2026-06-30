@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ title }}</title>
-  <link rel="stylesheet" href="/static/css/styles.css?v=2" />
+  <link rel="stylesheet" href="/static/css/styles.css?v={{ version }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
@@ -22,12 +22,21 @@
 
     <!-- Connection info -->
     <div class="header-info">
-      <div>UDP : <span id="udp-addr">&lt;IP ADDRESS&gt;</span></div>
-      <div>Port : <span id="udp-port">&lt;PORT&gt;</span></div>
+      <div>IP : <span class="accent-text" style="color:var(--accent)">{{ tailscale_ip }}</span></div>
       <div style="display: flex; align-items: center;">Yolo :
         <label class="yolo-switch">
           <input type="checkbox" id="yolo-toggle" checked>
           <span class="yolo-slider"></span>
+        </label>
+      </div>
+      <div style="display: flex; align-items: center; margin-left: 10px;">Theme :
+        <label class="theme-switch">
+          <input type="checkbox" id="theme-toggle">
+          <div class="theme-slider">
+            <span class="icon-sun">☀️</span>
+            <span class="icon-moon">🌙</span>
+            <div class="theme-thumb"></div>
+          </div>
         </label>
       </div>
     </div>
@@ -42,12 +51,11 @@
     <div class="video-panel" id="left-panel">
       <!-- Camera source selector -->
       <div class="cam-selector">
-        <label for="cam-source-1">📷 Source:</label>
         <select id="cam-source-1" class="cam-select">
           <option value="none">No Source</option>
         </select>
-        <input type="number" id="udp-port-1" class="cam-select" value="5000"
-          style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
+        <input type="number" id="udp-port-1" class="cam-select" value="1"
+          style="display:none; width: 80px; margin-left: 5px;" placeholder="Vid Port">
       </div>
       <div class="video-frame" id="video-container">
         <!-- Hidden video element for webcam -->
@@ -112,77 +120,292 @@
         </div>
       </div>
       <!-- Bottom stats -->
-      <div class="video-stats">
-        <div>fps : <span class="stat-value" id="vid-fps">--</span></div>
-        <div>pkg : <span class="stat-value" id="vid-drops">0</span></div>
-        <div>fps yolo : <span class="stat-value" id="vid-yolo-fps">---</span></div>
-        <div>cx : <span class="stat-value" id="vid-cx">--</span></div>
-        <div>cy : <span class="stat-value" id="vid-cy">--</span></div>
-        <div>dist : <span class="stat-value" id="vid-dist">--</span></div>
+      <div class="video-stats" style="display:flex; flex-wrap:wrap; gap:10px;">
+        <div>fps: <span class="stat-value" id="vid-fps">--</span></div>
+        <div>yolo: <span class="stat-value" id="vid-yolo-fps">---</span></div>
+        <div>gsd: <span class="stat-value" id="vid-gsd">--</span></div>
+        <div>dist: <span class="stat-value" id="vid-dist">--</span></div>
+        <div style="width:100%; display:flex; gap:10px;">
+          <div>uav: <span class="stat-value" id="vid-uav-loc" style="font-size:0.9em">--</span></div>
+          <div>tgt: <span class="stat-value" id="vid-tgt-loc" style="font-size:0.9em">--</span></div>
+        </div>
       </div>
     </div>
 
     <!-- ── CENTER TELEMETRY PANELS ───────────────────────────────────────── -->
 
-      <!-- Upper telemetry panel (UAV 1) -->
-      <div class="telem-panel" id="telem-panel-1">
-        <div class="telem-row">
-          <span class="telem-label">Lat</span>
-          <input type="text" class="telem-input" id="gps-lat" value="-7.795600123" readonly />
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Lon</span>
-          <input type="text" class="telem-input" id="gps-lon" value="110.369500456" readonly />
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Alt</span>
-          <input type="text" class="telem-input" id="nav-alt" value="110.5" readonly />
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">WP</span>
-          <input type="text" class="telem-input" id="wp-current" value="2" readonly />
-        </div>
-        <div class="telem-row">
-          <span class="telem-label">Spd</span>
-          <input type="text" class="telem-input" id="nav-gspd" value="16 m/s" readonly />
-        </div>
+    <!-- Upper telemetry panel (UAV 1) -->
+    <div class="telem-panel" id="telem-panel-1">
+      <div class="cam-selector"
+        style="margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 8px; display: flex; justify-content: center; align-items: center;">
+        <select id="mavlink-source-1" class="cam-select">
+          <option value="none">No Source</option>
+        </select>
+        <input type="number" id="mavlink-port-1" class="cam-select" value="5761"
+          style="display:none; width: 60px; margin-left: 5px;" placeholder="Port">
+        <button id="mavlink-btn-1" class="cam-select" style="display:none; margin-left: 5px; padding: 2px 8px; cursor: pointer; background: #444; border: 1px solid #555; color: #fff;">Connect</button>
+      </div>
+      <div class="telem-row" style="margin-bottom: 10px;">
+        <div id="mavlink-status-1"
+          style="background-color: #333; color: #aaa; padding: 4px 0; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; width: 100%; letter-spacing: 1px;">
+          No Mavlink Detected</div>
       </div>
 
-      <!-- Lower telemetry panel (UAV 2) -->
-      <div class="telem-panel" id="telem-panel-2">
-        <div class="telem-row">
-          <span class="telem-label">Lat</span>
-          <input type="text" class="telem-input" id="gps-lat-2" value="-7.795600123" readonly />
+      <div class="attitude-indicator">
+        <div class="attitude-roll" id="attitude-roll-1">
+          <div class="attitude-pitch" id="attitude-pitch-1">
+            <svg width="300" height="300" viewBox="-150 -150 300 300" style="position: absolute; top: 0; left: 0;">
+              <!-- Sky -->
+              <rect x="-150" y="-150" width="300" height="150" fill="#6773a9"/>
+              <!-- Ground -->
+              <rect x="-150" y="0" width="300" height="150" fill="#843939"/>
+              <!-- Horizon line -->
+              <line x1="-150" y1="0" x2="150" y2="0" stroke="white" stroke-width="2"/>
+              <!-- Pitch ladder (+20, +10, -10, -20) -->
+              <line x1="-30" y1="-20" x2="30" y2="-20" stroke="white" stroke-width="2"/>
+              <line x1="-15" y1="-10" x2="15" y2="-10" stroke="white" stroke-width="2"/>
+              <line x1="-15" y1="10" x2="15" y2="10" stroke="white" stroke-width="2"/>
+              <line x1="-30" y1="20" x2="30" y2="20" stroke="white" stroke-width="2"/>
+            </svg>
+          </div>
         </div>
-        <div class="telem-row">
-          <span class="telem-label">Lon</span>
-          <input type="text" class="telem-input" id="gps-lon-2" value="110.369500456" readonly />
+        
+        <!-- Rotating Heading Compass Ring -->
+        <div class="attitude-overlay">
+          <svg width="120" height="120" viewBox="-60 -60 120 120" id="heading-compass-1">
+            <g stroke="white" stroke-width="2" text-anchor="middle" font-size="10" font-family="sans-serif" fill="white" font-weight="normal">
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3"/>
+              <text x="0" y="-44" stroke="none">N</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(30)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(60)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3" transform="rotate(90)"/>
+              <text x="0" y="-44" stroke="none" transform="rotate(90)">E</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(120)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(150)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3" transform="rotate(180)"/>
+              <text x="0" y="-44" stroke="none" transform="rotate(180)">S</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(210)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(240)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3" transform="rotate(270)"/>
+              <text x="0" y="-44" stroke="none" transform="rotate(270)">W</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(300)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(330)"/>
+            </g>
+          </svg>
         </div>
-        <div class="telem-row">
-          <span class="telem-label">Alt</span>
-          <input type="text" class="telem-input" id="nav-alt-2" value="110.5" readonly />
+
+        <div class="attitude-overlay">
+          <svg width="120" height="120" viewBox="-60 -60 120 120">
+            <!-- Center dot -->
+            <circle cx="0" cy="0" r="3" fill="#ffcc00"/>
+            <!-- Left wing -->
+            <path d="M -40 0 L -10 0 L -10 5" fill="none" stroke="#ffcc00" stroke-width="3" stroke-linejoin="round"/>
+            <!-- Right wing -->
+            <path d="M 40 0 L 10 0 L 10 5" fill="none" stroke="#ffcc00" stroke-width="3" stroke-linejoin="round"/>
+            <!-- Top Heading Pointer (Fixed) -->
+            <polygon points="-5,-45 5,-45 0,-55" fill="#ffcc00" stroke="#ffcc00" stroke-width="1"/>
+          </svg>
         </div>
-        <div class="telem-row">
-          <span class="telem-label">WP</span>
-          <input type="text" class="telem-input" id="wp-current-2" value="2" readonly />
+        <div class="alt-tape-container">
+          <div class="alt-tape-ticks" id="alt-tape-ticks-1"></div>
+          <div class="alt-tape-pointer" id="alt-tape-val-1">0</div>
         </div>
-        <div class="telem-row">
-          <span class="telem-label">Spd</span>
-          <input type="text" class="telem-input" id="nav-gspd-2" value="16 m/s" readonly />
+        <div class="hud-heading" id="hud-head-1">000&deg;</div>
+      </div>
+
+      <div class="telem-row">
+        <span class="telem-label">GPS</span>
+        <input type="text" class="telem-input" id="gps-sats" value="0" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">LAT</span>
+        <input type="text" class="telem-input" id="gps-lat" value="--.-------" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">LON</span>
+        <input type="text" class="telem-input" id="gps-lon" value="---.-------" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">WP</span>
+        <input type="text" class="telem-input" id="wp-current" value="0" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">SPD</span>
+        <input type="text" class="telem-input" id="nav-gspd" value="0 m/s" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">VOLT</span>
+        <input type="text" class="telem-input" id="batt-volt" value="0.0 V" readonly />
+      </div>
+      
+      <!-- UDP Telemetry Section -->
+      <div style="margin-top: 15px; margin-bottom: 10px;">
+        <input type="number" id="json-port-1" class="cam-select" value="2"
+          style="display:none; width: 100%; margin-bottom: 8px; text-align: center;" placeholder="JSON Port">
+        <div id="udp-detect-status-1"
+          style="background-color: #555; color: #fff; padding: 6px 0; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; width: 100%; letter-spacing: 1px; transition: background-color 0.3s;">
+          NO TARGET
         </div>
       </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">T-LAT</span>
+        <input type="text" class="telem-input" id="udp-tgt-lat-1" value="--" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">T-LON</span>
+        <input type="text" class="telem-input" id="udp-tgt-lon-1" value="--" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">DIST</span>
+        <input type="text" class="telem-input" id="udp-tgt-dist-1" value="--" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">GSD</span>
+        <input type="text" class="telem-input" id="udp-tgt-gsd-1" value="--" readonly />
+      </div>
+    </div>
+
+    <!-- Lower telemetry panel (UAV 2) -->
+    <div class="telem-panel" id="telem-panel-2">
+      <div class="cam-selector"
+        style="margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 8px; display: flex; justify-content: center; align-items: center;">
+        <select id="mavlink-source-2" class="cam-select">
+          <option value="none">No Source</option>
+        </select>
+        <input type="number" id="mavlink-port-2" class="cam-select" value="5761"
+          style="display:none; width: 60px; margin-left: 5px;" placeholder="Port">
+        <button id="mavlink-btn-2" class="cam-select" style="display:none; margin-left: 5px; padding: 2px 8px; cursor: pointer; background: #444; border: 1px solid #555; color: #fff;">Connect</button>
+      </div>
+      <div class="telem-row" style="margin-bottom: 10px;">
+        <div id="mavlink-status-2"
+          style="background-color: #333; color: #aaa; padding: 4px 0; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; width: 100%; letter-spacing: 1px;">
+          No Mavlink Detected</div>
+      </div>
+
+      <div class="attitude-indicator">
+        <div class="attitude-roll" id="attitude-roll-2">
+          <div class="attitude-pitch" id="attitude-pitch-2">
+            <svg width="300" height="300" viewBox="-150 -150 300 300" style="position: absolute; top: 0; left: 0;">
+              <!-- Sky -->
+              <rect x="-150" y="-150" width="300" height="150" fill="#6773a9"/>
+              <!-- Ground -->
+              <rect x="-150" y="0" width="300" height="150" fill="#843939"/>
+              <!-- Horizon line -->
+              <line x1="-150" y1="0" x2="150" y2="0" stroke="white" stroke-width="2"/>
+              <!-- Pitch ladder (+20, +10, -10, -20) -->
+              <line x1="-30" y1="-20" x2="30" y2="-20" stroke="white" stroke-width="2"/>
+              <line x1="-15" y1="-10" x2="15" y2="-10" stroke="white" stroke-width="2"/>
+              <line x1="-15" y1="10" x2="15" y2="10" stroke="white" stroke-width="2"/>
+              <line x1="-30" y1="20" x2="30" y2="20" stroke="white" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Rotating Heading Compass Ring -->
+        <div class="attitude-overlay">
+          <svg width="120" height="120" viewBox="-60 -60 120 120" id="heading-compass-2">
+            <g stroke="white" stroke-width="2" text-anchor="middle" font-size="10" font-family="sans-serif" fill="white" font-weight="normal">
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3"/>
+              <text x="0" y="-44" stroke="none">N</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(30)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(60)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3" transform="rotate(90)"/>
+              <text x="0" y="-44" stroke="none" transform="rotate(90)">E</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(120)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(150)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3" transform="rotate(180)"/>
+              <text x="0" y="-44" stroke="none" transform="rotate(180)">S</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(210)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(240)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" stroke-width="3" transform="rotate(270)"/>
+              <text x="0" y="-44" stroke="none" transform="rotate(270)">W</text>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(300)"/>
+              <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(330)"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="attitude-overlay">
+          <svg width="120" height="120" viewBox="-60 -60 120 120">
+            <!-- Center dot -->
+            <circle cx="0" cy="0" r="3" fill="#ffcc00"/>
+            <!-- Left wing -->
+            <path d="M -40 0 L -10 0 L -10 5" fill="none" stroke="#ffcc00" stroke-width="3" stroke-linejoin="round"/>
+            <!-- Right wing -->
+            <path d="M 40 0 L 10 0 L 10 5" fill="none" stroke="#ffcc00" stroke-width="3" stroke-linejoin="round"/>
+            <!-- Top Heading Pointer (Fixed) -->
+            <polygon points="-5,-45 5,-45 0,-55" fill="#ffcc00" stroke="#ffcc00" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="alt-tape-container">
+          <div class="alt-tape-ticks" id="alt-tape-ticks-2"></div>
+          <div class="alt-tape-pointer" id="alt-tape-val-2">0</div>
+        </div>
+        <div class="hud-heading" id="hud-head-2">000&deg;</div>
+      </div>
+
+      <div class="telem-row">
+        <span class="telem-label">GPS</span>
+        <input type="text" class="telem-input" id="gps-sats-2" value="0" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">LAT</span>
+        <input type="text" class="telem-input" id="gps-lat-2" value="--.-------" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">LON</span>
+        <input type="text" class="telem-input" id="gps-lon-2" value="---.-------" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">WP</span>
+        <input type="text" class="telem-input" id="wp-current-2" value="0" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">SPD</span>
+        <input type="text" class="telem-input" id="nav-gspd-2" value="0 m/s" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label">VOLT</span>
+        <input type="text" class="telem-input" id="batt-volt-2" value="0.0 V" readonly />
+      </div>
+      
+      <!-- UDP Telemetry Section -->
+      <div style="margin-top: 15px; margin-bottom: 10px;">
+        <input type="number" id="json-port-2" class="cam-select" value="4"
+          style="display:none; width: 100%; margin-bottom: 8px; text-align: center;" placeholder="JSON Port">
+        <div id="udp-detect-status-2"
+          style="background-color: #555; color: #fff; padding: 6px 0; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; width: 100%; letter-spacing: 1px; transition: background-color 0.3s;">
+          NO TARGET
+        </div>
+      </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">T-LAT</span>
+        <input type="text" class="telem-input" id="udp-tgt-lat-2" value="--" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">T-LON</span>
+        <input type="text" class="telem-input" id="udp-tgt-lon-2" value="--" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">DIST</span>
+        <input type="text" class="telem-input" id="udp-tgt-dist-2" value="--" readonly />
+      </div>
+      <div class="telem-row">
+        <span class="telem-label" style="color: #ffeb3b;">GSD</span>
+        <input type="text" class="telem-input" id="udp-tgt-gsd-2" value="--" readonly />
+      </div>
+    </div>
 
 
     <!-- ── RIGHT VIDEO PANEL ─────────────────────────────────────────────── -->
     <div class="video-panel" id="right-panel">
       <!-- Camera source selector -->
       <div class="cam-selector">
-        <label for="cam-source-2" style="color: #666;">📷 Source:</label>
         <select id="cam-source-2" class="cam-select">
           <option value="none">No Source</option>
         </select>
-        <input type="number" id="udp-port-2" class="cam-select" value="5001"
-          style="display:none; width: 80px; margin-left: 5px;" placeholder="Port">
+        <input type="number" id="udp-port-2" class="cam-select" value="3"
+          style="display:none; width: 80px; margin-left: 5px;" placeholder="Vid Port">
       </div>
       <div class="video-frame" id="video-container-2">
         <!-- Hidden video element for webcam -->
@@ -217,13 +440,15 @@
         </div>
       </div>
       <!-- Bottom stats -->
-      <div class="video-stats">
-        <div>fps : <span class="stat-value" id="vid-fps-2">--</span></div>
-        <div>pkg : <span class="stat-value" id="vid-drops-2">0</span></div>
-        <div>fps yolo : <span class="stat-value" id="vid-yolo-fps-2">---</span></div>
-        <div>cx : <span class="stat-value" id="vid-cx-2">--</span></div>
-        <div>cy : <span class="stat-value" id="vid-cy-2">--</span></div>
-        <div>dist : <span class="stat-value" id="vid-dist-2">--</span></div>
+      <div class="video-stats" style="display:flex; flex-wrap:wrap; gap:10px;">
+        <div>fps: <span class="stat-value" id="vid-fps-2">--</span></div>
+        <div>yolo: <span class="stat-value" id="vid-yolo-fps-2">---</span></div>
+        <div>gsd: <span class="stat-value" id="vid-gsd-2">--</span></div>
+        <div>dist: <span class="stat-value" id="vid-dist-2">--</span></div>
+        <div style="width:100%; display:flex; gap:10px;">
+          <div>uav: <span class="stat-value" id="vid-uav-loc-2" style="font-size:0.9em">--</span></div>
+          <div>tgt: <span class="stat-value" id="vid-tgt-loc-2" style="font-size:0.9em">--</span></div>
+        </div>
       </div>
     </div>
 
@@ -239,10 +464,10 @@
       wsProto: location.protocol === "https:" ? "wss" : "ws",
     };
   </script>
-  <script src="/static/js/system.js"></script>
-  <script src="/static/js/telemetry.js"></script>
-  <script src="/static/js/video.js?v=2"></script>
-  <script src="/static/js/camera.js?v=2"></script>
+  <script src="/static/js/system.js?v={{ version }}"></script>
+  <script src="/static/js/telemetry.js?v={{ version }}"></script>
+  <script src="/static/js/video.js?v={{ version }}"></script>
+  <script src="/static/js/camera.js?v={{ version }}"></script>
 
 </body>
 

@@ -225,21 +225,9 @@ class VideoReceiver:
                 logger.warning("UDP recv error: %s", exc)
                 continue
 
-            # ── Decode packet header ──────────────────────────────
-            if len(packet) < 4:
-                self.stats.record_drop()
-                continue
-
-            try:
-                (declared_size,) = struct.unpack("!I", packet[:4])
-            except struct.error:
-                self.stats.record_drop()
-                continue
-
-            jpeg_data = packet[4:]
-            if len(jpeg_data) != declared_size:
-                self.stats.record_drop()
-                continue
+            # ── Pure JPEG packet (no header) ──────────────────────
+            jpeg_data = packet
+            declared_size = len(packet)
 
             # ── Decode JPEG ───────────────────────────────────────
             try:

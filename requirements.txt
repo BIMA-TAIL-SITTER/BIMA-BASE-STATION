@@ -30,7 +30,7 @@ ultralytics==8.3.55
 # torchvision>=0.15.0
 
 # Optional - uncomment to enable real MAVLink
-# pymavlink==2.4.41
+pymavlink==2.4.41
 
 # Development / testing
 # pytest==8.3.3

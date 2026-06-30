@@ -26,7 +26,7 @@ yolo_detector_instance = None
 
 
 @router.websocket("/video/{port}")
-async def video_ws(websocket: WebSocket, port: int):
+async def video_ws(websocket: WebSocket, port: int, json_port: int = None):
     """
     Binary WebSocket stream of JPEG frames.
 
@@ -38,7 +38,7 @@ async def video_ws(websocket: WebSocket, port: int):
         return
 
     # Ensure the UDP receiver for this port is running
-    video_manager_instance.ensure_stream(port)
+    video_manager_instance.ensure_stream(port, json_port)
     
     await ws_manager_instance.connect_video(websocket, port)
     try:
@@ -167,7 +167,7 @@ async def detect_frame(request: Request):
         return JSONResponse({"error": str(exc)}, status_code=500)
 
 
-@router.post("/yolo/toggle")
+@api_router.post("/yolo/toggle")
 async def toggle_yolo():
     if yolo_detector_instance is not None:
         yolo_detector_instance.is_enabled = not yolo_detector_instance.is_enabled

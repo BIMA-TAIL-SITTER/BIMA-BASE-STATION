@@ -15,6 +15,8 @@
   const select2 = document.getElementById('cam-source-2');
   const portInput1 = document.getElementById('udp-port-1');
   const portInput2 = document.getElementById('udp-port-2');
+  const jsonInput1 = document.getElementById('json-port-1');
+  const jsonInput2 = document.getElementById('json-port-2');
   const videoEl1 = document.getElementById('webcam-video-1');
   const videoEl2 = document.getElementById('webcam-video-2');
   const canvas1 = document.getElementById('video-canvas');
@@ -413,26 +415,41 @@
   // ─── Source change handlers ────────────────────────────────────────────
   // Expose current source mode so video.js knows whether to render UDP frames
   window.GS_camSource = { 1: 'none', 2: 'none' };
-  window.GS_udpPorts = { 1: 5000, 2: 5001 };
+  window.GS_udpPorts = { 1: 1, 2: 3 };
+  window.GS_jsonPorts = { 1: 2, 2: 4 };
 
-  function dispatchSourceChange(panelId, source, port) {
+  function dispatchSourceChange(panelId, source, port, jsonPort) {
     const event = new CustomEvent('gs-source-change', {
-      detail: { panelId, source, port }
+      detail: { panelId, source, port, jsonPort }
     });
     window.dispatchEvent(event);
   }
 
   portInput1.addEventListener('change', () => {
-    window.GS_udpPorts[1] = parseInt(portInput1.value) || 5000;
+    window.GS_udpPorts[1] = parseInt(portInput1.value) || 1;
     if (window.GS_camSource[1] === 'udp') {
-      dispatchSourceChange(1, 'udp', window.GS_udpPorts[1]);
+      dispatchSourceChange(1, 'udp', window.GS_udpPorts[1], window.GS_jsonPorts[1]);
+    }
+  });
+
+  jsonInput1.addEventListener('change', () => {
+    window.GS_jsonPorts[1] = parseInt(jsonInput1.value) || 2;
+    if (window.GS_camSource[1] === 'udp') {
+      dispatchSourceChange(1, 'udp', window.GS_udpPorts[1], window.GS_jsonPorts[1]);
     }
   });
 
   portInput2.addEventListener('change', () => {
-    window.GS_udpPorts[2] = parseInt(portInput2.value) || 5000;
+    window.GS_udpPorts[2] = parseInt(portInput2.value) || 3;
     if (window.GS_camSource[2] === 'udp') {
-      dispatchSourceChange(2, 'udp', window.GS_udpPorts[2]);
+      dispatchSourceChange(2, 'udp', window.GS_udpPorts[2], window.GS_jsonPorts[2]);
+    }
+  });
+
+  jsonInput2.addEventListener('change', () => {
+    window.GS_jsonPorts[2] = parseInt(jsonInput2.value) || 4;
+    if (window.GS_camSource[2] === 'udp') {
+      dispatchSourceChange(2, 'udp', window.GS_udpPorts[2], window.GS_jsonPorts[2]);
     }
   });
 
@@ -445,26 +462,29 @@
 
     if (val === 'udp') {
       portInput1.style.display = 'inline-block';
+      jsonInput1.style.display = 'inline-block';
       stopWebcam(1);
       // UDP rendering + YOLO handled by video.js
       if (noSignal1) noSignal1.classList.remove('hidden');
       if (noSignalText1) noSignalText1.textContent = `Waiting for UDP on port ${window.GS_udpPorts[1]}...`;
-      dispatchSourceChange(1, 'udp', window.GS_udpPorts[1]);
+      dispatchSourceChange(1, 'udp', window.GS_udpPorts[1], window.GS_jsonPorts[1]);
     } else if (val === 'none') {
       portInput1.style.display = 'none';
+      jsonInput1.style.display = 'none';
       stopWebcam(1);
       const ctx = canvas1.getContext('2d');
       ctx.fillStyle = '#0a0a08';
       ctx.fillRect(0, 0, canvas1.width, canvas1.height);
       if (noSignal1) noSignal1.classList.remove('hidden');
       if (noSignalText1) noSignalText1.textContent = 'NO SOURCE SELECTED';
-      dispatchSourceChange(1, 'none', null);
+      dispatchSourceChange(1, 'none', null, null);
     } else {
       portInput1.style.display = 'none';
+      jsonInput1.style.display = 'none';
       if (noSignal1) noSignal1.classList.remove('hidden');
       if (noSignalText1) noSignalText1.textContent = 'Starting camera...';
       startWebcam(1, val);
-      dispatchSourceChange(1, val, null);
+      dispatchSourceChange(1, val, null, null);
     }
   });
 
@@ -476,25 +496,28 @@
 
     if (val === 'udp') {
       portInput2.style.display = 'inline-block';
+      jsonInput2.style.display = 'inline-block';
       stopWebcam(2);
       if (noSignal2) noSignal2.classList.remove('hidden');
       if (noSignalText2) noSignalText2.textContent = `Waiting for UDP on port ${window.GS_udpPorts[2]}...`;
-      dispatchSourceChange(2, 'udp', window.GS_udpPorts[2]);
+      dispatchSourceChange(2, 'udp', window.GS_udpPorts[2], window.GS_jsonPorts[2]);
     } else if (val === 'none') {
       portInput2.style.display = 'none';
+      jsonInput2.style.display = 'none';
       stopWebcam(2);
       if (noSignal2) noSignal2.classList.remove('hidden');
       const ctx = canvas2.getContext('2d');
       ctx.fillStyle = '#0a0a08';
       ctx.fillRect(0, 0, canvas2.width, canvas2.height);
       if (noSignalText2) noSignalText2.textContent = 'NO SOURCE SELECTED';
-      dispatchSourceChange(2, 'none', null);
+      dispatchSourceChange(2, 'none', null, null);
     } else {
       portInput2.style.display = 'none';
+      jsonInput2.style.display = 'none';
       if (noSignal2) noSignal2.classList.remove('hidden');
       if (noSignalText2) noSignalText2.textContent = 'Starting camera...';
       startWebcam(2, val);
-      dispatchSourceChange(2, val, null);
+      dispatchSourceChange(2, val, null, null);
     }
   });
 

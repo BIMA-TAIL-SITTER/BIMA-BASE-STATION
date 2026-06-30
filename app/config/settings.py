@@ -45,6 +45,16 @@ class Settings(BaseSettings):
         default=5.0,
         description="Simulated telemetry publish rate in Hz",
     )
+    MAVLINK_HOSTS: str = Field(
+        default="100.121.12.16,100.109.178.125",
+        description="Comma-separated list of MAVLink TCP host IPs",
+    )
+    MAVLINK_DEFAULT_PORT: int = Field(default=5761, description="Default MAVLink TCP port")
+
+    @property
+    def mavlink_host_list(self) -> list[str]:
+        return [c.strip() for c in self.MAVLINK_HOSTS.split(",") if c.strip()]
+
 
     # ─── Snapshots ────────────────────────────────────────────────
     SNAPSHOT_DIR: str = Field(default="snapshots", description="Directory for saved snapshots")

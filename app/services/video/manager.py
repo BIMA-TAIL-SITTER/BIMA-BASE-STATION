@@ -55,6 +55,9 @@ class MultiStreamManager:
         self._broadcast_counts: dict[int, int] = {}
         self._last_sent_detection_ts: dict[int, float] = {}
         
+        self._telemetry_receivers = {} # Dict[int, UdpTelemetryReceiver]
+        self._video_to_telemetry = {}  # video_port -> json_port
+        
         logger.info(
             "MultiStreamManager ready (fps_limit=%d, jpeg_quality=%d, yolo=%s)",
             fps_limit,
@@ -64,8 +67,17 @@ class MultiStreamManager:
 
     # ─── Public ───────────────────────────────────────────────────
 
-    def ensure_stream(self, port: int) -> None:
+    def ensure_stream(self, port: int, json_port: Optional[int] = None) -> None:
         """Ensure a VideoReceiver and broadcast loop are running for the given port."""
+        if json_port:
+            self._video_to_telemetry[port] = json_port
+            if json_port not in self._telemetry_receivers:
+                logger.info("Starting new UdpTelemetryReceiver for JSON port %d", json_port)
+                from app.services.telemetry.udp_telemetry import UdpTelemetryReceiver
+                telem_recv = UdpTelemetryReceiver(host="0.0.0.0", port=json_port)
+                telem_recv.start()
+                self._telemetry_receivers[json_port] = telem_recv
+
         if port not in self._receivers:
             logger.info("Starting new VideoReceiver for port %d", port)
             receiver = VideoReceiver(source="udp", host="0.0.0.0", port=port)
@@ -90,12 +102,23 @@ class MultiStreamManager:
             del self._broadcast_counts[port]
         if port in self._last_sent_detection_ts:
             del self._last_sent_detection_ts[port]
+            
+        json_port = self._video_to_telemetry.pop(port, None)
+        if json_port and json_port in self._telemetry_receivers:
+            if json_port not in self._video_to_telemetry.values():
+                logger.info("Stopping UdpTelemetryReceiver for JSON port %d", json_port)
+                self._telemetry_receivers[json_port].stop()
+                del self._telemetry_receivers[json_port]
 
     def stop_all(self) -> None:
         """Stop all streams."""
         ports = list(self._receivers.keys())
         for port in ports:
             self.stop_stream(port)
+        for t_recv in self._telemetry_receivers.values():
+            t_recv.stop()
+        self._telemetry_receivers.clear()
+        self._video_to_telemetry.clear()
 
     async def _broadcast_loop(self, port: int, receiver: VideoReceiver) -> None:
         """
@@ -125,6 +148,31 @@ class MultiStreamManager:
                         await self._ws.broadcast_video(placeholder, port)
                 self._broadcast_counts[port] += 1
                 continue
+
+            frame = frame.copy()
+            
+            # --- OVERLAY YOLO FROM UDP TELEMETRY ---
+            json_port = self._video_to_telemetry.get(port)
+            if json_port and json_port in self._telemetry_receivers:
+                telem = self._telemetry_receivers[json_port].latest_data
+                if telem and telem.get("detection"):
+                    bbox = telem.get("bbox_px")
+                    conf = telem.get("conf", 0.0)
+                    if bbox and len(bbox) == 4:
+                        x1, y1, x2, y2 = [int(v) for v in bbox]
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        
+                        text = f"Target {conf*100:.1f}%"
+                        cv2.putText(frame, text, (x1, max(y1 - 10, 10)), 
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                
+                # Crosshair
+                h, w, _ = frame.shape
+                cx, cy = w // 2, h // 2
+                length = 15
+                cv2.line(frame, (cx - length, cy), (cx + length, cy), (0, 0, 255), 2)
+                cv2.line(frame, (cx, cy - length), (cx, cy + length), (0, 0, 255), 2)
+            # ---------------------------------------
 
             jpeg_bytes = self._encode_frame(frame)
             if jpeg_bytes is None:
@@ -157,18 +205,25 @@ class MultiStreamManager:
     # ─── Internals ────────────────────────────────────────────────
 
     async def _maybe_broadcast_detections(self, port: int) -> None:
-        """Push the latest YOLO detection frame as a JSON text message."""
-        if self._detector is None or not self._detector.is_enabled:
+        """Push the latest UDP telemetry JSON as text message."""
+        json_port = self._video_to_telemetry.get(port)
+        if not json_port or json_port not in self._telemetry_receivers:
             return
 
-        all_detections = self._detector.latest_detections
-        det_frame = all_detections.get(port)
-        if det_frame is None or det_frame.timestamp <= self._last_sent_detection_ts.get(port, 0.0):
+        telem = self._telemetry_receivers[json_port].latest_data
+        if not telem:
             return
 
-        self._last_sent_detection_ts[port] = det_frame.timestamp
+        timestamp = telem.get("_received_at", 0)
+        if timestamp <= self._last_sent_detection_ts.get(port, 0.0):
+            return
+
+        self._last_sent_detection_ts[port] = timestamp
         try:
-            payload = json.dumps(det_frame.to_dict())
+            # We wrap it in a format video.js expects or just send it raw and update video.js
+            # Adding type='telemetry' so video.js knows what to do
+            telem['type'] = 'telemetry'
+            payload = json.dumps(telem)
             await self._ws.broadcast_video_detections(payload, port)
         except Exception as exc:
             logger.debug("Detection broadcast error for port %d: %s", port, exc)

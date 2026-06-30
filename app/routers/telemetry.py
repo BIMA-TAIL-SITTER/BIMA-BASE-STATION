@@ -55,3 +55,43 @@ async def latest_telemetry():
     if data is None:
         return {"error": "no data yet"}
     return data
+
+@api_router.get("/sources")
+async def get_sources():
+    """Return available MAVLink IPs from settings."""
+    from app.config.settings import settings
+    return {
+        "hosts": settings.mavlink_host_list,
+        "default_port": settings.MAVLINK_DEFAULT_PORT
+    }
+
+from pydantic import BaseModel
+
+class ConnectRequest(BaseModel):
+    slot: int
+    ip: str
+    port: int
+
+@api_router.post("/connect")
+async def connect_mavlink(req: ConnectRequest):
+    if telemetry_generator_instance is None:
+        return {"error": "not initialised"}
+    success = await telemetry_generator_instance.connect_slot(req.slot, req.ip, req.port)
+    return {"success": success}
+
+class DisconnectRequest(BaseModel):
+    slot: int
+
+@api_router.post("/disconnect")
+async def disconnect_mavlink(req: DisconnectRequest):
+    if telemetry_generator_instance is None:
+        return {"error": "not initialised"}
+    await telemetry_generator_instance.disconnect_slot(req.slot)
+    return {"success": True}
+
+@api_router.get("/status")
+async def get_status():
+    if telemetry_generator_instance is None:
+        return {"error": "not initialised"}
+    return telemetry_generator_instance.get_status()
+

@@ -130,4 +130,45 @@
   // ─── Boot log ─────────────────────────────────────────────────────────────
   window.GS_log("info", "system", "Ground Station interface initialised");
 
+  // ─────────────────────────────────────────────────────────────────
+  // Mouse scroll support for inputs and selects
+  // ─────────────────────────────────────────────────────────────────
+  document.addEventListener('wheel', function(e) {
+    // Check if hovering over a cam-select input or select
+    if (e.target && e.target.classList.contains('cam-select')) {
+      if (e.target.tagName.toLowerCase() === 'input' && e.target.type === 'number') {
+        e.preventDefault();
+        let step = parseFloat(e.target.step) || 1;
+        let min = parseFloat(e.target.min);
+        let max = parseFloat(e.target.max);
+        let val = parseFloat(e.target.value) || 0;
+        
+        if (e.deltaY < 0) { // scroll up
+          val += step;
+        } else if (e.deltaY > 0) { // scroll down
+          val -= step;
+        }
+        
+        if (!isNaN(min) && val < min) val = min;
+        if (!isNaN(max) && val > max) val = max;
+        
+        e.target.value = val;
+        e.target.dispatchEvent(new Event('change', { bubbles: true }));
+      } else if (e.target.tagName.toLowerCase() === 'select') {
+        e.preventDefault();
+        let sel = e.target;
+        let maxIdx = sel.options.length - 1;
+        let curIdx = sel.selectedIndex;
+        
+        if (e.deltaY < 0) { // scroll up
+          if (curIdx > 0) sel.selectedIndex = curIdx - 1;
+        } else if (e.deltaY > 0) { // scroll down
+          if (curIdx < maxIdx) sel.selectedIndex = curIdx + 1;
+        }
+        
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+  }, { passive: false });
+
 })();
