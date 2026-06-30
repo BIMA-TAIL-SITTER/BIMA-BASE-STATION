@@ -13,7 +13,6 @@
   --danger: #FF4040;
   --warning: #FFA040;
   --ok: #40FF80;
-  --text-main: #ffffff;
   --font: "JetBrains Mono", "Courier New", monospace;
 }
 
@@ -32,7 +31,7 @@ body {
   width: 100vw;
   overflow: hidden;
   background: var(--bg);
-  color: var(--text-main);
+  color: #fff;
   font-family: var(--font);
 }
 
@@ -70,14 +69,14 @@ canvas {
   align-items: center;
   padding: 10px 32px 10px 32px;
   gap: 48px;
-  background: var(--bg);
+  background: #2D3A47;
 }
 
 .brand-title {
   font-size: 24px;
   font-weight: 900;
   letter-spacing: 0.04em;
-  color: var(--text-main);
+  color: #fff;
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
@@ -90,11 +89,11 @@ canvas {
   gap: 24px;
   font-size: 11px;
   letter-spacing: 0.06em;
-  color: var(--muted);
+  color: #A9B7C6;
 }
 
 .header-info span {
-  color: var(--accent);
+  color: #F7C8D3;
   font-weight: 600;
 }
 
@@ -123,7 +122,7 @@ canvas {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #babbbc;
+  background-color: #A9B7C6;
   transition: .3s;
   border-radius: 20px;
 }
@@ -143,7 +142,7 @@ canvas {
 }
 
 .yolo-switch input:checked+.yolo-slider {
-  background-color: #20b889;
+  background-color: #A8B58A;
 }
 
 .yolo-switch input:checked+.yolo-slider:before {
@@ -191,7 +190,10 @@ canvas {
 
 .theme-slider {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: var(--panel);
   border: 1px solid var(--border);
   transition: 0.4s;
@@ -203,7 +205,8 @@ canvas {
   overflow: hidden;
 }
 
-.icon-sun, .icon-moon {
+.icon-sun,
+.icon-moon {
   font-size: 12px;
   z-index: 1;
   transition: 0.4s;
@@ -219,10 +222,10 @@ canvas {
   transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   border-radius: 50%;
   z-index: 2;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.theme-switch input:checked + .theme-slider .theme-thumb {
+.theme-switch input:checked+.theme-slider .theme-thumb {
   transform: translateX(24px);
   background-color: var(--accent);
 }
@@ -305,19 +308,23 @@ canvas {
     padding: 10px;
     gap: 6px;
   }
+
   .telem-row .telem-label {
     min-width: 40px;
     font-size: 11px;
   }
+
   .telem-row .telem-input {
     font-size: 11px;
     padding: 2px 6px;
   }
+
   .attitude-indicator {
     transform: scale(0.85);
     transform-origin: top center;
     margin-bottom: -15px !important;
   }
+
   .hud-heading {
     transform: translateX(-50%) scale(0.9);
     bottom: 2px;
@@ -535,7 +542,7 @@ canvas {
 
 /* ── Telemetry Panels ── */
 .telem-panel {
-  background: var(--surface);
+  background: rgba(10, 10, 8, 0.6);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: clamp(8px, 1vw, 16px);
@@ -564,7 +571,7 @@ canvas {
   position: relative;
   overflow: hidden;
   background-color: #222;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
 .alt-tape-container {
@@ -579,10 +586,13 @@ canvas {
 
 .alt-tape-ticks {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
     linear-gradient(to bottom, #fff 2px, transparent 2px),
-    linear-gradient(to bottom, rgba(255,255,255,0.4) 1px, transparent 1px);
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
   background-size: 10px 40px, 5px 10px;
   background-repeat: repeat-y;
   background-position: left center;
@@ -602,7 +612,7 @@ canvas {
   border-radius: 3px;
   text-align: center;
   min-width: 24px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.8);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
 .alt-tape-pointer::before {
@@ -628,7 +638,7 @@ canvas {
   font-weight: 800;
   padding: 2px 8px;
   border-radius: 4px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.8);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
   letter-spacing: 1px;
   z-index: 10;
 }
@@ -636,7 +646,8 @@ canvas {
 .attitude-roll {
   position: absolute;
   top: 50%;
-  left: calc(50% - 22px); /* Center in the area left of the 45px tape */
+  left: calc(50% - 22px);
+  /* Center in the area left of the 45px tape */
   width: 300px;
   height: 300px;
   transform: translate(-50%, -50%);
@@ -645,7 +656,10 @@ canvas {
 
 .attitude-pitch {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   transition: transform 0.1s linear;
 }
 
@@ -665,8 +679,8 @@ canvas {
   font-size: clamp(9px, 0.85vw, 13px);
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--text-main);
-  min-width: clamp(30px, 3vw, 45px);
+  color: #fff;
+  min-width: 36px;
   text-align: right;
 }
 
@@ -679,7 +693,7 @@ canvas {
   font-family: var(--font);
   font-size: clamp(9px, 0.85vw, 12px);
   font-weight: 600;
-  color: var(--text-main);
+  color: #fff;
   text-align: center;
   letter-spacing: 0.04em;
   outline: none;
@@ -739,4 +753,25 @@ canvas {
     gap: 12px;
     padding: 8px 0;
   }
+}
+
+/* Fix telemetry text visibility */
+.telem-row .telem-input {
+  background: #FFF7E6 !important;
+  color: #2D3A47 !important;
+  -webkit-text-fill-color: #2D3A47 !important;
+  opacity: 1 !important;
+}
+
+.telem-row .telem-input::placeholder {
+  color: #2D3A47 !important;
+}
+
+
+/* Kalau input disabled/read-only */
+.telem-row .telem-input:disabled,
+.telem-row .telem-input[readonly] {
+  color: #2D3A47 !important;
+  -webkit-text-fill-color: #2D3A47 !important;
+  opacity: 1 !important;
 }
