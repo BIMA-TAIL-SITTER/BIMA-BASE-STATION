@@ -1,54 +1,66 @@
 # UAV Ground Station
 
-A web-based UAV Ground Station that receives live video over UDP, streams it
-to the browser in real-time via WebSocket, and displays telemetry in a
-dark military-style command-centre interface.
+A web-based, multi-UAV Ground Station that receives live video over UDP, streams it to the browser in real-time via multi-channel WebSockets, runs asynchronous YOLO object detection, bridges real MAVLink telemetry, and displays everything in a modern, dark military-style command-centre interface.
 
 ```
-UAV (sender)
-  └─ UDP JPEG stream
-        └─ Ground Station (FastAPI)
-              ├─ /ws/video      → browser canvas
-              ├─ /ws/telemetry  → live telemetry panel
-              └─ /ws/system     → log feed
+UAVs / Camera Sources
+  ├─ UDP JPEG Streams (Port 5000+)  ──► Ground Station (FastAPI + MultiStreamManager)
+  │                                        ├─ /ws/video/{port}      ──► Browser Canvas (Frames + YOLO HUD)
+  │                                        ├─ /ws/telemetry         ──► Live MAVLink & Target Telemetry (5 Hz)
+  │                                        └─ /ws/system            ──► Log Feed & System Events
+  └─ MAVLink TCP (Port 5761+)       ──► MavlinkTelemetryBridge (Slot 1 & Slot 2)
 ```
 
 ---
 
-## Architecture
+## Key Features
+
+- **Dynamic Multi-Stream Video**: Supports simultaneous video feeds on configurable UDP ports via `/ws/video/{port}`. Includes optional UDP telemetry overlay (`?json_port={port}`) for rendering target bounding boxes and crosshairs directly onto incoming frames.
+- **Real-Time YOLO Object Detection**: Integrated `YOLODetector` powered by Ultralytics (`yolo11n.pt` by default). Runs inference asynchronously in a dedicated background worker thread without blocking streaming loops. Broadcasts detections over WebSockets and provides a REST endpoint (`POST /api/video/detect`) for client-side camera/webcam detection.
+- **Dual-Slot MAVLink Telemetry Bridge**: Connect to two independent MAVLink TCP streams simultaneously (Slot 1 and Slot 2). Automatically decodes heartbeat, attitude, global position, battery status, VFR HUD, and waypoints, broadcasting unified JSON telemetry snapshots at 5 Hz.
+- **High-Rate UDP Target Telemetry**: Lightweight receiver (`UdpTelemetryReceiver`) for receiving high-frequency target tracking coordinates and confidence scores over UDP.
+- **Responsive Command Centre UI**: Designed with CSS Grid and Flexbox for seamless adaptation between 4-column desktop monitors and mobile devices. Features sticky HUD top bars, dark/light theme toggles, live log console, and client-side camera streaming.
+
+---
+
+## Architecture & Directory Structure
 
 ```
 ground_station/
 ├── app/
-│   ├── main.py                      # FastAPI app + lifespan (service wiring)
+│   ├── main.py                      # FastAPI app entry point + lifespan service wiring
 │   ├── config/
-│   │   └── settings.py              # Pydantic Settings (env vars)
+│   │   └── settings.py              # Pydantic Settings (env vars & configuration defaults)
 │   ├── services/
 │   │   ├── video/
-│   │   │   ├── receiver.py          # UDP socket → decoded frame (thread)
-│   │   │   └── manager.py           # frame → JPEG → WebSocket broadcast
+│   │   │   ├── receiver.py          # UDP socket / camera reader → decoded frames (daemon thread)
+│   │   │   └── manager.py           # MultiStreamManager: dynamic multi-stream video & UDP telemetry overlay
 │   │   ├── telemetry/
-│   │   │   └── generator.py         # simulated telemetry (replace w/ MAVLink)
+│   │   │   ├── generator.py         # Telemetry packet schemas & data structures
+│   │   │   └── udp_telemetry.py     # UdpTelemetryReceiver: lightweight high-rate JSON telemetry
 │   │   ├── mavlink/
-│   │   │   └── interfaces.py        # abstract interfaces for future MAVLink
+│   │   │   ├── connection.py        # Async TCP MAVLink connection handler
+│   │   │   ├── interfaces.py        # Abstract interfaces for MAVLink telemetry bridges
+│   │   │   └── telemetry_bridge.py  # MavlinkTelemetryBridge: multi-slot MAVLink parsing & broadcasting
 │   │   ├── yolo/
-│   │   │   └── detector.py          # abstract interfaces for future YOLO
+│   │   │   └── detector.py          # YOLODetector: real-time asynchronous YOLO inference thread
 │   │   └── websocket/
-│   │       └── manager.py           # multi-channel WebSocket hub
+│   │       └── manager.py           # Multi-channel WebSocket hub (/ws/video, /ws/telemetry, /ws/system)
 │   ├── routers/
-│   │   ├── video.py                 # /ws/video + /api/video/*
-│   │   ├── telemetry.py             # /ws/telemetry + /api/telemetry/*
-│   │   └── system.py                # /ws/system + /api/system/*
+│   │   ├── video.py                 # /ws/video/{port} + REST (/api/video/status, /api/video/detect, /yolo/toggle)
+│   │   ├── telemetry.py             # /ws/telemetry + REST (/api/telemetry/connect, /disconnect, /sources, /status, /latest)
+│   │   └── system.py                # /ws/system + REST (/api/system/events, /api/system/info)
 │   ├── static/
-│   │   ├── css/styles.css           # dark military theme
+│   │   ├── css/styles.css           # Responsive dark/light command-centre styling
 │   │   └── js/
-│   │       ├── system.js            # WS client, log feed, clock
-│   │       ├── telemetry.js         # WS client, DOM updates
-│   │       └── video.js             # WS client, canvas renderer, HUD
+│   │       ├── camera.js            # Client-side webcam/phone camera capture & JPEG streaming to backend
+│   │       ├── system.js            # WS client, log feed console, clock, theme toggle
+│   │       ├── telemetry.js         # WS client, MAVLink slot management, DOM updates
+│   │       └── video.js             # WS client, canvas renderer, YOLO bounding box overlays
 │   └── templates/
-│       └── index.html               # Jinja2 template (Tailwind + vanilla JS)
-├── logs/                            # rotating log files (auto-created)
-├── snapshots/                       # saved JPEG snapshots (auto-created)
+│       └── index.html               # Main UI template (4-column responsive grid layout)
+├── logs/                            # Rotating log files (auto-created)
+├── snapshots/                       # Saved JPEG snapshots (auto-created)
 ├── requirements.txt
 ├── .env.example
 ├── Dockerfile
@@ -57,19 +69,58 @@ ground_station/
 
 ---
 
-## Video Packet Protocol
+## Video & Telemetry Protocols
 
-The backend is **fully compatible** with the existing UDP sender.
+### 1. UDP Video Stream Protocol
+
+The backend is fully compatible with standard UDP JPEG streaming scripts.
 
 ```
-Packet structure:
-  [0:4]  uint32 little-endian   — declared JPEG payload length
-  [4:]   bytes                  — raw JPEG data
+Packet Structure:
+  [0:4]  uint32 little-endian   — declared JPEG payload length in bytes
+  [4:]   bytes                  — raw JPEG image data
+```
 
-Python sender example:
-  jpeg_bytes = cv2.imencode('.jpg', frame)[1].tobytes()
-  packet     = struct.pack('<I', len(jpeg_bytes)) + jpeg_bytes
-  sock.sendto(packet, (ground_station_ip, 5000))
+#### Python Sender Example:
+```python
+import cv2, socket, struct, time
+
+HOST = "127.0.0.1"   # Ground Station IP
+PORT = 5000          # Target UDP Port
+QUALITY = 80
+
+cap = cv2.VideoCapture(0)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+    ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, QUALITY])
+    if not ok:
+        continue
+    data = buf.tobytes()
+    packet = struct.pack("<I", len(data)) + data
+    try:
+        sock.sendto(packet, (HOST, PORT))
+    except Exception as e:
+        print(f"Send error: {e}")
+    time.sleep(1 / 30)
+
+cap.release()
+sock.close()
+```
+
+### 2. UDP Target Telemetry Overlay (`json_port`)
+
+When opening a video stream with an associated JSON port (e.g. `/ws/video/5000?json_port=5005`), the backend starts a `UdpTelemetryReceiver` on that port. If incoming JSON packets contain detection bounding boxes, the backend automatically renders green target boxes and crosshairs onto the video frames.
+
+```json
+{
+  "detection": true,
+  "bbox_px": [120, 80, 340, 400],
+  "conf": 0.85
+}
 ```
 
 ---
@@ -98,7 +149,7 @@ pip install -r requirements.txt
 
 # 4. Copy environment config
 cp .env.example .env
-# Edit .env as needed (UDP_PORT, WEB_PORT, etc.)
+# Edit .env as needed (UDP_PORT, WEB_PORT, YOLO_ENABLED, etc.)
 
 # 5. Start the server
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -135,261 +186,126 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 # Development (auto-reload)
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-# Production (single worker — video is single-stream)
+# Production (single worker recommended for streaming synchronization)
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1
 
-# Custom ports from .env
+# Custom ports via environment variables
 WEB_PORT=9000 UDP_PORT=6000 uvicorn app.main:app --host 0.0.0.0 --port 9000
 ```
 
 ---
 
-## Opening the UI
+## WebSocket & REST API Reference
 
-Once the server is running, open in any modern browser:
+### WebSocket Endpoints
 
-```
-http://localhost:8000
-```
-
-Or from another machine on the same LAN:
-
-```
-http://<server-ip>:8000
-```
-
----
-
-## Testing the Video Stream
-
-You need a sender script on the UAV side (or locally for testing).
-
-### Test sender (run on any machine with Python + OpenCV):
-
-```python
-import cv2, socket, struct, time
-
-HOST = "127.0.0.1"   # ground station IP
-PORT = 5000
-QUALITY = 80
-
-cap  = cv2.VideoCapture(0)          # 0 = webcam; or use a video file
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
-    ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, QUALITY])
-    if not ok:
-        continue
-    data   = buf.tobytes()
-    packet = struct.pack("<I", len(data)) + data
-    try:
-        sock.sendto(packet, (HOST, PORT))
-    except Exception as e:
-        print(f"Send error: {e}")
-    time.sleep(1 / 30)
-
-cap.release()
-sock.close()
-```
-
-### Test with an existing video file:
-
-```python
-cap = cv2.VideoCapture("path/to/video.mp4")
-```
-
-### Test with a static image (single frame loop):
-
-```python
-frame = cv2.imread("test.jpg")
-```
-
----
-
-## Tailscale Usage
-
-Tailscale creates a private overlay network so the UAV and ground station
-can communicate securely over the internet without port forwarding.
-
-### Setup
-
-```bash
-# 1. Install Tailscale on both the UAV companion computer and the ground station
-#    https://tailscale.com/download
-
-# 2. Authenticate both devices to the same Tailscale account
-tailscale up
-
-# 3. Find the Tailscale IP of the ground station
-tailscale ip -4
-
-# 4. Set the environment variable on the ground station
-TAILSCALE_ENABLED=true
-
-# 5. The UAV sender targets the Tailscale IP of the ground station
-HOST = "100.x.x.x"  # Tailscale IP
-```
-
-### Firewall
-
-Ensure UDP port 5000 and TCP port 8000 are open in the OS firewall:
-
-```bash
-# Linux (ufw)
-sudo ufw allow 5000/udp
-sudo ufw allow 8000/tcp
-
-# Windows (PowerShell — run as Administrator)
-netsh advfirewall firewall add rule name="GS_UDP" dir=in action=allow protocol=UDP localport=5000
-netsh advfirewall firewall add rule name="GS_WEB" dir=in action=allow protocol=TCP localport=8000
-```
-
----
-
-## Docker
-
-```bash
-# Build and run
-cp .env.example .env
-docker compose up --build
-
-# Run in background
-docker compose up -d
-
-# View logs
-docker compose logs -f
-
-# Stop
-docker compose down
-```
-
----
-
-## WebSocket API
-
-| Endpoint        | Type   | Description                          |
-|-----------------|--------|--------------------------------------|
-| `/ws/video`     | binary | Raw JPEG frames at up to 30 FPS      |
-| `/ws/telemetry` | text   | JSON telemetry packets at 5 Hz       |
-| `/ws/system`    | text   | JSON system events / log messages    |
+| Endpoint                | Type   | Description                                                                 |
+|-------------------------|--------|-----------------------------------------------------------------------------|
+| `/ws/video/{port}`      | binary | Raw JPEG frames for the given UDP port (up to `VIDEO_FPS_LIMIT` FPS). Also transmits YOLO text JSON detection blobs. Supports optional query param `?json_port={port}`. |
+| `/ws/telemetry`         | text   | JSON MAVLink & target telemetry snapshots published at `TELEMETRY_HZ` (5 Hz). Includes `slot` identifier (`1` or `2`). |
+| `/ws/system`            | text   | JSON log messages, system warnings, and application events. Replays last 50 buffered events on connect. |
 
 ### REST Endpoints
 
-| Endpoint              | Method | Description                    |
-|-----------------------|--------|--------------------------------|
-| `/`                   | GET    | Ground Station UI              |
-| `/health`             | GET    | Server health + video stats    |
-| `/api/video/status`   | GET    | Video receiver statistics      |
-| `/api/telemetry/latest` | GET  | Latest telemetry snapshot      |
-| `/api/system/events`  | GET    | Last 100 system events         |
-| `/api/system/info`    | GET    | Server info                    |
-
-### Telemetry Packet Schema
-
-```json
-{
-  "timestamp":           1718000000.0,
-  "uptime_s":            42.5,
-  "vehicle_id":          1,
-  "vehicle_name":        "UAV-01",
-  "lat":                 -7.7956000,
-  "lon":                 110.3695000,
-  "altitude_m":          50.0,
-  "relative_alt_m":      50.0,
-  "ground_speed_ms":     8.5,
-  "air_speed_ms":        9.0,
-  "heading_deg":         270.0,
-  "climb_rate_ms":       0.2,
-  "roll_deg":            1.2,
-  "pitch_deg":           -0.8,
-  "yaw_deg":             270.0,
-  "battery_voltage":     15.8,
-  "battery_current":     14.2,
-  "battery_remaining_pct": 82,
-  "rssi":                -68,
-  "link_quality_pct":    95,
-  "flight_mode":         "AUTO",
-  "armed":               true,
-  "mission_state":       "WAYPOINT",
-  "current_waypoint":    2,
-  "total_waypoints":     5,
-  "distance_to_wp_m":    38.4,
-  "gps_fix":             3,
-  "satellites_visible":  12,
-  "hdop":                0.9,
-  "ekf_ok":              true,
-  "pre_arm_check":       true
-}
-```
-
----
-
-## Future Expansion
-
-### Adding Real MAVLink Telemetry
-
-1. Uncomment `pymavlink` in `requirements.txt` and install it.
-2. Implement `MAVLinkConnection` and `MAVLinkTelemetryBridge` from
-   `app/services/mavlink/interfaces.py`.
-3. In `app/main.py`, replace `TelemetryGenerator` with your concrete
-   `MAVLinkTelemetryBridge` subclass.
-
-### Adding YOLO Detection
-
-1. Uncomment `ultralytics` in `requirements.txt` and install it.
-2. Implement `BaseDetector` from `app/services/yolo/detector.py`
-   (the example stub is included in comments).
-3. Start the detector pipeline as an asyncio Task in `main.py`.
-4. Push `DetectionFrame` JSON over `/ws/video` or a new `/ws/detection`
-   channel; call `window.GS_setDetections()` from the frontend.
-
-### Adding Multiple UAVs
-
-- `VideoManager` is a single-UAV service; add a `vehicle_id` namespace
-  to the WebSocket paths: `/ws/video/{vehicle_id}`.
-- `TelemetryGenerator` generates data for one vehicle; instantiate one
-  per vehicle and broadcast on separate sub-channels.
-- Left sidebar vehicle list already renders multiple cards once the
-  `vehicle_id` field in telemetry is used.
-
-### Swarm Operations
-
-- Add `/ws/swarm` channel with aggregated multi-vehicle telemetry.
-- Create `services/swarm/coordinator.py` that subscribes to all
-  vehicle telemetry streams and re-publishes a merged view.
-
----
-
-## Troubleshooting
-
-| Symptom | Fix |
-|---------|-----|
-| **"No Signal" displayed** | Ensure the UDP sender is running and targeting the correct IP/port. Check firewall rules for UDP 5000. |
-| **Port already in use** | Change `UDP_PORT` or `WEB_PORT` in `.env`. |
-| **ModuleNotFoundError** | Activate the virtual environment and re-run `pip install -r requirements.txt`. |
-| **Very high CPU** | Lower `VIDEO_FPS_LIMIT` and/or `VIDEO_JPEG_QUALITY` in `.env`. |
-| **Browser shows blank canvas** | Check browser console for WebSocket errors. Verify the server is reachable on the configured port. |
-| **Docker UDP not receiving** | Confirm the port mapping is `5000:5000/udp` (not TCP) in `docker-compose.yml`. |
-| **Windows firewall blocking** | Add inbound rules for UDP 5000 and TCP 8000 (see Tailscale section above). |
+| Endpoint                   | Method | Description                                                                 |
+|----------------------------|--------|-----------------------------------------------------------------------------|
+| `/`                        | GET    | Ground Station main web UI                                                  |
+| `/health`                  | GET    | Overall server health, active video stream stats, YOLO status, and client count |
+| `/api/video/status`        | GET    | Detailed receiving statistics for all active video UDP ports                  |
+| `/api/video/detect`        | POST   | Accept raw JPEG image body, run asynchronous YOLO inference, and return bounding boxes |
+| `/api/video/yolo/toggle`   | POST   | Dynamically enable or disable backend YOLO object detection                 |
+| `/api/telemetry/latest`    | GET    | Latest telemetry snapshot for MAVLink Slot 1 and Slot 2                     |
+| `/api/telemetry/sources`   | GET    | List configured MAVLink TCP host IPs and default port                       |
+| `/api/telemetry/connect`   | POST   | Connect a MAVLink slot to an IP and TCP port (`{"slot": 1, "ip": "...", "port": 5761}`) |
+| `/api/telemetry/disconnect`| POST   | Disconnect an active MAVLink slot (`{"slot": 1}`)                           |
+| `/api/telemetry/status`    | GET    | Current connection status for MAVLink Slot 1 and Slot 2                     |
+| `/api/system/events`       | GET    | Retrieve up to the last 200 system log events                               |
+| `/api/system/info`         | GET    | Server platform, Python version, PID, and environment info                  |
 
 ---
 
 ## Configuration Reference
 
-All options are read from environment variables or `.env`:
+All options are configured via environment variables or inside the `.env` file:
 
-| Variable              | Default     | Description                                   |
-|-----------------------|-------------|-----------------------------------------------|
-| `HOST`                | `0.0.0.0`   | Web server bind host                          |
-| `WEB_PORT`            | `8000`      | HTTP / WebSocket port                         |
-| `UDP_PORT`            | `5000`      | UDP video receive port                        |
-| `VIDEO_FPS_LIMIT`     | `30`        | Max FPS forwarded to browsers                 |
-| `VIDEO_JPEG_QUALITY`  | `80`        | Re-encode JPEG quality (1–100)                |
-| `VIDEO_MAX_CLIENTS`   | `10`        | Max simultaneous video WebSocket clients      |
-| `TAILSCALE_ENABLED`   | `false`     | Enable Tailscale-specific logging             |
-| `LOG_LEVEL`           | `INFO`      | Python logging level                          |
-| `TELEMETRY_HZ`        | `5.0`       | Simulated telemetry rate in Hz                |
-| `SNAPSHOT_DIR`        | `snapshots` | Directory for server-side snapshots           |
+| Variable                | Default                             | Description                                                                 |
+|-------------------------|-------------------------------------|-----------------------------------------------------------------------------|
+| `HOST`                  | `0.0.0.0`                           | Bind host for the web server                                                |
+| `WEB_PORT`              | `8000`                              | HTTP & WebSocket server port                                                |
+| `UDP_PORT`              | `5000`                              | Default UDP port for incoming video streams                                 |
+| `VIDEO_FPS_LIMIT`       | `30`                                | Maximum frames per second pushed to browser WebSocket clients               |
+| `VIDEO_JPEG_QUALITY`    | `80`                                | Re-encoded JPEG quality (1–100) for WebSocket transport                     |
+| `VIDEO_MAX_CLIENTS`     | `10`                                | Maximum simultaneous WebSocket clients per video stream                     |
+| `TAILSCALE_ENABLED`     | `false`                             | Enable Tailscale-specific network logging & CORS handling                   |
+| `LOG_LEVEL`             | `INFO`                              | Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`)                  |
+| `TELEMETRY_HZ`          | `5.0`                               | MAVLink telemetry broadcast rate over WebSocket in Hz                       |
+| `MAVLINK_HOSTS`         | `100.121.12.16,100.109.178.125`     | Comma-separated list of available MAVLink TCP host IPs in source dropdowns  |
+| `MAVLINK_DEFAULT_PORT`  | `5761`                              | Default MAVLink TCP port                                                    |
+| `SNAPSHOT_DIR`          | `snapshots`                         | Directory for saving server-side image snapshots                            |
+| `YOLO_ENABLED`          | `true`                              | Master toggle for backend YOLO object detection                             |
+| `YOLO_MODEL_PATH`       | `yolo11n.pt`                        | Path or filename of the YOLO model weights (auto-downloads `yolo11n.pt`)    |
+| `YOLO_CONF_THRESHOLD`   | `0.4`                               | Minimum confidence score to keep a detection box                            |
+| `YOLO_IOU_THRESHOLD`    | `0.45`                              | IoU threshold for Non-Maximum Suppression (NMS)                             |
+| `YOLO_MAX_FPS`          | `10.0`                              | Maximum YOLO inference rate in Hz (runs independently of video stream FPS)  |
+| `YOLO_DEVICE`           | `""`                                | Inference computation device: `""` (auto), `"cpu"`, or `"cuda:0"`          |
+| `YOLO_TARGET_CLASSES`   | `"person"`                          | Comma-separated target class names to detect (e.g. `"person,car,bus"`)       |
+
+---
+
+## Tailscale Setup
+
+Tailscale creates a secure overlay network so UAVs and the ground station can communicate seamlessly over the internet without port forwarding.
+
+```bash
+# 1. Install Tailscale on both UAV companion computer and Ground Station
+# 2. Authenticate both devices to the same Tailscale network
+tailscale up
+
+# 3. Find the Tailscale IP of the Ground Station
+tailscale ip -4
+
+# 4. In .env on the Ground Station, set:
+TAILSCALE_ENABLED=true
+
+# 5. UAV video sender targets the Tailscale IP of the Ground Station
+HOST = "100.x.x.x"
+```
+
+### Firewall Rules
+Ensure UDP video ports (e.g., 5000, 5005) and TCP web/MAVLink ports (8000, 5761) are open:
+
+```powershell
+# Windows PowerShell (Run as Administrator)
+netsh advfirewall firewall add rule name="GS_UDP" dir=in action=allow protocol=UDP localport=5000-5010
+netsh advfirewall firewall add rule name="GS_WEB" dir=in action=allow protocol=TCP localport=8000
+```
+
+---
+
+## Docker Deployment
+
+```bash
+# 1. Copy environment config
+cp .env.example .env
+
+# 2. Build and run container in background
+docker compose up -d --build
+
+# 3. View live container logs
+docker compose logs -f
+
+# 4. Stop container
+docker compose down
+```
+
+---
+
+## Troubleshooting
+
+| Symptom | Resolution |
+|---------|------------|
+| **"NO SIGNAL" / Blank Video** | Verify the UDP sender script is running and targeting the exact IP and port. Check OS firewall rules for UDP traffic. |
+| **MAVLink Disconnected** | Ensure the MAVLink TCP endpoint is reachable from the ground station. Check IP address and verify TCP port `5761` is open. |
+| **YOLO Not Detecting** | Check terminal logs to ensure `ultralytics` is installed and `YOLO_ENABLED=true`. Verify target class names match COCO class labels in `YOLO_TARGET_CLASSES`. |
+| **High CPU / Latency** | Reduce `VIDEO_FPS_LIMIT`, lower `VIDEO_JPEG_QUALITY`, or decrease `YOLO_MAX_FPS` in `.env`. |
+| **Port Already in Use** | Modify `WEB_PORT` or `UDP_PORT` inside `.env` or pass as environment variables. |

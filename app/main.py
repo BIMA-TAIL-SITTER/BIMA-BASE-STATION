@@ -144,6 +144,8 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
+from app.routers.peta import peta_router
+
 # ─── Routers ─────────────────────────────────────────────────────
 app.include_router(video.router)
 app.include_router(telemetry.router)
@@ -151,6 +153,7 @@ app.include_router(system.router)
 app.include_router(video.api_router)
 app.include_router(telemetry.api_router)
 app.include_router(system.api_router)
+app.include_router(peta_router)
 
 
 # ─── Root ─────────────────────────────────────────────────────────
@@ -190,6 +193,18 @@ async def index(request: Request):
             "version": int(time.time()),
         },
     )
+
+
+# ─── Config API (for decoupled Next.js frontend) ─────────────────
+@app.get("/api/config", tags=["system"])
+async def get_config(request: Request):
+    """Return server configuration for the decoupled Next.js frontend."""
+    return {
+        "ws_host": request.headers.get("host", f"{settings.HOST}:{settings.WEB_PORT}"),
+        "tailscale_ip": get_tailscale_ip(),
+        "yolo_enabled": settings.YOLO_ENABLED,
+        "web_port": settings.WEB_PORT,
+    }
 
 
 # ─── Health Check ─────────────────────────────────────────────────
