@@ -69,3 +69,16 @@ venv.bak/
 *.avi
 debug_frame_*.jpg
 yolo_debug.log
+
+# Runtime logs
+logs/
+*.log
+*.log.*
+
+# Runtime snapshot output
+snapshots/
+
+# Scratch/junk
+dump_trash/
+git_diff.txt
+bus.jpg

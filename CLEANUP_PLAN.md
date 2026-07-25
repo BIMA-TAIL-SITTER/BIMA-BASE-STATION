@@ -51,29 +51,46 @@ BIMA-BASE-STATION/
 
 ## Temuan & Rencana Perbaikan
 
+> **Revisi (dari user, setelah draft pertama):**
+> - `*.pt` **JANGAN** di-gitignore — model weight tetap perlu tracked biar gak ribet fetch manual (keputusan user, beda dari draft awal).
+> - `*.mbtiles` **JANGAN** di-gitignore — `data/peta_offline.mbtiles` itu data peta yang wajib ready begitu laptop lain clone repo. Kalau di-ignore, clone baru gak bisa langsung load peta offline. `snapshots/` dan `dump_trash/` tetap aman di-ignore.
+> - Klaim "Zustand" di README **BUKAN salah** — itu emang arsitektur yang dituju. Yang salah itu code-nya (`useGCSStore.tsx` masih pakai React Context, belum Zustand). Jadi bukan "perbaiki teks README", tapi **migrasi code React Context → Zustand** (lihat kategori D baru).
+> - Poin A5 lama (commit `TECHNICAL_DOCUMENT.md` + `swarm_integration_audit_plan.md`) — sudah di-push user ke branch lain, dihapus dari plan ini.
+
 ### A. Aman dieksekusi langsung (additive / non-destruktif terhadap data)
 
 | # | File | Masalah | Fix |
 |---|---|---|---|
-| 1 | `.gitignore` | Gak cover `*.pt`, `logs/`, `*.mbtiles`, `snapshots/`, `dump_trash/` | Tambah pattern-pattern itu (mbtiles pattern gak lepas `data/peta_offline.mbtiles` yang udah tracked) |
+| 1 | `.gitignore` | Gak cover `logs/`, `snapshots/`, `dump_trash/` | Tambah pattern-pattern itu SAJA. `*.pt` dan `*.mbtiles` sengaja TIDAK di-ignore (lihat revisi di atas) |
 | 2 | `requirements.txt` | `Pillow` hilang padahal `app/routers/peta.py` import `PIL` langsung → clean install rusak; ada baris duplikat komentar `ultralytics` | Tambah `Pillow`, hapus baris duplikat, perbaiki label "optional" di torch |
 | 3 | `.env.example` | Gak ada `MAVLINK_HOSTS`, `MAVLINK_DEFAULT_PORT`, blok `YOLO_*` | Sinkronkan dengan `app/config/settings.py` |
-| 4 | `README.md:31,95` | Klaim "Zustand" — implementasi asli `useGCSStore.tsx` pakai React Context+useState | Ganti teks jadi akurat |
-| 5 | `TECHNICAL_DOCUMENT.md`, `swarm_integration_audit_plan.md` | Untracked, tapi dokumen yang memang diinginkan | `git add` (staging aja, commit nunggu izin eksplisit) |
 
 ### B. Butuh eksekusi git yang eksplisit dikonfirmasi user dulu
 
 | # | Aksi | File | Catatan |
 |---|---|---|---|
-| 6 | `git rm --cached` (file tetap di disk) | `dump_trash/*`, `git_diff.txt`, `bus.jpg`, `testcuda.py`, `testingcuda.py`, `logs/ground_station.log(.1)` | Aman: gak direferensi app manapun, `logs/` dibuat ulang otomatis saat startup |
+| 6 | `git rm --cached` (file tetap di disk) | `dump_trash/*`, `git_diff.txt`, `bus.jpg`, `testcuda.py`, `testingcuda.py`, `logs/ground_station.log(.1)` | Aman: gak direferensi app manapun, `logs/` dibuat ulang otomatis saat startup. `*.pt` dan `*.mbtiles` TIDAK termasuk di sini — tetap tracked |
 
 ### C. Keputusan terbuka — JANGAN diasumsikan, tanya user satu-satu sebelum eksekusi
 
 1. **`app/static/` + `app/templates/`** (fallback UI lama) — hapus (Next.js udah primary) atau simpan (fallback darurat)?
-2. **`best.pt`** (6.2MB, gak ada referensi code, cuma disebut "custom trained model" di dokumen) — untrack-tapi-simpan-di-disk, atau hapus total?
-3. **`yolov8n.pt`** — cuma dipakai stray script yang bakal dihapus di langkah B6. Aman dihapus total, tapi tetap konfirmasi.
+2. **`best.pt`** (6.2MB, gak ada referensi code, cuma disebut "custom trained model" di dokumen) — tetap tracked (sesuai revisi di atas), tapi masih perlu diputuskan: dipakai beneran atau boleh dihapus dari repo?
+3. **`yolov8n.pt`** — cuma dipakai stray script yang bakal dihapus di langkah B6. Tetap tracked, tapi worth ditanya apakah masih relevan disimpan.
 4. **`app/unduh_ubin_awal.py`** — hapus (dead code, duplikat logic `unduh_ubin_satelit_eksternal` di `peta.py`) atau simpan sebagai CLI tool yang didokumentasikan?
 5. **6 dokumen markdown root yang overlap** — konsolidasi ke folder `docs/` sekarang, atau ditunda?
+
+### D. Migrasi kode — React Context → Zustand (belum dieksekusi, perlu konfirmasi scope dulu)
+
+`gcs-client/src/hooks/useGCSStore.tsx` saat ini pakai `createContext` + `useState` + `useCallback` manual (`GCSProvider` wrap seluruh app di `layout.tsx`, konsumen panggil `useGCSStore()` via `useContext`). README/TECHNICAL_DOCUMENT menyebut Zustand sebagai arsitektur yang dituju — code perlu disesuaikan.
+
+Langkah migrasi (draft, belum jalan):
+1. `npm install zustand` di `gcs-client/` (`package.json` saat ini belum ada `zustand` sama sekali).
+2. Rewrite `useGCSStore.tsx`: ganti `createContext`/`GCSProvider` jadi `create<GCSStore>()(...)` dari `zustand` — state + actions gabung dalam satu store, localStorage sync (`bima_gcs_uav_1/2`, `bima_gcs_configured`) tetap dipertahankan (bisa pakai `zustand/middleware persist` atau manual seperti sekarang).
+3. Grep semua pemakai `useGCSStore()` / `GCSProvider` (`layout.tsx` dan semua komponen yang import dari `@/hooks/useGCSStore`) — pastikan API pemanggilan tetap kompatibel (Zustand hook dipanggil sama seperti custom hook, tapi tanpa perlu `<GCSProvider>` wrapper — `layout.tsx` perlu diubah untuk drop provider wrapper).
+4. Hapus `GCSProvider` dari `layout.tsx` setelah migrasi (Zustand gak butuh context provider).
+5. Test: `npm run dev`, jalanin golden path (config awal, connect UAV, toggle theme, toggle YOLO) — pastikan state persist ke localStorage tetap jalan sama seperti sebelumnya.
+
+**Catatan:** ini refactor lintas-file (bukan quick fix), disarankan dieksekusi sebagai task tersendiri setelah kategori A/B/C selesai, bukan digabung ke "cleanup cepat".
 
 ---
 
