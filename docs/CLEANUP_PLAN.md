@@ -31,7 +31,7 @@ BIMA-BASE-STATION/
 │   ├── components/{header,map,modal,telemetry,video}/...
 │   ├── hooks/{useGCSStore.tsx,useWebSocket.ts}   # useGCSStore = React Context+useState, BUKAN Zustand
 │   └── types/{telemetry.ts,video.ts}
-├── data/peta_offline.mbtiles     # 38MB, DATA ASLI — bukan clutter
+├── data/peta_offline.mbtiles     # 38MB+, SQLite auto-cache tile — terus tumbuh saat dipakai, akan di-gitignore
 ├── logs/, snapshots/             # runtime output, tracked di git (harusnya di-ignore)
 ├── dump_trash/                   # junk drawer tracked di git: cekkk.jpg, drone.pt, simgeo.py, testmav.py
 ├── best.pt, yolo11n.pt, yolov8n.pt   # model weights tracked di git di root
@@ -53,15 +53,19 @@ BIMA-BASE-STATION/
 
 > **Revisi (dari user, setelah draft pertama):**
 > - `*.pt` **JANGAN** di-gitignore — model weight tetap perlu tracked biar gak ribet fetch manual (keputusan user, beda dari draft awal).
-> - `*.mbtiles` **JANGAN** di-gitignore — `data/peta_offline.mbtiles` itu data peta yang wajib ready begitu laptop lain clone repo. Kalau di-ignore, clone baru gak bisa langsung load peta offline. `snapshots/` dan `dump_trash/` tetap aman di-ignore.
 > - Klaim "Zustand" di README **BUKAN salah** — itu emang arsitektur yang dituju. Yang salah itu code-nya (`useGCSStore.tsx` masih pakai React Context, belum Zustand). Jadi bukan "perbaiki teks README", tapi **migrasi code React Context → Zustand** (lihat kategori D baru).
 > - Poin A5 lama (commit `TECHNICAL_DOCUMENT.md` + `swarm_integration_audit_plan.md`) — sudah di-push user ke branch lain, dihapus dari plan ini.
+>
+> **Revisi kedua — `data/peta_offline.mbtiles` (setelah investigasi lebih lanjut):**
+> Ternyata file ini **BUKAN data statis** — dia SQLite database yang terus nambah/berubah tiap kali user browsing area peta baru (`app/routers/peta.py`: `dapatkan_potongan_gambar_satelit()` → cache-miss → `unduh_ubin_satelit_eksternal()` download dari Esri → `simpan_ubin_satelit_ke_basis_data()` langsung `INSERT OR REPLACE` + `commit()` ke file itu juga). Jadi tiap kali main-map, file berubah (`modified` terus di `git status`) — commit ke git jadi berat & terus-menerus kalau tetap tracked.
+>
+> Keputusan baru (user pilih **opsi 2**): **`*.mbtiles` DI-GITIGNORE**, file tetap dipertahankan di disk masing-masing user, TIDAK didistribusikan lewat git. Alasan ini gak bertentangan sama kebutuhan "clone baru bisa load peta": app ini punya **auto-cache self-heal** built-in — begitu ada internet sekali, tile yang belum ada di database bakal otomatis di-download & disimpan sendiri (lihat alur di atas). Jadi clone baru TETAP bisa pakai peta normal asal ada koneksi internet minimal sekali; yang gak bisa didapat otomatis cuma "pre-seeded offline-ready dari detik pertama" — itu perlu dibagikan manual di luar git (USB/shared-drive/Tailscale file transfer), bukan lewat commit.
 
 ### A. Aman dieksekusi langsung (additive / non-destruktif terhadap data)
 
 | # | File | Masalah | Fix |
 |---|---|---|---|
-| 1 | `.gitignore` | Gak cover `logs/`, `snapshots/`, `dump_trash/` | Tambah pattern-pattern itu SAJA. `*.pt` dan `*.mbtiles` sengaja TIDAK di-ignore (lihat revisi di atas) |
+| 1 | `.gitignore` | Gak cover `logs/`, `snapshots/`, `dump_trash/`, `*.mbtiles` | Tambah pattern-pattern itu. `*.pt` sengaja TIDAK di-ignore (lihat revisi pertama); `*.mbtiles` SEKARANG di-ignore (lihat revisi kedua) |
 | 2 | `requirements.txt` | `Pillow` hilang padahal `app/routers/peta.py` import `PIL` langsung → clean install rusak; ada baris duplikat komentar `ultralytics` | Tambah `Pillow`, hapus baris duplikat, perbaiki label "optional" di torch |
 | 3 | `.env.example` | Gak ada `MAVLINK_HOSTS`, `MAVLINK_DEFAULT_PORT`, blok `YOLO_*` | Sinkronkan dengan `app/config/settings.py` |
 
@@ -69,7 +73,8 @@ BIMA-BASE-STATION/
 
 | # | Aksi | File | Catatan |
 |---|---|---|---|
-| 6 | `git rm --cached` (file tetap di disk) | `dump_trash/*`, `git_diff.txt`, `bus.jpg`, `testcuda.py`, `testingcuda.py`, `logs/ground_station.log(.1)` | Aman: gak direferensi app manapun, `logs/` dibuat ulang otomatis saat startup. `*.pt` dan `*.mbtiles` TIDAK termasuk di sini — tetap tracked |
+| 6 | `git rm --cached` (file tetap di disk) | `dump_trash/*`, `git_diff.txt`, `bus.jpg`, `testcuda.py`, `testingcuda.py`, `logs/ground_station.log(.1)` | Aman: gak direferensi app manapun, `logs/` dibuat ulang otomatis saat startup. `*.pt` TIDAK termasuk di sini — tetap tracked |
+| 7 | `git rm --cached data/peta_offline.mbtiles` (file tetap di disk) | `data/peta_offline.mbtiles` | Lihat revisi kedua — file ini terus berubah tiap dipakai, gak cocok terus-menerus tracked di git. Setelah untrack, rekan yang belum punya data lokal perlu copy manual (bukan git) kalau butuh versi offline-ready langsung |
 
 ### C. Keputusan terbuka — JANGAN diasumsikan, tanya user satu-satu sebelum eksekusi
 

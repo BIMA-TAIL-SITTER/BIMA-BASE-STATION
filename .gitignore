@@ -82,3 +82,9 @@ snapshots/
 dump_trash/
 git_diff.txt
 bus.jpg
+testcuda.py
+testingcuda.py
+
+# Local-only scratch docs (keep on disk, never push)
+docs/fix/
+data/

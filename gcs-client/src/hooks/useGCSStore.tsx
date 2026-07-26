@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, type ReactNode, useEffect } from "react";
 import type { UAVConnectionConfig, GCSConfig, ThemeMode } from "@/types/telemetry";
 
 interface GCSStoreState {
@@ -36,22 +36,20 @@ export function GCSProvider({ children }: { children: ReactNode }) {
   const [yoloEnabled, setYoloEnabledState] = useState(true);
 
   // Auto-load cached connection config on launch
-  useState(() => {
-    if (typeof window !== "undefined") {
-      const configured = localStorage.getItem("bima_gcs_configured");
-      if (configured === "true") {
-        const c1 = localStorage.getItem("bima_gcs_uav_1");
-        const c2 = localStorage.getItem("bima_gcs_uav_2");
-        if (c1) {
-          try { setUav1(JSON.parse(c1)); } catch {}
-        }
-        if (c2) {
-          try { setUav2(JSON.parse(c2)); } catch {}
-        }
-        setIsConfigured(true);
-      }
+  useEffect(() => {
+  const configured = localStorage.getItem("bima_gcs_configured");
+  if (configured === "true") {
+    const c1 = localStorage.getItem("bima_gcs_uav_1");
+    const c2 = localStorage.getItem("bima_gcs_uav_2");
+    if (c1) {
+      try { setUav1(JSON.parse(c1)); } catch {}
     }
-  });
+    if (c2) {
+      try { setUav2(JSON.parse(c2)); } catch {}
+    }
+    setIsConfigured(true);
+  }
+}, []);
 
   const setConfig = useCallback((c: GCSConfig) => {
     setConfigState(c);
