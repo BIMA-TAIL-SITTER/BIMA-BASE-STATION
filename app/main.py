@@ -7,13 +7,10 @@ import asyncio
 import logging
 import logging.handlers
 import os
-import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
 from app.config.settings import settings
 from app.services.video.manager import MultiStreamManager
@@ -140,10 +137,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─── Static Files & Templates ────────────────────────────────────
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="app/templates")
-
 from app.routers.peta import peta_router
 
 # ─── Routers ─────────────────────────────────────────────────────
@@ -180,20 +173,6 @@ def get_tailscale_ip():
         return ip
     except Exception:
         return "127.0.0.1"
-
-@app.get("/", include_in_schema=False)
-async def index(request: Request):
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "title": "UAV Ground Station",
-            "ws_host": request.headers.get("host", f"{settings.HOST}:{settings.WEB_PORT}"),
-            "tailscale_ip": get_tailscale_ip(),
-            "version": int(time.time()),
-        },
-    )
-
 
 # ─── Config API (for decoupled Next.js frontend) ─────────────────
 @app.get("/api/config", tags=["system"])

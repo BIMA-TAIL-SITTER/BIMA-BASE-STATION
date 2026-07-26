@@ -1,6 +1,32 @@
 """
-Skrip Pengunduh Ubin Satelit Awal ke Basis Data MBTiles
-Mengunduh citra satelit Esri World Imagery di sekitar koordinat operasi dan menyimpannya permanen ke MBTiles.
+CLI Tool: Preload Ubin Satelit ke MBTiles Offline (Persiapan Deployment Lapangan)
+
+Skrip standalone (BUKAN dipanggil otomatis oleh aplikasi) untuk mengunduh citra satelit
+Esri World Imagery di sekitar satu koordinat pusat, lalu menyimpannya ke
+`data/peta_offline.mbtiles`. Tujuannya: preload cache peta SEBELUM berangkat ke lokasi
+survey/terbang, supaya operator lapangan tidak bergantung pada auto-download on-demand
+milik `app/routers/peta.py` (yang butuh internet real-time saat drone terbang).
+
+Cara pakai:
+    1. Edit `posisi_lintang_pusat` dan `posisi_bujur_pusat` di bawah, sesuai koordinat
+       pusat lokasi survey yang akan dituju.
+    2. Jalankan dari root repo (pastikan working directory di root project, karena
+       path `data/peta_offline.mbtiles` relatif terhadap cwd):
+           python -m app.unduh_ubin_awal
+       atau:
+           python app/unduh_ubin_awal.py
+    3. Skrip akan mengunduh ubin level zoom 13-14-15 dalam radius 2 ubin di sekeliling
+       koordinat pusat, dan menyimpannya ke MBTiles lokal. Tile yang sudah ada di
+       database (hasil pemakaian sebelumnya) otomatis dilewati (tidak diunduh ulang).
+    4. Setelah selesai, salin `data/peta_offline.mbtiles` ke laptop lain di tim
+       (USB / shared-drive / Tailscale file transfer) jika mereka juga akan bertugas
+       di lokasi yang sama tanpa akses internet — lihat catatan distribusi cache di
+       `docs/CLEANUP_PLAN.md`.
+
+Catatan: file ini di-gitignore (lihat revisi kedua di `docs/CLEANUP_PLAN.md`) karena
+isinya berubah terus tiap dipakai — jangan andalkan `git pull` untuk menyamakan cache
+peta antar anggota tim.
+
 Wajib menggunakan variabel deskriptif berbahasa Indonesia.
 """
 

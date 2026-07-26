@@ -60,6 +60,10 @@ BIMA-BASE-STATION/
 > Ternyata file ini **BUKAN data statis** — dia SQLite database yang terus nambah/berubah tiap kali user browsing area peta baru (`app/routers/peta.py`: `dapatkan_potongan_gambar_satelit()` → cache-miss → `unduh_ubin_satelit_eksternal()` download dari Esri → `simpan_ubin_satelit_ke_basis_data()` langsung `INSERT OR REPLACE` + `commit()` ke file itu juga). Jadi tiap kali main-map, file berubah (`modified` terus di `git status`) — commit ke git jadi berat & terus-menerus kalau tetap tracked.
 >
 > Keputusan baru (user pilih **opsi 2**): **`*.mbtiles` DI-GITIGNORE**, file tetap dipertahankan di disk masing-masing user, TIDAK didistribusikan lewat git. Alasan ini gak bertentangan sama kebutuhan "clone baru bisa load peta": app ini punya **auto-cache self-heal** built-in — begitu ada internet sekali, tile yang belum ada di database bakal otomatis di-download & disimpan sendiri (lihat alur di atas). Jadi clone baru TETAP bisa pakai peta normal asal ada koneksi internet minimal sekali; yang gak bisa didapat otomatis cuma "pre-seeded offline-ready dari detik pertama" — itu perlu dibagikan manual di luar git (USB/shared-drive/Tailscale file transfer), bukan lewat commit.
+>
+> **Verifikasi asal data (biar gak ragu):** Dicek langsung ke code — semua isi `data/peta_offline.mbtiles` 100% berasal dari server publik Esri World Imagery (`server.arcgisonline.com`), bukan data privat/manual. Seed awal di `app/unduh_ubin_awal.py:30-31` pakai koordinat hardcode `-7.7956, 110.3695`; tile tambahan di-fetch on-demand lewat `app/routers/peta.py:87-98`. Jadi datanya bisa di-generate ulang kapan aja asal ada internet — aman di-gitignore, gak ada yang hilang permanen.
+>
+> **⚠️ Catatan penting buat deployment lapangan:** Kalau file `.mbtiles` di laptop tertentu udah ke-cache tile buat lokasi terbang/survey yang SPESIFIK (bukan cuma area seed default), cache itu SEKARANG cuma ada di laptop itu — gak lagi otomatis kebagi ke rekan lain lewat `git clone` (karena di-gitignore). Kalau mau bawa tim ke lokasi survey yang sama dan di sana **gak ada internet sama sekali**, laptop yang belum punya cache buat area itu bakal cuma dapet placeholder abu-abu (`buat_gambar_ubin_pengganti`), bukan peta beneran. **Wajib**: sebelum berangkat ke lokasi tanpa internet, copy manual `data/peta_offline.mbtiles` dari laptop yang udah punya cache lengkap ke laptop-laptop tim lainnya (USB / shared-drive / Tailscale file transfer) — jangan andelin git buat distribusi ini.
 
 ### A. Aman dieksekusi langsung (additive / non-destruktif terhadap data)
 
@@ -76,13 +80,13 @@ BIMA-BASE-STATION/
 | 6 | `git rm --cached` (file tetap di disk) | `dump_trash/*`, `git_diff.txt`, `bus.jpg`, `testcuda.py`, `testingcuda.py`, `logs/ground_station.log(.1)` | Aman: gak direferensi app manapun, `logs/` dibuat ulang otomatis saat startup. `*.pt` TIDAK termasuk di sini — tetap tracked |
 | 7 | `git rm --cached data/peta_offline.mbtiles` (file tetap di disk) | `data/peta_offline.mbtiles` | Lihat revisi kedua — file ini terus berubah tiap dipakai, gak cocok terus-menerus tracked di git. Setelah untrack, rekan yang belum punya data lokal perlu copy manual (bukan git) kalau butuh versi offline-ready langsung |
 
-### C. Keputusan terbuka — JANGAN diasumsikan, tanya user satu-satu sebelum eksekusi
+### C. Keputusan terbuka — ✅ SUDAH TERJAWAB
 
-1. **`app/static/` + `app/templates/`** (fallback UI lama) — hapus (Next.js udah primary) atau simpan (fallback darurat)?
-2. **`best.pt`** (6.2MB, gak ada referensi code, cuma disebut "custom trained model" di dokumen) — tetap tracked (sesuai revisi di atas), tapi masih perlu diputuskan: dipakai beneran atau boleh dihapus dari repo?
-3. **`yolov8n.pt`** — cuma dipakai stray script yang bakal dihapus di langkah B6. Tetap tracked, tapi worth ditanya apakah masih relevan disimpan.
-4. **`app/unduh_ubin_awal.py`** — hapus (dead code, duplikat logic `unduh_ubin_satelit_eksternal` di `peta.py`) atau simpan sebagai CLI tool yang didokumentasikan?
-5. **6 dokumen markdown root yang overlap** — konsolidasi ke folder `docs/` sekarang, atau ditunda?
+1. **`app/static/` + `app/templates/`** (fallback UI lama) — ✅ **Dieksekusi**. `app/static/` dan `app/templates/` dihapus, `app/main.py` udah dibersihin (import `StaticFiles`/`Jinja2Templates`/`time`, mount block, route `GET /` semua dicabut; `get_tailscale_ip()` dan `/api/config` tetap utuh). Diverifikasi manual: `/health` dan `/api/config` normal, `/` sekarang 404 (expected). Draft asli ada di `docs/fix/remove-legacy-static-ui.md`.
+2. **`best.pt`** (6.2MB, gak ada referensi code) — ✅ **Tetap tracked**, no action.
+3. **`yolov8n.pt`** — ✅ **Tetap tracked**, no action.
+4. **`app/unduh_ubin_awal.py`** — ✅ **Dieksekusi**. Docstring diganti jadi dokumentasi CLI tool lengkap (cara pakai, tujuan preload lapangan). Logic inti gak berubah. Draft asli ada di `docs/fix/unduh-ubin-awal-cli-tool.md`.
+5. **6 dokumen markdown root yang overlap** — ✅ **Selesai** (dikonfirmasi ulang: 5 file non-README udah dipindah ke `docs/` oleh user, `README.md` tetap di root).
 
 ### D. Migrasi kode — React Context → Zustand (belum dieksekusi, perlu konfirmasi scope dulu)
 
