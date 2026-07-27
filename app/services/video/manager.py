@@ -187,7 +187,7 @@ class MultiStreamManager:
             await self._maybe_broadcast_detections(port)
 
     def get_status(self) -> dict:
-        status = {"streams": {}}
+        status = {"streams": {}, "telemetry_streams": {}}
         for port, receiver in self._receivers.items():
             stats = receiver.get_stats()
             status["streams"][port] = {
@@ -198,9 +198,15 @@ class MultiStreamManager:
                 "sender": stats["last_sender"],
                 "avg_packet_bytes": stats["avg_packet_size"],
             }
+        for json_port, telem_recv in self._telemetry_receivers.items():
+            status["telemetry_streams"][str(json_port)] = {
+                "latest_data": telem_recv.latest_data,
+                "has_data": bool(telem_recv.latest_data),
+            }
         if self._detector is not None:
             status["yolo_enabled"] = self._detector.is_enabled
         return status
+
 
     # ─── Internals ────────────────────────────────────────────────
 

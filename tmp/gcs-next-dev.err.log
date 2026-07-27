@@ -1,0 +1,8 @@
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3000
+- PID:          33512
+- Dir:          C:\Users\L O Q\Documents\BIMA\BIMA-BASE-STATION\gcs_js
+- Log:          .next\dev\logs\next-development.log
+
+Run taskkill /PID 33512 /F to stop it.

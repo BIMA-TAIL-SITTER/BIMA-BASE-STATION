@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Blue UAV">
+  <path fill="#56B4D3" d="M32 3c-2 0-3.4 2.2-4 5.3l-3.2 16.2L7 31.2c-2.5.9-4 2.8-4 5v3.1l20.1-2.8-1.5 13.9-6.4 4.1V58l10.8-2 4.2 5h3.6l4.2-5 10.8 2v-3.5l-6.4-4.1-1.5-13.9L61 39.3v-3.1c0-2.2-1.5-4.1-4-5l-17.8-6.7L36 8.3C35.4 5.2 34 3 32 3Z"/>
+  <path fill="none" stroke="#F1F1EF" stroke-width="1.5" d="M32 8v45M23.1 36.5 32 34l8.9 2.5"/>
+</svg>

@@ -72,6 +72,9 @@ class TelemetryPacket:
     current_waypoint: int = 0
     total_waypoints: int = 0
     distance_to_wp_m: float = 0.0
+    target_waypoint_lat: Optional[float] = None
+    target_waypoint_lon: Optional[float] = None
+    home_distance_m: Optional[float] = None
 
     # GPS
     gps_fix: int = 3          # 0=no fix, 2=2D, 3=3D

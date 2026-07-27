@@ -47,6 +47,18 @@ class MissionItem:
     z: float  # altitude or local z
 
 
+@dataclass
+class MissionTransferResult:
+    """Result returned by a complete MAVLink mission transaction."""
+
+    success: bool
+    total: int
+    transferred: int
+    result_code: Optional[int]
+    result_label: str
+    message: str
+
+
 # ─── Abstract Interfaces ─────────────────────────────────────────────────────
 
 class MAVLinkConnection(abc.ABC):
@@ -94,6 +106,10 @@ class MAVLinkConnection(abc.ABC):
         timeout:
             Maximum seconds to wait (None = no timeout).
         """
+
+    @abc.abstractmethod
+    def recv_msg(self) -> Optional[Any]:
+        """Receive the next available message without blocking."""
 
 
 class MAVLinkTelemetryBridge(abc.ABC):

@@ -1,0 +1,137 @@
+{
+  "ok": false,
+  "frames_root": "C:\\Users\\L O Q\\Documents\\BIMA\\BIMA-BASE-STATION\\tmp\\july-v2-upgrade\\frames",
+  "states": [
+    "idle",
+    "running-right",
+    "running-left",
+    "waving",
+    "jumping",
+    "failed",
+    "waiting",
+    "running",
+    "review"
+  ],
+  "errors": [
+    "expected 6 frame files for idle, found 0",
+    "expected 8 frame files for running-right, found 0",
+    "expected 8 frame files for running-left, found 0",
+    "expected 4 frame files for waving, found 0",
+    "expected 5 frame files for jumping, found 0",
+    "expected 8 frame files for failed, found 0",
+    "expected 6 frame files for waiting, found 0",
+    "expected 6 frame files for running, found 0",
+    "expected 6 frame files for review, found 0"
+  ],
+  "warnings": [],
+  "rows": [
+    {
+      "state": "idle",
+      "expected_frames": 6,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 6 frame files for idle, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "running-right",
+      "expected_frames": 8,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 8 frame files for running-right, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "running-left",
+      "expected_frames": 8,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 8 frame files for running-left, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "waving",
+      "expected_frames": 4,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 4 frame files for waving, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "jumping",
+      "expected_frames": 5,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 5 frame files for jumping, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "failed",
+      "expected_frames": 8,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 8 frame files for failed, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "waiting",
+      "expected_frames": 6,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 6 frame files for waiting, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "running",
+      "expected_frames": 6,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 6 frame files for running, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    },
+    {
+      "state": "review",
+      "expected_frames": 6,
+      "actual_frames": 0,
+      "extraction_method": null,
+      "ok": false,
+      "errors": [
+        "expected 6 frame files for review, found 0"
+      ],
+      "warnings": [],
+      "frames": []
+    }
+  ]
+}

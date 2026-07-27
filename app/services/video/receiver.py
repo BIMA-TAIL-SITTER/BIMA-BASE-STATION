@@ -225,8 +225,11 @@ class VideoReceiver:
                 logger.warning("UDP recv error: %s", exc)
                 continue
 
-            # ── Pure JPEG packet (no header) ──────────────────────
-            jpeg_data = packet
+            # ── Check for 4-byte length header or pure JPEG packet ──
+            if len(packet) > 4 and packet[0:2] != b'\xff\xd8' and packet[4:6] == b'\xff\xd8':
+                jpeg_data = packet[4:]
+            else:
+                jpeg_data = packet
             declared_size = len(packet)
 
             # ── Decode JPEG ───────────────────────────────────────

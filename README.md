@@ -205,7 +205,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```bash
 # 1. Navigate to the gcs-client directory
 cd ground_station/gcs-client
-
+ 
 # 2. Install Node.js dependencies
 npm install
 

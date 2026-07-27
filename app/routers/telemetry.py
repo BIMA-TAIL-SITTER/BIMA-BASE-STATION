@@ -8,7 +8,8 @@ telemetry_generator_instance and ws_manager_instance are injected by main.py.
 
 import logging
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Path, WebSocket, WebSocketDisconnect
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ router = APIRouter(prefix="/ws", tags=["telemetry"])
 # Injected by main.py lifespan
 telemetry_generator_instance = None
 ws_manager_instance = None
+mission_manager_instance = None
 
 
 @router.websocket("/telemetry")
@@ -65,10 +67,8 @@ async def get_sources():
         "default_port": settings.MAVLINK_DEFAULT_PORT
     }
 
-from pydantic import BaseModel
-
 class ConnectRequest(BaseModel):
-    slot: int
+    slot: int = Field(ge=1, le=4)
     ip: str
     port: int
 
@@ -80,7 +80,7 @@ async def connect_mavlink(req: ConnectRequest):
     return {"success": success}
 
 class DisconnectRequest(BaseModel):
-    slot: int
+    slot: int = Field(ge=1, le=4)
 
 @api_router.post("/disconnect")
 async def disconnect_mavlink(req: DisconnectRequest):
@@ -94,4 +94,33 @@ async def get_status():
     if telemetry_generator_instance is None:
         return {"error": "not initialised"}
     return telemetry_generator_instance.get_status()
+
+
+@api_router.get("/udp_status")
+async def get_udp_status():
+    """Return latest JSON data received across all active UdpTelemetryReceivers (e.g. port 1001)."""
+    from app.routers.video import video_manager_instance
+    if video_manager_instance is None:
+        return {"error": "video_manager not initialised"}
+    status = {}
+    for json_port, telem_recv in video_manager_instance._telemetry_receivers.items():
+        status[str(json_port)] = {
+            "listening": telem_recv._running.is_set(),
+            "has_data": bool(telem_recv.latest_data),
+            "latest_data": telem_recv.latest_data,
+        }
+    return {"udp_telemetry_receivers": status}
+
+
+@api_router.get("/mission/{slot}")
+async def get_mission(slot: int = Path(ge=1, le=4)):
+    """Download and return the flight mission waypoints for the given slot."""
+    if mission_manager_instance is None:
+        return {"error": "mission manager not initialised"}
+    try:
+        waypoints = await mission_manager_instance.download_mission(slot)
+        return {"waypoints": waypoints}
+    except Exception as exc:
+        logger.error("Mission download failed for slot %d: %s", slot, exc)
+        return {"error": str(exc), "waypoints": []}
 

@@ -3,6 +3,7 @@ Ground Station — FastAPI Application Entry Point
 Initializes all services and registers routers.
 """
 
+
 import asyncio
 import logging
 import logging.handlers
@@ -17,10 +18,13 @@ from fastapi.templating import Jinja2Templates
 
 from app.config.settings import settings
 from app.services.video.manager import MultiStreamManager
+from app.services.mavlink.command_bridge import MavlinkCommandBridge
+from app.services.mavlink.message_router import MavlinkMessageRouter
+from app.services.mavlink.param_bridge import MavlinkParamBridge
 from app.services.mavlink.telemetry_bridge import MavlinkTelemetryBridge
 from app.services.websocket.manager import WebSocketManager
 from app.services.yolo.detector import YOLODetector
-from app.routers import video, telemetry, system
+from app.routers import control, video, telemetry, system
 
 # ─── Logging Setup ────────────────────────────────────────────────
 os.makedirs("logs", exist_ok=True)
@@ -70,6 +74,23 @@ video_manager = MultiStreamManager(
     detector=yolo_detector,
 )
 telemetry_generator = MavlinkTelemetryBridge(ws_manager=ws_manager)
+message_router = MavlinkMessageRouter(telemetry_generator.connections)
+command_bridge = MavlinkCommandBridge(
+    connections=telemetry_generator.connections,
+    message_router=message_router,
+    ws_manager=ws_manager,
+    mission_cache_sink=telemetry_generator.set_mission,
+)
+param_bridge = MavlinkParamBridge(
+    connections=telemetry_generator.connections,
+    message_router=message_router,
+    ws_manager=ws_manager,
+)
+message_router.register_handler({"*"}, telemetry_generator.handle_message)
+message_router.register_handler(
+    {"AUTOPILOT_VERSION", "HEARTBEAT", "PARAM_VALUE"},
+    param_bridge.handle_message,
+)
 
 
 # ─── Lifespan ─────────────────────────────────────────────────────
@@ -91,6 +112,10 @@ async def lifespan(app: FastAPI):
     video.yolo_detector_instance = yolo_detector
     telemetry.telemetry_generator_instance = telemetry_generator
     telemetry.ws_manager_instance = ws_manager
+    telemetry.mission_manager_instance = command_bridge
+    control.command_bridge_instance = command_bridge
+    control.param_bridge_instance = param_bridge
+    control.ws_manager_instance = ws_manager
     system.ws_manager_instance = ws_manager
 
     # Start YOLO detector in its own background thread (blocking inference)
@@ -101,7 +126,8 @@ async def lifespan(app: FastAPI):
         else:
             logger.warning("YOLODetector requested but unavailable — check ultralytics install")
 
-    # Start async broadcast loops
+    # Start the single MAVLink receiver before telemetry broadcasting.
+    await message_router.start()
     telemetry_task = asyncio.create_task(telemetry_generator.broadcast_loop())
 
     logger.info("Ground Station ready — open http://%s:%d", settings.HOST, settings.WEB_PORT)
@@ -112,6 +138,8 @@ async def lifespan(app: FastAPI):
     logger.info("Ground Station shutting down…")
     telemetry_task.cancel()
     video_manager.stop_all()
+    await param_bridge.stop()
+    await message_router.stop()
     if hasattr(telemetry_generator, 'stop'):
         await telemetry_generator.stop()
     if yolo_detector is not None:
@@ -150,9 +178,11 @@ from app.routers.peta import peta_router
 app.include_router(video.router)
 app.include_router(telemetry.router)
 app.include_router(system.router)
+app.include_router(control.router)
 app.include_router(video.api_router)
 app.include_router(telemetry.api_router)
 app.include_router(system.api_router)
+app.include_router(control.api_router)
 app.include_router(peta_router)
 
 

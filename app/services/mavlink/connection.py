@@ -20,7 +20,7 @@ class MavlinkTCPConnection(MAVLinkConnection):
     def __init__(self, ip: str, port: int) -> None:
         self.ip = ip
         self.port = port
-        self.conn_str = f"tcp:{ip}:{port}"
+        self.conn_str = f"udp:{ip}:{port}"
         self._master: Optional[mavutil.mavfile] = None
 
     async def connect(self) -> None:
@@ -74,6 +74,11 @@ class MavlinkTCPConnection(MAVLinkConnection):
 
     def is_connected(self) -> bool:
         return self._master is not None
+
+    @property
+    def master(self) -> Optional[mavutil.mavfile]:
+        """Expose the native pymavlink connection for protocol send helpers."""
+        return self._master
 
     async def send_message(self, message: Any) -> None:
         if self._master:
