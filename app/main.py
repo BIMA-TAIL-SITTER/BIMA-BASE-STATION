@@ -23,8 +23,28 @@ from app.services.mavlink.message_router import MavlinkMessageRouter
 from app.services.mavlink.param_bridge import MavlinkParamBridge
 from app.services.mavlink.telemetry_bridge import MavlinkTelemetryBridge
 from app.services.websocket.manager import WebSocketManager
-from app.services.yolo.detector import YOLODetector
 from app.routers import control, video, telemetry, system
+
+# ─── Logging Setup ────────────────────────────────────────────────
+os.makedirs("logs", exist_ok=True)
+
+_log_formatter = logging.Formatter(
+    fmt="%(asctime)s [%(levelname)-8s] %(name)s — %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+_file_handler = logging.handlers.RotatingFileHandler(
+    filename="logs/ground_station.log",
+    maxBytes=10 * 1024 * 1024,  # 10 MB
+    backupCount=5,
+    encoding="utf-8",
+)
+_file_handler.setFormatter(_log_formatter)
+
+_console_handler = logging.StreamHandler()
+_console_handler.setFormatter(_log_formatter)
+
+_root_logger = logging.getLogger()
 
 # ─── Logging Setup ────────────────────────────────────────────────
 os.makedirs("logs", exist_ok=True)
@@ -55,23 +75,9 @@ logger = logging.getLogger(__name__)
 # ─── Global Service Instances ──────────────────────────────────────
 ws_manager = WebSocketManager()
 
-# YOLO detector — disabled automatically if `ultralytics` isn't installed
-# or YOLO_ENABLED=false in settings. Reads frames straight from the
-# receiver, independent of the video broadcast loop.
-yolo_detector = YOLODetector(
-    ws_manager=ws_manager,
-    model_path=settings.YOLO_MODEL_PATH,
-    conf_threshold=settings.YOLO_CONF_THRESHOLD,
-    iou_threshold=settings.YOLO_IOU_THRESHOLD,
-    max_fps=settings.YOLO_MAX_FPS,
-    device=settings.YOLO_DEVICE or None,
-    target_classes=settings.yolo_target_classes,
-) if settings.YOLO_ENABLED else None
-
 video_manager = MultiStreamManager(
     ws_manager=ws_manager,
     fps_limit=settings.VIDEO_FPS_LIMIT,
-    detector=yolo_detector,
 )
 telemetry_generator = MavlinkTelemetryBridge(ws_manager=ws_manager)
 message_router = MavlinkMessageRouter(telemetry_generator.connections)
@@ -101,7 +107,6 @@ async def lifespan(app: FastAPI):
     logger.info("  UAV Ground Station starting up")
     logger.info("  Web  port : %d", settings.WEB_PORT)
     logger.info("  Host      : %s", settings.HOST)
-    logger.info("  YOLO      : %s", "enabled" if settings.YOLO_ENABLED else "disabled")
     logger.info("═══════════════════════════════════════════")
 
     os.makedirs("snapshots", exist_ok=True)
@@ -109,7 +114,6 @@ async def lifespan(app: FastAPI):
     # Inject service references into routers so they can be accessed
     video.video_manager_instance = video_manager
     video.ws_manager_instance = ws_manager
-    video.yolo_detector_instance = yolo_detector
     telemetry.telemetry_generator_instance = telemetry_generator
     telemetry.ws_manager_instance = ws_manager
     telemetry.mission_manager_instance = command_bridge
@@ -117,14 +121,6 @@ async def lifespan(app: FastAPI):
     control.param_bridge_instance = param_bridge
     control.ws_manager_instance = ws_manager
     system.ws_manager_instance = ws_manager
-
-    # Start YOLO detector in its own background thread (blocking inference)
-    if yolo_detector is not None:
-        yolo_detector.start()
-        if yolo_detector.is_enabled:
-            logger.info("YOLODetector started (model=%s)", settings.YOLO_MODEL_PATH)
-        else:
-            logger.warning("YOLODetector requested but unavailable — check ultralytics install")
 
     # Start the single MAVLink receiver before telemetry broadcasting.
     await message_router.start()
@@ -142,8 +138,6 @@ async def lifespan(app: FastAPI):
     await message_router.stop()
     if hasattr(telemetry_generator, 'stop'):
         await telemetry_generator.stop()
-    if yolo_detector is not None:
-        yolo_detector.stop()
     try:
         await asyncio.gather(telemetry_task, return_exceptions=True)
     except Exception:
@@ -232,7 +226,6 @@ async def get_config(request: Request):
     return {
         "ws_host": request.headers.get("host", f"{settings.HOST}:{settings.WEB_PORT}"),
         "tailscale_ip": get_tailscale_ip(),
-        "yolo_enabled": settings.YOLO_ENABLED,
         "web_port": settings.WEB_PORT,
     }
 
@@ -244,8 +237,5 @@ async def health():
     return {
         "status": "ok",
         "video": video_status,
-        "yolo": {
-            "enabled": yolo_detector.is_enabled if yolo_detector else False,
-        },
         "clients": ws_manager.client_count(),
     }

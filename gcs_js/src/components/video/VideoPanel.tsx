@@ -32,7 +32,7 @@ interface CameraOption {
 }
 
 export default function VideoPanel({ panelId, onTargetUpdate }: VideoPanelProps) {
-  const { config, uavs, isConfigured, yoloEnabled } = useGCSStore();
+  const { config, uavs, isConfigured } = useGCSStore();
   const uavConfig = uavs[panelId];
   const agent = UAV_AGENT_BY_ID[panelId];
 
@@ -46,13 +46,13 @@ export default function VideoPanel({ panelId, onTargetUpdate }: VideoPanelProps)
   const [udpPort, setUdpPort] = useState<number>(uavConfig ? parseInt(uavConfig.streamPort, 10) || (panelId === 1 ? 5600 : 5601) : (panelId === 1 ? 5600 : 5601));
   const [jsonPort, setJsonPort] = useState<number>(uavConfig ? parseInt(uavConfig.jsonPort, 10) || (panelId === 1 ? 5001 : 5002) : (panelId === 1 ? 5001 : 5002));
 
+
   const [showCrosshair, setShowCrosshair] = useState(true);
   const [showHUD, setShowHUD] = useState(true);
   const showDetections = true;
   const [noSignal, setNoSignal] = useState(true);
   const [noSignalText, setNoSignalText] = useState(`Waiting for UDP on port ${udpPort}...`);
   const [fps, setFps] = useState(0);
-  const [yoloFps, setYoloFps] = useState("---");
 
   // Frame & detection refs (not state — avoids re-renders at 30fps)
   const detectionsRef = useRef<Detection[]>([]);
@@ -62,7 +62,6 @@ export default function VideoPanel({ panelId, onTargetUpdate }: VideoPanelProps)
   const lastFpsTimeRef = useRef(0);
   const activeStreamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number>(0);
-  const yoloTimerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   // Video stats
   const [videoStats, setVideoStats] = useState({
@@ -200,7 +199,6 @@ export default function VideoPanel({ panelId, onTargetUpdate }: VideoPanelProps)
       const msg = JSON.parse(data);
 
       if (msg.type === "telemetry") {
-        setYoloFps(msg.fps_inference?.toString() || "---");
         const isDetected = !!msg.detection;
         const gsdStr = msg.lokasi_target?.gsd_x?.toFixed(3) || "--";
         const distStr = msg.lokasi_target?.distance_m?.toFixed(1) || "--";
@@ -243,9 +241,6 @@ export default function VideoPanel({ panelId, onTargetUpdate }: VideoPanelProps)
       if (msg.type === "detections") {
         detectionsRef.current = msg.detections || [];
         detFrameSizeRef.current = { w: msg.frame_width || 0, h: msg.frame_height || 0 };
-        if (msg.inference_ms) {
-          setYoloFps((1000 / msg.inference_ms).toFixed(1));
-        }
         const ld = lastDrawRef.current;
         hudRef.current?.drawHUD(ld, detectionsRef.current, detFrameSizeRef.current.w, detFrameSizeRef.current.h);
       }
@@ -267,136 +262,6 @@ export default function VideoPanel({ panelId, onTargetUpdate }: VideoPanelProps)
     binaryType: "blob",
     onClose: handleSocketClose,
   });
-
-  // Local Webcam stream & YOLO processing
-  const stopWebcam = useCallback(() => {
-    if (activeStreamRef.current) {
-      activeStreamRef.current.getTracks().forEach((t) => t.stop());
-      activeStreamRef.current = null;
-    }
-    if (animFrameRef.current) {
-      cancelAnimationFrame(animFrameRef.current);
-      animFrameRef.current = 0;
-    }
-    if (yoloTimerRef.current) {
-      clearInterval(yoloTimerRef.current);
-      yoloTimerRef.current = undefined;
-    }
-  }, []);
-
-  const startWebcam = useCallback(async (deviceId: string) => {
-    stopWebcam();
-    setNoSignal(true);
-    setNoSignalText("Starting camera...");
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { deviceId: { exact: deviceId } },
-      });
-      activeStreamRef.current = stream;
-      const videoEl = webcamVideoRef.current;
-      if (videoEl) {
-        videoEl.srcObject = stream;
-        await videoEl.play();
-      }
-      setNoSignal(false);
-
-      // Render loop for webcam
-      const drawWebcamFrame = () => {
-        if (!activeStreamRef.current) return;
-        const vc = videoCanvasRef.current;
-        const ve = webcamVideoRef.current;
-        if (vc && ve && ve.readyState >= 2) {
-          syncCanvasSize();
-          const cw = vc.width;
-          const ch = vc.height;
-          const vw = ve.videoWidth || 1;
-          const vh = ve.videoHeight || 1;
-          const scale = Math.min(cw / vw, ch / vh);
-          const dw = vw * scale;
-          const dh = vh * scale;
-          const dx = (cw - dw) / 2;
-          const dy = (ch - dh) / 2;
-
-          const ctx = vc.getContext("2d", { alpha: false });
-          if (ctx) {
-            ctx.fillStyle = "#0a0a08";
-            ctx.fillRect(0, 0, cw, ch);
-            ctx.drawImage(ve, dx, dy, dw, dh);
-          }
-
-          const draw: PanelDrawState = { dx, dy, dw, dh, cw, ch };
-          lastDrawRef.current = draw;
-          hudRef.current?.drawHUD(draw, detectionsRef.current, detFrameSizeRef.current.w, detFrameSizeRef.current.h);
-        }
-        animFrameRef.current = requestAnimationFrame(drawWebcamFrame);
-      };
-      drawWebcamFrame();
-
-      // Start YOLO polling for local webcam
-      const tmpCanvas = document.createElement("canvas");
-      let sending = false;
-      yoloTimerRef.current = setInterval(async () => {
-        if (sending || !yoloEnabled || !webcamVideoRef.current || webcamVideoRef.current.readyState < 2) return;
-        const ve = webcamVideoRef.current;
-        tmpCanvas.width = ve.videoWidth;
-        tmpCanvas.height = ve.videoHeight;
-        const tctx = tmpCanvas.getContext("2d");
-        if (!tctx) return;
-        tctx.drawImage(ve, 0, 0);
-
-        try {
-          sending = true;
-          const blob = await new Promise<Blob | null>((resolve) => tmpCanvas.toBlob(resolve, "image/jpeg", 0.7));
-          if (!blob) return;
-
-          const resp = await fetch(`${API_BASE}/api/video/detect`, {
-            method: "POST",
-            headers: { "Content-Type": "application/octet-stream" },
-            body: blob,
-          });
-          const data = await resp.json();
-          if (data.type === "detections") {
-            detectionsRef.current = data.detections || [];
-            detFrameSizeRef.current = { w: data.frame_width || 0, h: data.frame_height || 0 };
-            if (data.inference_ms) setYoloFps((1000 / data.inference_ms).toFixed(1));
-          }
-        } catch {
-          // ignore error
-        } finally {
-          sending = false;
-        }
-      }, 200); // 5 Hz
-    } catch {
-      setNoSignal(true);
-      setNoSignalText("CAMERA IN USE OR BLOCKED");
-    }
-  }, [stopWebcam, syncCanvasSize, yoloEnabled]);
-
-  const handleSourceChange = (val: string) => {
-    setSourceMode(val);
-    if (val === "udp") {
-      stopWebcam();
-      setNoSignal(true);
-      setNoSignalText(`Waiting for UDP on port ${udpPort}...`);
-    } else if (val === "none") {
-      stopWebcam();
-      setNoSignal(true);
-      setNoSignalText("NO SOURCE SELECTED");
-      const vc = videoCanvasRef.current;
-      if (vc) {
-        const ctx = vc.getContext("2d");
-        ctx?.fillRect(0, 0, vc.width, vc.height);
-      }
-    } else {
-      startWebcam(val);
-    }
-  };
-
-  useEffect(() => {
-    return () => stopWebcam();
-  }, [stopWebcam]);
-
   // Controls
   const handleFullscreen = useCallback(() => {
     const container = containerRef.current;
@@ -468,14 +333,12 @@ export default function VideoPanel({ panelId, onTargetUpdate }: VideoPanelProps)
         {/* Top-right overlay matching index.html */}
         <div className="hud-overlay hud-tr">
           {!noSignal && <span className="hud-badge is-recording">REC</span>}
-          {yoloEnabled && <span className="hud-badge">YOLO ON</span>}
         </div>
 
         {/* Compact flight/video stats pinned inside the frame edges. */}
         <div className="video-stats video-stats-overlay">
           <div className="video-stats-side video-stats-left">
             <div>fps: <span className="stat-value">{fps}</span></div>
-            <div>yolo: <span className="stat-value">{yoloFps}</span></div>
             <div>gsd: <span className="stat-value">{videoStats.gsd}</span></div>
           </div>
           <div className="video-stats-side video-stats-right">

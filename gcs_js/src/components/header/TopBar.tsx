@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useCallback } from "react";
 import { useGCSStore } from "@/hooks/useGCSStore";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 
 export default function TopBar() {
   const pathname = usePathname();
@@ -13,22 +13,9 @@ export default function TopBar() {
     config,
     theme,
     toggleTheme,
-    yoloEnabled,
-    setYoloEnabled,
     setIsEditModalOpen,
   } = useGCSStore();
 
-  const handleYoloToggle = useCallback(async () => {
-    try {
-      const response = await fetch(`${API_BASE}/api/video/yolo/toggle`, {
-        method: "POST",
-      });
-      const data = (await response.json()) as { enabled: boolean };
-      setYoloEnabled(data.enabled);
-    } catch {
-      console.error("Failed to toggle YOLO");
-    }
-  }, [setYoloEnabled]);
 
   return (
     <header id="top-bar">
@@ -67,18 +54,6 @@ export default function TopBar() {
           EDIT IP / PORT
         </button>
 
-        <div className="toggle-group">
-          <span>Yolo :</span>
-          <label className="yolo-switch">
-            <input
-              type="checkbox"
-              checked={yoloEnabled}
-              onChange={handleYoloToggle}
-              aria-label="Toggle YOLO detection"
-            />
-            <span className="yolo-slider" />
-          </label>
-        </div>
 
         <div className="toggle-group">
           <span>Theme :</span>

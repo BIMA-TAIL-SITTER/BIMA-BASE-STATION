@@ -16,7 +16,6 @@ interface GCSStoreState {
   isConfigured: boolean;
   isEditModalOpen: boolean;
   theme: ThemeMode;
-  yoloEnabled: boolean;
 }
 
 interface GCSStoreActions {
@@ -25,7 +24,6 @@ interface GCSStoreActions {
   markConfigured: () => void;
   setIsEditModalOpen: (open: boolean) => void;
   toggleTheme: () => void;
-  setYoloEnabled: (enabled: boolean) => void;
 }
 
 type GCSStore = GCSStoreState & GCSStoreActions;
@@ -44,7 +42,6 @@ export function GCSProvider({ children }: { children: ReactNode }) {
   const [isConfigured, setIsConfigured] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>("dark");
-  const [yoloEnabled, setYoloEnabledState] = useState(true);
 
   // Auto-load cached connection config after mount to prevent hydration mismatch
   useEffect(() => {
@@ -78,7 +75,6 @@ export function GCSProvider({ children }: { children: ReactNode }) {
 
   const setConfig = useCallback((c: GCSConfig) => {
     setConfigState(c);
-    setYoloEnabledState(c.yolo_enabled);
   }, []);
 
   const setUAVConfig = useCallback((uavId: UAVId, cfg: UAVConnectionConfig) => {
@@ -99,15 +95,10 @@ export function GCSProvider({ children }: { children: ReactNode }) {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }, []);
 
-  const setYoloEnabled = useCallback((enabled: boolean) => {
-    setYoloEnabledState(enabled);
-  }, []);
-
   const store: GCSStore = {
-    config, uavs, isConfigured, isEditModalOpen, theme, yoloEnabled,
-    setConfig, setUAVConfig, markConfigured, setIsEditModalOpen, toggleTheme, setYoloEnabled,
+    config, uavs, isConfigured, isEditModalOpen, theme,
+    setConfig, setUAVConfig, markConfigured, setIsEditModalOpen, toggleTheme,
   };
-
   return <GCSContext.Provider value={store}>{children}</GCSContext.Provider>;
 }
 

@@ -25,7 +25,6 @@ import numpy as np
 
 from app.services.video.receiver import VideoReceiver
 from app.services.websocket.manager import WebSocketManager
-from app.services.yolo.detector import YOLODetector
 from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -43,12 +42,10 @@ class MultiStreamManager:
         self,
         ws_manager: WebSocketManager,
         fps_limit: int = 30,
-        detector: Optional[YOLODetector] = None,
     ) -> None:
         self._ws = ws_manager
         self._fps_limit = max(1, fps_limit)
         self._frame_interval = 1.0 / self._fps_limit
-        self._detector = detector
         
         self._receivers: dict[int, VideoReceiver] = {}
         self._tasks: dict[int, asyncio.Task] = {}
@@ -59,10 +56,9 @@ class MultiStreamManager:
         self._video_to_telemetry = {}  # video_port -> json_port
         
         logger.info(
-            "MultiStreamManager ready (fps_limit=%d, jpeg_quality=%d, yolo=%s)",
+            "MultiStreamManager ready (fps_limit=%d, jpeg_quality=%d)",
             fps_limit,
             settings.VIDEO_JPEG_QUALITY,
-            "enabled" if (detector and detector.is_enabled) else "disabled",
         )
 
     # ─── Public ───────────────────────────────────────────────────
@@ -203,8 +199,6 @@ class MultiStreamManager:
                 "latest_data": telem_recv.latest_data,
                 "has_data": bool(telem_recv.latest_data),
             }
-        if self._detector is not None:
-            status["yolo_enabled"] = self._detector.is_enabled
         return status
 
 
