@@ -17322,3 +17322,732 @@ asyncio.exceptions.CancelledError
 2026-07-27 23:24:39 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
 2026-07-27 23:24:41 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
 2026-07-27 23:24:41 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-27 23:29:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-27 23:29:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-27 23:29:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-27 23:29:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:29:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:29:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:29:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-27 23:29:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-27 23:29:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:29:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:29:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:29:48 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-07-27 23:29:52 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-07-27 23:29:53 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:29:53 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-27 23:29:53 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-27 23:29:53 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:29:53 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-27 23:29:53 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:29:53 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-27 23:29:53 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-27 23:29:53 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:29:53 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-27 23:29:53 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-27 23:29:53 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:29:53 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-27 23:29:53 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:29:53 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-27 23:29:53 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-27 23:29:53 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-27 23:29:53 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-27 23:29:53 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-27 23:29:53 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-27 23:29:53 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:29:53 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-27 23:29:53 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:29:53 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:29:53 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:29:53 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-27 23:29:53 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:29:53 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:29:55 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-27 23:29:55 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-27 23:32:51 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-27 23:32:51 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-27 23:32:51 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:32:51 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:32:51 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:32:51 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-27 23:32:51 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-27 23:32:51 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:32:51 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:32:51 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:32:51 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-27 23:32:58 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:32:58 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-27 23:32:58 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-27 23:32:58 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:32:58 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-27 23:32:58 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:32:58 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-27 23:32:58 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-27 23:32:58 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:32:58 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-27 23:32:58 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-27 23:32:58 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:32:58 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-27 23:32:58 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:32:58 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-27 23:32:58 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-27 23:32:58 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-27 23:32:58 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-27 23:32:58 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-27 23:32:59 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-27 23:32:59 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-27 23:32:59 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:32:59 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:32:59 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:32:59 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:32:59 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-27 23:32:59 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:32:59 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:33:01 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-27 23:33:01 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-27 23:34:53 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-27 23:34:54 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-27 23:34:56 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-27 23:34:56 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-27 23:34:56 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:34:56 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:34:56 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:34:56 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-27 23:34:56 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-27 23:34:56 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:34:56 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:34:56 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:34:56 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-27 23:34:57 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:34:57 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-27 23:34:57 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-27 23:34:57 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:34:57 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-27 23:34:57 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:34:57 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-27 23:34:57 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-27 23:34:57 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:34:57 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-27 23:34:57 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-27 23:34:57 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:34:57 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-27 23:34:57 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:34:57 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-27 23:34:57 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-27 23:34:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-27 23:34:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-27 23:34:57 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:34:57 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:34:57 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:34:57 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:34:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-27 23:34:57 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-27 23:34:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-27 23:34:57 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-27 23:34:57 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:34:57 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:34:59 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-27 23:34:59 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-27 23:35:28 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1
+2026-07-27 23:35:28 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1
+2026-07-27 23:35:28 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1
+2026-07-27 23:35:28 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:35:28 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1
+2026-07-27 23:35:28 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:35:28 [INFO    ] app.services.websocket.manager — Video client connected to port 1 - total: 1
+2026-07-27 23:35:28 [INFO    ] app.services.video.manager — Broadcast loop started for port 1
+2026-07-27 23:35:29 [INFO    ] app.services.websocket.manager — Video client connected to port 1 - total: 2
+2026-07-27 23:35:29 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:1:1
+2026-07-27 23:35:29 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:1:1
+2026-07-27 23:35:29 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 2
+2026-07-27 23:35:32 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:1:1: [Errno 11001] getaddrinfo failed
+2026-07-27 23:35:32 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [Errno 11001] getaddrinfo failed
+2026-07-27 23:35:32 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:1:1: [Errno 11001] getaddrinfo failed
+2026-07-27 23:35:32 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [Errno 11001] getaddrinfo failed
+2026-07-27 23:35:39 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1 - remaining: 1
+2026-07-27 23:35:39 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 1
+2026-07-27 23:35:39 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1 - remaining: 0
+2026-07-27 23:35:39 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1
+2026-07-27 23:35:39 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:35:39 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1
+2026-07-27 23:35:39 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:51:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-27 23:51:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-27 23:51:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-27 23:51:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:51:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:51:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:51:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-27 23:51:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-27 23:51:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-27 23:51:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:51:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-27 23:52:10 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-27 23:52:10 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-27 23:52:10 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-27 23:52:10 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:52:10 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-27 23:52:10 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:52:10 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-27 23:52:10 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-27 23:52:10 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-27 23:52:10 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-27 23:52:10 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-27 23:52:10 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-27 23:52:10 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-27 23:52:10 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-27 23:52:10 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-27 23:52:10 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-27 23:52:10 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-27 23:52:10 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-27 23:52:10 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-27 23:52:10 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:52:10 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:52:10 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:52:10 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:52:10 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-27 23:52:10 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-27 23:52:10 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-27 23:52:10 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:52:10 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-27 23:52:12 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-27 23:52:12 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-28 00:13:36 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:13:36 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:13:36 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:13:36 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:13:36 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:13:36 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:13:36 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:13:36 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:13:36 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:13:36 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:13:36 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:13:36 [INFO    ] app.main — Ground Station shutting down…
+2026-07-28 00:13:36 [INFO    ] app.services.yolo.detector — YOLODetector stopped | total_inferences=0 | total_detections=0
+2026-07-28 00:13:36 [INFO    ] app.main — Ground Station stopped.
+2026-07-28 00:13:38 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-07-28 00:13:38 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:13:38 [INFO    ] app.main —   UAV Ground Station starting up
+2026-07-28 00:13:38 [INFO    ] app.main —   Web  port : 8000
+2026-07-28 00:13:38 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-07-28 00:13:38 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:13:38 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-07-28 00:13:39 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-07-28 00:13:39 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:13:39 [INFO    ] app.main —   UAV Ground Station starting up
+2026-07-28 00:13:39 [INFO    ] app.main —   Web  port : 8000
+2026-07-28 00:13:39 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-07-28 00:13:39 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:13:39 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-07-28 00:13:39 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-28 00:13:39 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:13:39 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:14:08 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:14:08 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:14:08 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:14:08 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:14:08 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:14:08 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:14:08 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:14:08 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:14:08 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:14:08 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:14:08 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:14:08 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:14:08 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:14:08 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:14:08 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:14:08 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:14:08 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:14:08 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-28 00:14:08 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:14:08 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:14:08 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-28 00:14:08 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:14:08 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:14:08 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-28 00:14:08 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-28 00:14:09 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-28 00:14:09 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:14:09 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:14:10 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-28 00:14:10 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-28 00:14:41 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:14:41 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:14:41 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:14:41 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:14:41 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:14:41 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:14:41 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:14:41 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:14:41 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:14:41 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:14:41 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:16:49 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:16:49 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:16:49 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:16:49 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:16:49 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:16:49 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:16:49 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:16:49 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:16:49 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:16:49 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:16:49 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:16:49 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:16:49 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:16:49 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:16:49 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:16:49 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:16:49 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:16:49 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-28 00:16:49 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:16:49 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:16:49 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-28 00:16:49 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:16:49 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:16:49 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-28 00:16:49 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-28 00:16:49 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-28 00:16:49 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:16:49 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-28 00:16:51 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-28 00:16:51 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-28 00:18:49 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:18:49 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:18:49 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:18:49 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:18:49 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:18:49 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:18:49 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:18:49 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:18:49 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:18:49 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:18:49 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:18:51 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:18:51 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:18:51 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:18:51 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:18:51 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:18:51 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:18:51 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:18:51 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:18:51 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:18:51 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:18:51 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:18:51 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:18:51 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:18:51 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:18:51 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:18:51 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:18:52 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:19:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:19:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:19:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:19:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:19:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:19:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:19:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:19:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:19:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:19:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:19:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:19:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:19:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:19:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:19:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:19:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:19:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:19:50 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:19:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:19:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:19:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:19:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:19:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:19:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:19:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:19:50 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:19:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:19:50 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:20:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:20:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:20:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:20:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:20:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:20:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:20:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:20:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:20:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:20:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:20:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:20:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:20:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:20:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:20:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:20:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:20:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:20:50 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:20:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:20:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:20:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:20:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:20:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:20:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:20:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:20:50 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:20:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:20:50 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:21:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:21:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:21:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:21:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:21:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:21:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:21:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:21:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:21:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:21:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:21:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:21:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:21:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:21:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:21:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:21:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:21:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:21:50 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:21:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:21:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:21:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:21:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:21:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:21:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:21:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:21:50 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:21:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:21:50 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:22:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:22:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:22:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:22:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:22:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:22:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:22:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:22:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:22:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:22:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:22:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:22:48 [INFO    ] app.main — Ground Station shutting down…
+2026-07-28 00:22:48 [INFO    ] app.main — Ground Station stopped.
+2026-07-28 00:22:49 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-07-28 00:22:49 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:22:49 [INFO    ] app.main —   UAV Ground Station starting up
+2026-07-28 00:22:49 [INFO    ] app.main —   Web  port : 8000
+2026-07-28 00:22:49 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-07-28 00:22:49 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:22:49 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-07-28 00:22:50 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-07-28 00:22:50 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:22:50 [INFO    ] app.main —   UAV Ground Station starting up
+2026-07-28 00:22:50 [INFO    ] app.main —   Web  port : 8000
+2026-07-28 00:22:50 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-07-28 00:22:50 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:22:50 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-07-28 00:22:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:22:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:22:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:22:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:22:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:22:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:22:50 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:22:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:22:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:22:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:22:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:22:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:22:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:22:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:22:50 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:22:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:22:50 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:23:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:23:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:23:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:23:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:23:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:23:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:23:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:23:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:23:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:23:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:23:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:23:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:23:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:23:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:23:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:23:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:23:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:23:50 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:23:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:23:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:23:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:23:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:23:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:23:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:23:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:23:50 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:23:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:23:50 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:24:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:24:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:24:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:24:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:24:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:24:48 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:24:48 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:24:48 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:24:48 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:24:48 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:24:48 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:24:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:24:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-28 00:24:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-28 00:24:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:24:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-28 00:24:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:24:50 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-28 00:24:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-28 00:24:50 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:24:50 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-28 00:24:50 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-28 00:24:50 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-28 00:24:50 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-28 00:24:50 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-28 00:24:50 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-28 00:24:50 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-28 00:24:50 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-28 00:25:34 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-28 00:25:34 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-28 00:25:34 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-28 00:25:34 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:25:34 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-28 00:25:34 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:25:34 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-28 00:25:34 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-28 00:25:34 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-28 00:25:34 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-28 00:25:34 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-28 00:25:34 [INFO    ] app.main — Ground Station shutting down…
+2026-07-28 00:25:34 [INFO    ] app.main — Ground Station stopped.
+2026-07-28 00:25:40 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-07-28 00:25:40 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:25:40 [INFO    ] app.main —   UAV Ground Station starting up
+2026-07-28 00:25:40 [INFO    ] app.main —   Web  port : 8000
+2026-07-28 00:25:40 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-07-28 00:25:40 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-28 00:25:40 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-07-28 00:25:43 [INFO    ] app.main — Ground Station shutting down…
+2026-07-28 00:25:43 [INFO    ] app.main — Ground Station stopped.
+2026-07-30 14:55:09 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-07-30 14:55:10 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-30 14:55:10 [INFO    ] app.main —   UAV Ground Station starting up
+2026-07-30 14:55:10 [INFO    ] app.main —   Web  port : 8000
+2026-07-30 14:55:10 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-07-30 14:55:10 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-30 14:55:10 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-07-30 14:55:27 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-07-30 14:55:27 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-30 14:55:27 [INFO    ] app.main —   UAV Ground Station starting up
+2026-07-30 14:55:27 [INFO    ] app.main —   Web  port : 8000
+2026-07-30 14:55:27 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-07-30 14:55:27 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-07-30 14:55:27 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-07-30 14:55:31 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-30 14:55:31 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-30 14:55:31 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-30 14:55:31 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-30 14:55:31 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-30 14:55:31 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-30 14:55:31 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-30 14:55:31 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-30 14:55:31 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-30 14:55:31 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-30 14:55:31 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-30 14:55:31 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-30 14:55:31 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-30 14:55:31 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-30 14:55:31 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-30 14:55:31 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-30 14:55:31 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-30 14:55:31 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-30 14:55:31 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-30 14:55:31 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-30 14:55:32 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-30 14:55:32 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-30 14:55:32 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-30 14:55:32 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-30 14:55:32 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-30 14:55:32 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-30 14:55:32 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-30 14:55:32 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-30 14:55:34 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-30 14:55:34 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-30 14:55:47 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-30 14:55:47 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-30 14:55:47 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-30 14:55:47 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-30 14:55:47 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-30 14:55:47 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-30 14:55:47 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-30 14:55:47 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-30 14:55:47 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-30 14:55:47 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-30 14:55:47 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-30 14:55:47 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-07-30 14:55:49 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-07-30 14:55:49 [INFO    ] app.services.websocket.manager — Control client connected to slot 3 - total: 1
+2026-07-30 14:55:56 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 3 - remaining: 0
+2026-07-30 14:55:56 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-07-30 15:04:19 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-07-30 15:04:19 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-07-30 15:04:19 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-07-30 15:04:19 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-07-30 15:04:19 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-30 15:04:19 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-07-30 15:04:19 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-30 15:04:19 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-07-30 15:04:19 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-07-30 15:04:19 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-07-30 15:04:19 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-07-30 15:04:19 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-07-30 15:04:19 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-07-30 15:04:19 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-07-30 15:04:19 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-07-30 15:04:19 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-07-30 15:04:19 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-07-30 15:04:20 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-07-30 15:04:20 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-07-30 15:04:20 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-07-30 15:04:20 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-07-30 15:04:20 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-07-30 15:04:20 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-07-30 15:04:20 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-07-30 15:04:20 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-07-30 15:04:20 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-07-30 15:04:20 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-07-30 15:04:20 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-07-30 15:04:20 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-07-30 15:04:22 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-07-30 15:04:22 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: Heartbeat timeout
+2026-07-30 15:22:21 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-07-30 15:22:21 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-07-30 15:22:21 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-07-30 15:22:21 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-30 15:22:21 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-07-30 15:22:21 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-30 15:22:21 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-07-30 15:22:21 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-07-30 15:22:21 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-07-30 15:22:21 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-07-30 15:22:21 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-07-30 15:22:21 [INFO    ] app.main — Ground Station shutting down…
+2026-07-30 15:22:21 [INFO    ] app.main — Ground Station stopped.
+2026-08-01 23:42:31 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-08-01 23:42:32 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-08-01 23:42:32 [INFO    ] app.main —   UAV Ground Station starting up
+2026-08-01 23:42:32 [INFO    ] app.main —   Web  port : 8000
+2026-08-01 23:42:32 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-08-01 23:42:32 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-08-01 23:42:32 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-08-01 23:44:06 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-08-01 23:44:06 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-08-01 23:44:06 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-08-01 23:44:06 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-08-01 23:44:06 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-08-01 23:44:06 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-08-01 23:44:06 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-08-01 23:44:06 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-08-01 23:44:07 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-08-01 23:44:07 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-08-01 23:44:07 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-08-01 23:44:07 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-08-01 23:44:07 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-08-01 23:44:07 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-08-01 23:44:07 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-08-01 23:44:07 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-08-01 23:44:07 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-08-01 23:44:07 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:07 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-08-01 23:44:07 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-08-01 23:44:07 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:07 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-08-01 23:44:20 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-08-01 23:44:20 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-08-01 23:44:20 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-08-01 23:44:20 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-08-01 23:44:20 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-08-01 23:44:20 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-08-01 23:44:20 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-08-01 23:44:20 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-08-01 23:44:20 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-08-01 23:44:20 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-08-01 23:44:20 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-08-01 23:44:20 [INFO    ] app.main — Ground Station shutting down…
+2026-08-01 23:44:20 [INFO    ] app.main — Ground Station stopped.
+2026-08-02 00:05:48 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-08-02 00:05:48 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-08-02 00:05:48 [INFO    ] app.main —   UAV Ground Station starting up
+2026-08-02 00:05:48 [INFO    ] app.main —   Web  port : 8000
+2026-08-02 00:05:48 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-08-02 00:05:48 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-08-02 00:05:48 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-08-02 00:05:56 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 1001
+2026-08-02 00:05:56 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:1001
+2026-08-02 00:05:56 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 1002
+2026-08-02 00:05:56 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-08-02 00:05:56 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 1002
+2026-08-02 00:05:56 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-08-02 00:05:56 [INFO    ] app.services.websocket.manager — Video client connected to port 1002 - total: 1
+2026-08-02 00:05:56 [INFO    ] app.services.video.manager — Broadcast loop started for port 1002
+2026-08-02 00:05:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-08-02 00:05:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.0:14550
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.0:14550: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 1: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-08-02 00:05:57 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-08-02 00:05:57 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-08-02 00:05:57 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-08-02 00:05:57 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-08-02 00:05:57 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-08-02 00:05:57 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-08-02 00:05:57 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-08-02 00:05:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 2: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 4: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [ERROR   ] app.services.mavlink.telemetry_bridge — Failed to connect slot 3: [WinError 10049] The requested address is not valid in its context
+2026-08-02 00:05:57 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-08-02 00:11:36 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-08-02 00:11:36 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-08-02 00:11:36 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-08-02 00:11:36 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-08-02 00:11:36 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-08-02 00:11:36 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-08-02 00:11:36 [INFO    ] app.services.websocket.manager — Video client disconnected from port 1002 - remaining: 0
+2026-08-02 00:11:36 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 1002
+2026-08-02 00:11:36 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-08-02 00:11:36 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 1001
+2026-08-02 00:11:36 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-08-02 00:11:36 [INFO    ] app.main — Ground Station shutting down…
+2026-08-02 00:11:36 [INFO    ] app.main — Ground Station stopped.
