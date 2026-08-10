@@ -21,7 +21,7 @@ from app.services.mavlink.message_router import MavlinkMessageRouter
 from app.services.mavlink.param_bridge import MavlinkParamBridge
 from app.services.mavlink.telemetry_bridge import MavlinkTelemetryBridge
 from app.services.websocket.manager import WebSocketManager
-from app.routers import control, video, telemetry, system
+from app.routers import control, video, telemetry, system, stitching
 
 # ─── Logging Setup ────────────────────────────────────────────────
 os.makedirs("logs", exist_ok=True)
@@ -112,6 +112,7 @@ async def lifespan(app: FastAPI):
     # Inject service references into routers so they can be accessed
     video.video_manager_instance = video_manager
     video.ws_manager_instance = ws_manager
+    stitching.video_manager_instance = video_manager
     telemetry.telemetry_generator_instance = telemetry_generator
     telemetry.ws_manager_instance = ws_manager
     telemetry.mission_manager_instance = command_bridge
@@ -121,6 +122,7 @@ async def lifespan(app: FastAPI):
     system.ws_manager_instance = ws_manager
 
     # Start the single MAVLink receiver before telemetry broadcasting.
+    await stitching.startup()
     await message_router.start()
     telemetry_task = asyncio.create_task(telemetry_generator.broadcast_loop())
 
@@ -132,6 +134,7 @@ async def lifespan(app: FastAPI):
     logger.info("Ground Station shutting down…")
     telemetry_task.cancel()
     video_manager.stop_all()
+    await stitching.shutdown()
     await param_bridge.stop()
     await message_router.stop()
     if hasattr(telemetry_generator, 'stop'):
@@ -170,10 +173,12 @@ app.include_router(video.router)
 app.include_router(telemetry.router)
 app.include_router(system.router)
 app.include_router(control.router)
+app.include_router(stitching.router)
 app.include_router(video.api_router)
 app.include_router(telemetry.api_router)
 app.include_router(system.api_router)
 app.include_router(control.api_router)
+app.include_router(stitching.api_router)
 app.include_router(peta_router)
 
 

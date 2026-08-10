@@ -69,3 +69,5 @@ venv.bak/
 *.avi
 debug_frame_*.jpg
 yolo_debug.log
+/stitching_service/sessions/*
+!/stitching_service/sessions/.gitkeep

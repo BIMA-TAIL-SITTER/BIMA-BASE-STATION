@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback } from "react";
 import { useGCSStore } from "@/hooks/useGCSStore";
 
 
@@ -29,20 +28,27 @@ export default function TopBar() {
           className={pathname === "/mission" ? "is-active" : ""}
           aria-current={pathname === "/mission" ? "page" : undefined}
         >
-          MISSION
+          Mission
         </Link>
         <Link
           href="/params"
           className={pathname === "/params" ? "is-active" : ""}
           aria-current={pathname === "/params" ? "page" : undefined}
         >
-          PARAMS
+          Params
+        </Link>
+        <Link
+          href="/stitching"
+          className={pathname === "/stitching" ? "is-active" : ""}
+          aria-current={pathname === "/stitching" ? "page" : undefined}
+        >
+          Stitching
         </Link>
       </nav>
 
       <div className="header-info">
         <div>
-          IP : <span className="accent-text">{config?.tailscale_ip ?? "---"}</span>
+          IP: <span className="accent-text">{config?.tailscale_ip ?? "---"}</span>
         </div>
 
         <button
@@ -51,12 +57,12 @@ export default function TopBar() {
           className="header-action-button"
           title="Edit IP dan Port Setiap UAV"
         >
-          EDIT IP / PORT
+          Edit Connection
         </button>
 
 
         <div className="toggle-group">
-          <span>Theme :</span>
+          <span>Theme:</span>
           <label className="theme-switch">
             <input
               type="checkbox"
@@ -65,8 +71,8 @@ export default function TopBar() {
               aria-label="Toggle light theme"
             />
             <div className="theme-slider">
-              <span className="icon-sun" aria-hidden="true">LT</span>
-              <span className="icon-moon" aria-hidden="true">DK</span>
+              <span className="icon-sun" aria-hidden="true">☀</span>
+              <span className="icon-moon" aria-hidden="true">☾</span>
               <div className="theme-thumb" />
             </div>
           </label>

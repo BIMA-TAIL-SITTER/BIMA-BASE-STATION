@@ -23,6 +23,14 @@ websockets==14.1
 opencv-python-headless==4.11.0.86
 numpy==2.2.6
 
+# Live image stitching
+pillow>=8.2.0
+exifread>=3.5.1
+scipy>=1.7.0
+geopy>=2.3.0
+watchdog>=3.0.0
+python-multipart>=0.0.6
+
 
 # Optional - uncomment to enable real MAVLink
 pymavlink==2.4.41
