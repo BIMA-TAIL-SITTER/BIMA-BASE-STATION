@@ -29,6 +29,17 @@ class MavlinkTCPConnection(MAVLinkConnection):
         def _blocking_connect():
             # Pass retries=0 to prevent pymavlink from internally sleeping and retrying on refused connections
             self._master = mavutil.mavlink_connection(self.conn_str, retries=0)
+            
+            # Send an initial heartbeat so the UDP server (e.g. MAVProxy udpin) knows our IP and port
+            try:
+                self._master.mav.heartbeat_send(
+                    mavutil.mavlink.MAV_TYPE_GCS,
+                    mavutil.mavlink.MAV_AUTOPILOT_INVALID,
+                    0, 0, 0
+                )
+            except Exception as e:
+                logger.debug("Failed to send initial heartbeat: %s", e)
+                
             logger.info("Waiting for heartbeat from %s...", self.conn_str)
             # Short timeout on heartbeat wait so we don't hang if connected but no data
             hb = self._master.wait_heartbeat(timeout=2.0)

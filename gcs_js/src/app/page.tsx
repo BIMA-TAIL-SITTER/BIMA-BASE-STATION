@@ -30,11 +30,12 @@ const PetaOfflineUav = dynamic(() => import("@/components/map/PetaOfflineUav"), 
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const SPLITTER_WIDTH = 8;
-const DASHBOARD_COLUMN_GAP = 8;
+const DASHBOARD_COLUMN_GAP = 12;
 const DASHBOARD_SPLITTER_COUNT = 2;
 const DASHBOARD_COLUMN_GAP_COUNT = 4;
 const MIN_RIGHT_COLUMN_WIDTH = 248;
 const MAX_RIGHT_COLUMN_WIDTH = 520;
+const DEFAULT_RIGHT_COLUMN_MAX_WIDTH = 400;
 
 const EMPTY_TELEMETRY: UAVRecord<TelemetryData | null> = {
   1: null,
@@ -131,9 +132,9 @@ function GCSDashboard() {
 
   const [leftColumnPercent, setLeftColumnPercent] = useState(24);
   const [rightColumnWidth, setRightColumnWidth] = useState<number | null>(null);
-  const [measuredRightColumnWidth, setMeasuredRightColumnWidth] = useState(330);
+  const [measuredRightColumnWidth, setMeasuredRightColumnWidth] = useState(384);
   const activeSplitter = useRef<"left" | "right" | null>(null);
-  const rightSplitterDragStart = useRef({ pointerX: 0, width: 330 });
+  const rightSplitterDragStart = useRef({ pointerX: 0, width: 384 });
   const initialSplitterPositionSet = useRef(false);
   const minimumLeftPercent = useRef(10);
   const lastUpdate = useRef<UAVRecord<number>>({ 1: 0, 2: 0, 3: 0, 4: 0 });
@@ -151,7 +152,10 @@ function GCSDashboard() {
     } = measurements;
     const rightPanel = document.querySelector<HTMLElement>(".kolom-monitoring-kanan");
     const rightPanelWidth = rightPanel?.getBoundingClientRect().width
-      ?? Math.min(330, Math.max(MIN_RIGHT_COLUMN_WIDTH, window.innerWidth * 0.2));
+      ?? Math.min(
+        DEFAULT_RIGHT_COLUMN_MAX_WIDTH,
+        Math.max(MIN_RIGHT_COLUMN_WIDTH, window.innerWidth * 0.2),
+      );
     setMeasuredRightColumnWidth(Math.round(rightPanelWidth));
     const minimumWidth = contentWidth * 0.1;
     const maximumWidth = Math.max(
@@ -367,15 +371,18 @@ function GCSDashboard() {
     const connectUAV = async (uavId: UAVId) => {
       const connection = uavs[uavId];
       if (!connection?.tcpIp || !connection.mavlinkPort) return;
+
+      const ip = connection.tcpIp.trim();
+      const port = Number.parseInt(connection.mavlinkPort, 10);
+
+      // Skip unconfigured / placeholder addresses
+      if (!ip || ip === "0" || ip === "0.0.0.0" || !port || port <= 0) return;
+
       try {
         const response = await fetch(`${API_BASE}/api/telemetry/connect`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            slot: uavId,
-            ip: connection.tcpIp,
-            port: Number.parseInt(connection.mavlinkPort, 10),
-          }),
+          body: JSON.stringify({ slot: uavId, ip, port }),
         });
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -463,7 +470,7 @@ function GCSDashboard() {
         style={{
           "--left-column-width": `${leftColumnPercent}%`,
           "--right-column-width": rightColumnWidth === null
-            ? "clamp(248px, 20vw, 330px)"
+            ? "clamp(248px, 20vw, 400px)"
             : `${rightColumnWidth}px`,
         } as CSSProperties}
       >
@@ -521,7 +528,7 @@ function GCSDashboard() {
             setMeasuredRightColumnWidth(
               Math.round(
                 Math.min(
-                  330,
+                  DEFAULT_RIGHT_COLUMN_MAX_WIDTH,
                   Math.max(MIN_RIGHT_COLUMN_WIDTH, window.innerWidth * 0.2),
                 ),
               ),

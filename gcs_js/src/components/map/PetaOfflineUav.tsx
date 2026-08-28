@@ -67,16 +67,6 @@ function formatHdop(value: number | undefined): string {
   return Number.isFinite(value) ? value!.toFixed(2) : "--";
 }
 
-function formatWaypoint(current: number | undefined, total: number | undefined): string {
-  return `${current ?? "--"}/${total ?? "--"}`;
-}
-
-function formatDistance(value: number | undefined): string {
-  if (!Number.isFinite(value)) return "--";
-  if (value! >= 1000) return `${(value! / 1000).toFixed(2)} km`;
-  return `${value!.toFixed(0)} m`;
-}
-
 export default function PetaOfflineUav({
   vehicles,
   mavlinkStatuses,
@@ -176,7 +166,7 @@ export default function PetaOfflineUav({
   const createWaypointIcon = (sequence: number, color: string) => L.divIcon({
     className: "ikon-waypoint-kustom",
     html: `
-      <div style="background:${color};color:#090A0C;border:2px solid #090A0C;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:10px;font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.7);">
+      <div style="background:${color};color:#fff;border:2px solid rgba(0,0,0,0.3);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-family:var(--font-data);font-size:10px;font-weight:600;box-shadow:0 2px 4px rgba(0,0,0,.4);">
         ${sequence}
       </div>
     `,
@@ -212,7 +202,7 @@ export default function PetaOfflineUav({
               ))}
               <Polyline
                 positions={mission.map((waypoint) => [waypoint.lat, waypoint.lon])}
-                pathOptions={{ color: agent.color, dashArray: "5, 5", weight: 2 }}
+                pathOptions={{ color: agent.color, dashArray: "6, 4", weight: 2, opacity: 0.7 }}
               />
             </React.Fragment>
           );
@@ -242,19 +232,20 @@ export default function PetaOfflineUav({
         })}
       </MapContainer>
 
+      {/* Top-left overlay: UAV 01 */}
       <div
-        className="map-uav-overlay map-uav-overlay-top-left flex flex-col gap-2"
+        className="map-uav-overlay map-uav-overlay-top-left"
         style={{
           "--agent-color": UAV_AGENT_BY_ID[1].color,
           "--agent-color-rgb": UAV_AGENT_BY_ID[1].colorRgb,
         } as React.CSSProperties}
       >
-        <div className="flex flex-col">
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <strong>UAV 01 GPS DATA</strong>
           <span>SAT: {formatSatellites(vehicles[1].satellites)}</span>
           <span>HDOP: {formatHdop(vehicles[1].hdop)}</span>
         </div>
-        <div className="transform origin-top-left scale-[0.6]">
+        <div style={{ transform: "scale(0.6)", transformOrigin: "top left" }}>
           <AttitudeIndicator
             roll={vehicles[1].roll ?? 0}
             pitch={vehicles[1].pitch ?? 0}
@@ -265,14 +256,15 @@ export default function PetaOfflineUav({
         </div>
       </div>
 
+      {/* Bottom-left overlay: UAV 02 */}
       <div
-        className="map-uav-overlay map-uav-overlay-bottom-left flex flex-col gap-2"
+        className="map-uav-overlay map-uav-overlay-bottom-left"
         style={{
           "--agent-color": UAV_AGENT_BY_ID[2].color,
           "--agent-color-rgb": UAV_AGENT_BY_ID[2].colorRgb,
         } as React.CSSProperties}
       >
-        <div className="transform origin-bottom-left scale-[0.6]">
+        <div style={{ transform: "scale(0.6)", transformOrigin: "bottom left" }}>
           <AttitudeIndicator
             roll={vehicles[2].roll ?? 0}
             pitch={vehicles[2].pitch ?? 0}
@@ -281,26 +273,27 @@ export default function PetaOfflineUav({
             panelId={2}
           />
         </div>
-        <div className="flex flex-col">
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <strong>UAV 02 GPS DATA</strong>
           <span>SAT: {formatSatellites(vehicles[2].satellites)}</span>
           <span>HDOP: {formatHdop(vehicles[2].hdop)}</span>
         </div>
       </div>
 
+      {/* Top-right overlay: UAV 03 */}
       <div
-        className="map-uav-overlay map-uav-overlay-top-right flex flex-col items-end gap-2"
+        className="map-uav-overlay map-uav-overlay-top-right"
         style={{
           "--agent-color": UAV_AGENT_BY_ID[3].color,
           "--agent-color-rgb": UAV_AGENT_BY_ID[3].colorRgb,
         } as React.CSSProperties}
       >
-        <div className="text-right flex flex-col items-end">
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end", textAlign: "right" }}>
           <strong>UAV 03 GPS DATA</strong>
           <span>SAT: {formatSatellites(vehicles[3].satellites)}</span>
           <span>HDOP: {formatHdop(vehicles[3].hdop)}</span>
         </div>
-        <div className="transform origin-top-right scale-[0.6]">
+        <div style={{ transform: "scale(0.6)", transformOrigin: "top right" }}>
           <AttitudeIndicator
             roll={vehicles[3].roll ?? 0}
             pitch={vehicles[3].pitch ?? 0}
@@ -311,14 +304,15 @@ export default function PetaOfflineUav({
         </div>
       </div>
 
+      {/* Bottom-right overlay: UAV 04 */}
       <div
-        className="map-uav-overlay map-uav-overlay-bottom-right flex flex-col items-end gap-2"
+        className="map-uav-overlay map-uav-overlay-bottom-right"
         style={{
           "--agent-color": UAV_AGENT_BY_ID[4].color,
           "--agent-color-rgb": UAV_AGENT_BY_ID[4].colorRgb,
         } as React.CSSProperties}
       >
-        <div className="transform origin-bottom-right scale-[0.6]">
+        <div style={{ transform: "scale(0.6)", transformOrigin: "bottom right" }}>
           <AttitudeIndicator
             roll={vehicles[4].roll ?? 0}
             pitch={vehicles[4].pitch ?? 0}
@@ -327,7 +321,7 @@ export default function PetaOfflineUav({
             panelId={4}
           />
         </div>
-        <div className="text-right flex flex-col items-end">
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end", textAlign: "right" }}>
           <strong>UAV 04 GPS DATA</strong>
           <span>SAT: {formatSatellites(vehicles[4].satellites)}</span>
           <span>HDOP: {formatHdop(vehicles[4].hdop)}</span>

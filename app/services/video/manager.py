@@ -51,6 +51,7 @@ class MultiStreamManager:
         self._tasks: dict[int, asyncio.Task] = {}
         self._broadcast_counts: dict[int, int] = {}
         self._last_sent_detection_ts: dict[int, float] = {}
+        self._detector = None
         
         self._telemetry_receivers = {} # Dict[int, UdpTelemetryReceiver]
         self._video_to_telemetry = {}  # video_port -> json_port
@@ -115,6 +116,16 @@ class MultiStreamManager:
             t_recv.stop()
         self._telemetry_receivers.clear()
         self._video_to_telemetry.clear()
+
+    def get_latest_frame(self, port: int) -> Optional[np.ndarray]:
+        """Return a copy of the latest decoded frame for a stream port."""
+        receiver = self._receivers.get(port)
+        if receiver is None:
+            return None
+        frame = receiver.latest_frame
+        if frame is None:
+            return None
+        return frame.copy()
 
     async def _broadcast_loop(self, port: int, receiver: VideoReceiver) -> None:
         """

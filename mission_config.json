@@ -1,0 +1,6 @@
+{
+  "gcs": {
+    "raspi_ip": "127.0.0.1",
+    "mission_udp_port": 14561
+  }
+}

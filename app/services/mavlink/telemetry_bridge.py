@@ -67,7 +67,15 @@ class MavlinkTelemetryBridge(MAVLinkTelemetryBridge):
 
     async def connect_slot(self, slot: int, ip: str, port: int) -> bool:
         if slot not in self.connections:
+            logger.warning("connect_slot: invalid slot %s (valid: %s)", slot, list(self.connections.keys()))
             return False
+
+        # Skip connection if ip is 0, 0.0.0.0, or port is 0
+        if not ip or ip in ["0", "0.0.0.0"] or port == 0:
+            logger.info("Skipping connection for slot %d — unconfigured IP/Port: %s:%d", slot, ip, port)
+            return False
+
+        logger.info("connect_slot %d → %s:%d — starting...", slot, ip, port)
 
         self._connect_tokens[slot] += 1
         token = self._connect_tokens[slot]
@@ -85,9 +93,10 @@ class MavlinkTelemetryBridge(MAVLinkTelemetryBridge):
                 await connection.disconnect()
                 return False
             self.connections[slot] = connection
+            logger.info("connect_slot %d → %s:%d — SUCCESS", slot, ip, port)
             return True
         except Exception as exc:
-            logger.error("Failed to connect slot %d: %s", slot, exc)
+            logger.error("connect_slot %d → %s:%d — FAILED: %s", slot, ip, port, exc)
             await connection.disconnect()
             return False
 

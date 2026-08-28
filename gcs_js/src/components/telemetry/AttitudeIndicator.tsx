@@ -31,17 +31,17 @@ function AttitudeIndicatorInner({ roll, pitch, heading, altitude, panelId }: Att
             viewBox="-150 -150 300 300"
             style={{ position: "absolute", top: 0, left: 0 }}
           >
-            {/* Sky */}
-            <rect x="-150" y="-150" width="300" height="150" fill="#5B6BA0" />
-            {/* Ground */}
-            <rect x="-150" y="0" width="300" height="150" fill="#7A3333" />
+            {/* Sky — softer blue-gray */}
+            <rect x="-150" y="-150" width="300" height="150" fill="#4A5580" />
+            {/* Ground — warmer brown */}
+            <rect x="-150" y="0" width="300" height="150" fill="#6B4040" />
             {/* Horizon line */}
-            <line x1="-150" y1="0" x2="150" y2="0" stroke="white" strokeWidth="2" />
+            <line x1="-150" y1="0" x2="150" y2="0" stroke="rgba(255,255,255,0.8)" strokeWidth="2" />
             {/* Pitch ladder */}
-            <line x1="-30" y1="-20" x2="30" y2="-20" stroke="white" strokeWidth="2" />
-            <line x1="-15" y1="-10" x2="15" y2="-10" stroke="white" strokeWidth="2" />
-            <line x1="-15" y1="10" x2="15" y2="10" stroke="white" strokeWidth="2" />
-            <line x1="-30" y1="20" x2="30" y2="20" stroke="white" strokeWidth="2" />
+            <line x1="-30" y1="-20" x2="30" y2="-20" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+            <line x1="-15" y1="-10" x2="15" y2="-10" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
+            <line x1="-15" y1="10" x2="15" y2="10" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
+            <line x1="-30" y1="20" x2="30" y2="20" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
           </svg>
         </div>
       </div>
@@ -56,27 +56,27 @@ function AttitudeIndicatorInner({ roll, pitch, heading, altitude, panelId }: Att
           style={{ transform: `rotate(${-heading}deg)` }}
         >
           <g
-            stroke="white"
-            strokeWidth="2"
+            stroke="rgba(255,255,255,0.7)"
+            strokeWidth="1.5"
             textAnchor="middle"
-            fontSize="10"
-            fontFamily="sans-serif"
-            fill="white"
-            fontWeight="normal"
+            fontSize="9"
+            fontFamily="var(--font-display)"
+            fill="rgba(255,255,255,0.8)"
+            fontWeight="500"
           >
-            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="3" />
+            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="2.5" />
             <text x="0" y="-44" stroke="none">N</text>
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(30)" />
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(60)" />
-            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="3" transform="rotate(90)" />
+            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="2.5" transform="rotate(90)" />
             <text x="0" y="-44" stroke="none" transform="rotate(90)">E</text>
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(120)" />
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(150)" />
-            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="3" transform="rotate(180)" />
+            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="2.5" transform="rotate(180)" />
             <text x="0" y="-44" stroke="none" transform="rotate(180)">S</text>
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(210)" />
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(240)" />
-            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="3" transform="rotate(270)" />
+            <line x1="0" y1="-55" x2="0" y2="-60" strokeWidth="2.5" transform="rotate(270)" />
             <text x="0" y="-44" stroke="none" transform="rotate(270)">W</text>
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(300)" />
             <line x1="0" y1="-55" x2="0" y2="-60" transform="rotate(330)" />
@@ -87,10 +87,10 @@ function AttitudeIndicatorInner({ roll, pitch, heading, altitude, panelId }: Att
       {/* Fixed aircraft wings overlay */}
       <div className="attitude-overlay">
         <svg width="120" height="120" viewBox="-60 -60 120 120">
-          <circle cx="0" cy="0" r="3" fill="#ffcc00" />
-          <path d="M -40 0 L -10 0 L -10 5" fill="none" stroke="#ffcc00" strokeWidth="3" strokeLinejoin="round" />
-          <path d="M 40 0 L 10 0 L 10 5" fill="none" stroke="#ffcc00" strokeWidth="3" strokeLinejoin="round" />
-          <polygon points="-5,-45 5,-45 0,-55" fill="#ffcc00" stroke="#ffcc00" strokeWidth="1" />
+          <circle cx="0" cy="0" r="3" fill="#FBBF24" />
+          <path d="M -40 0 L -10 0 L -10 5" fill="none" stroke="#FBBF24" strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M 40 0 L 10 0 L 10 5" fill="none" stroke="#FBBF24" strokeWidth="2.5" strokeLinejoin="round" />
+          <polygon points="-5,-45 5,-45 0,-55" fill="#FBBF24" stroke="#FBBF24" strokeWidth="1" />
         </svg>
       </div>
 

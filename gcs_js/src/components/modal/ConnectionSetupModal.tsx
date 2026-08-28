@@ -1,11 +1,15 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { createEmptyConnectionRecord, UAV_IDS } from "@/config/agents";
+import {
+  createEmptyConnectionRecord,
+  UAV_AGENT_BY_ID,
+  UAV_IDS,
+} from "@/config/agents";
 import { useGCSStore } from "@/hooks/useGCSStore";
 import type { UAVConnectionConfig, UAVId } from "@/types/telemetry";
 import UAVConnectionCardGrid, {
-  CONNECTION_FIELDS,
+  connectionFieldsFor,
   connectionFieldId,
   type ConnectionFieldKey,
 } from "./UAVConnectionCardGrid";
@@ -40,15 +44,16 @@ export default function ConnectionSetupModal() {
 
     for (const uavId of UAV_IDS) {
       const config = values[uavId];
-      const filledCount = CONNECTION_FIELDS.filter(
-        (field) => config[field.key].trim().length > 0,
+      const connectionFields = connectionFieldsFor(UAV_AGENT_BY_ID[uavId].hasVideo);
+      const filledCount = connectionFields.filter(
+        (field) => (config[field.key] || "").trim().length > 0,
       ).length;
 
       if (filledCount === 0) continue;
 
       let groupIsValid = true;
-      for (const field of CONNECTION_FIELDS) {
-        const value = config[field.key].trim();
+      for (const field of connectionFields) {
+        const value = (config[field.key] || "").trim();
         const id = connectionFieldId(uavId, field.key);
         if (!value) {
           newErrors[id] = true;
@@ -88,10 +93,12 @@ export default function ConnectionSetupModal() {
 
     for (const uavId of validUAVs) {
       const config: UAVConnectionConfig = {
-        streamPort: values[uavId].streamPort.trim(),
-        tcpIp: values[uavId].tcpIp.trim(),
-        mavlinkPort: values[uavId].mavlinkPort.trim(),
-        jsonPort: values[uavId].jsonPort.trim(),
+        streamPort: (values[uavId].streamPort || "").trim(),
+        tcpIp: (values[uavId].tcpIp || "").trim(),
+        mavlinkPort: (values[uavId].mavlinkPort || "").trim(),
+        jsonPort: (values[uavId].jsonPort || "").trim(),
+        missionUdpPort: (values[uavId].missionUdpPort || "").trim(),
+        raspiIp: (values[uavId].raspiIp || "").trim(),
       };
       setUAVConfig(uavId, config);
     }

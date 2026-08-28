@@ -29,6 +29,7 @@ export interface TelemetryData {
   battery_current?: number;
   battery_remaining_pct?: number;
   armed?: boolean;
+  [key: string]: any; // Allow arbitrary raw mavlink fields
 }
 
 /** UDP JSON telemetry from the UAV detection pipeline */
@@ -74,6 +75,8 @@ export interface UAVConnectionConfig {
   tcpIp: string;
   mavlinkPort: string;
   jsonPort: string;
+  missionUdpPort: string;   // Port UDP untuk mission protocol GCS↔Raspi
+  raspiIp: string;          // IP Raspi (Tailscale) untuk mission upload (udpout)
 }
 
 /** Mavlink connection status */
@@ -90,3 +93,14 @@ export type UAVType = "FIXED WING" | "COPTER";
 
 /** Per-slot collection helper. */
 export type UAVRecord<T> = Record<UAVId, T>;
+
+/** Custom metric configuration for dynamic grid */
+export interface MetricConfig {
+  id: string; // Unique ID (e.g. uuid or timestamp) for React keys
+  telemetryKey: string;
+  label: string;
+  format: "number" | "coordinate" | "distance" | "degrees" | "string";
+  decimals?: number;
+  suffix?: string;
+  accent?: boolean;
+}

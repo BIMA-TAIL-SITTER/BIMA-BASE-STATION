@@ -1,7 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { createDefaultConnectionRecord, UAV_IDS } from "@/config/agents";
+import {
+  createDefaultConnectionRecord,
+  UAV_AGENT_BY_ID,
+  UAV_IDS,
+} from "@/config/agents";
 import { useGCSStore } from "@/hooks/useGCSStore";
 import type { UAVId } from "@/types/telemetry";
 import UAVConnectionCardGrid, {
@@ -22,7 +26,9 @@ function EditConnectionDialog() {
   const [values, setValues] = useState(() => {
     const next = createDefaultConnectionRecord();
     for (const uavId of UAV_IDS) {
-      if (uavs[uavId]) next[uavId] = { ...uavs[uavId] };
+      if (uavs[uavId]) {
+        next[uavId] = { ...next[uavId], ...uavs[uavId] };
+      }
     }
     return next;
   });
@@ -38,13 +44,51 @@ function EditConnectionDialog() {
   );
 
   const handleSave = useCallback(() => {
+    const apiBase = window.location.origin.replace(/:\d+$/, ":8000");
+
     for (const uavId of UAV_IDS) {
+      const hasVideo = UAV_AGENT_BY_ID[uavId].hasVideo;
+      const ip = (values[uavId].tcpIp || "").trim();
+      const mavPort = (values[uavId].mavlinkPort || "").trim();
+
       setUAVConfig(uavId, {
-        streamPort: values[uavId].streamPort.trim(),
-        tcpIp: values[uavId].tcpIp.trim(),
-        mavlinkPort: values[uavId].mavlinkPort.trim(),
-        jsonPort: values[uavId].jsonPort.trim(),
+        streamPort: hasVideo ? (values[uavId].streamPort || "").trim() : "",
+        tcpIp: ip,
+        mavlinkPort: mavPort,
+        jsonPort: hasVideo ? (values[uavId].jsonPort || "").trim() : "",
+        missionUdpPort: !hasVideo ? (values[uavId].missionUdpPort || "").trim() : "",
+        raspiIp: !hasVideo ? (values[uavId].raspiIp || "").trim() : "",
       });
+
+      // Reconnect MAVLink for slots with a valid IP and port
+      if (ip && ip !== "0" && ip !== "0.0.0.0" && mavPort) {
+        const portNum = parseInt(mavPort, 10);
+        if (portNum > 0) {
+          fetch(`${apiBase}/api/telemetry/connect`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slot: uavId, ip, port: portNum }),
+          }).catch((e) =>
+            console.error(`[edit-modal] Reconnect slot ${uavId} failed:`, e),
+          );
+        }
+      }
+
+      // POST mission config to backend for copter slots (writes mission_config.json)
+      if (!hasVideo && (values[uavId].missionUdpPort || "").trim()) {
+        const raspiIp = (values[uavId].raspiIp || "").trim();
+        if (raspiIp) {
+          fetch(`${apiBase}/api/control/mission-config`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              slot: uavId,
+              raspi_ip: raspiIp,
+              mission_udp_port: parseInt(values[uavId].missionUdpPort.trim()) || 14560,
+            }),
+          }).catch(() => {/* ignore — best effort */});
+        }
+      }
     }
     setIsEditModalOpen(false);
   }, [setIsEditModalOpen, setUAVConfig, values]);
@@ -69,9 +113,6 @@ function EditConnectionDialog() {
             </svg>
           </div>
           <h2 className="setup-title" id="edit-connection-title">EDIT CONNECTION SETUP</h2>
-          <p className="setup-subtitle">
-            Update all four UAV links and reconnect active telemetry sources
-          </p>
         </div>
 
         <UAVConnectionCardGrid

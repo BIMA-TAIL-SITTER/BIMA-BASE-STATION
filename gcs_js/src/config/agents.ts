@@ -22,8 +22,8 @@ export const UAV_AGENTS: readonly UAVAgentConfig[] = [
     label: "UAV 1",
     shortLabel: "UAV 01",
     type: "FIXED WING",
-    color: "#56B4D3",
-    colorRgb: "86, 180, 211",
+    color: "#3B82F6",
+    colorRgb: "59, 130, 246",
     iconPath: "/plane-blue.svg",
     hasVideo: true,
     defaultConnection: {
@@ -31,6 +31,8 @@ export const UAV_AGENTS: readonly UAVAgentConfig[] = [
       tcpIp: "192.168.1.10",
       mavlinkPort: "5761",
       jsonPort: "5001",
+      missionUdpPort: "",
+      raspiIp: "",
     },
   },
   {
@@ -38,8 +40,8 @@ export const UAV_AGENTS: readonly UAVAgentConfig[] = [
     label: "UAV 2",
     shortLabel: "UAV 02",
     type: "FIXED WING",
-    color: "#D6C15A",
-    colorRgb: "214, 193, 90",
+    color: "#F59E0B",
+    colorRgb: "245, 158, 11",
     iconPath: "/plane-yellow.svg",
     hasVideo: true,
     defaultConnection: {
@@ -47,6 +49,8 @@ export const UAV_AGENTS: readonly UAVAgentConfig[] = [
       tcpIp: "192.168.1.11",
       mavlinkPort: "5762",
       jsonPort: "5002",
+      missionUdpPort: "",
+      raspiIp: "",
     },
   },
   {
@@ -54,15 +58,17 @@ export const UAV_AGENTS: readonly UAVAgentConfig[] = [
     label: "UAV 3",
     shortLabel: "UAV 03",
     type: "COPTER",
-    color: "#D78552",
-    colorRgb: "215, 133, 82",
+    color: "#F97316",
+    colorRgb: "249, 115, 22",
     iconPath: "/copter.svg",
     hasVideo: false,
     defaultConnection: {
-      streamPort: "5602",
+      streamPort: "",
       tcpIp: "192.168.1.12",
       mavlinkPort: "5763",
-      jsonPort: "5003",
+      jsonPort: "",
+      missionUdpPort: "14560",
+      raspiIp: "192.168.1.12",
     },
   },
   {
@@ -70,15 +76,17 @@ export const UAV_AGENTS: readonly UAVAgentConfig[] = [
     label: "UAV 4",
     shortLabel: "UAV 04",
     type: "COPTER",
-    color: "#D56B9D",
-    colorRgb: "213, 107, 157",
+    color: "#EC4899",
+    colorRgb: "236, 72, 153",
     iconPath: "/copter.svg",
     hasVideo: false,
     defaultConnection: {
-      streamPort: "5603",
+      streamPort: "",
       tcpIp: "192.168.1.13",
       mavlinkPort: "5764",
-      jsonPort: "5004",
+      jsonPort: "",
+      missionUdpPort: "14561",
+      raspiIp: "192.168.1.13",
     },
   },
 ];
@@ -91,7 +99,7 @@ export function createEmptyConnectionRecord(): Record<UAVId, UAVConnectionConfig
   return Object.fromEntries(
     UAV_AGENTS.map((agent) => [
       agent.id,
-      { streamPort: "", tcpIp: "", mavlinkPort: "", jsonPort: "" },
+      { streamPort: "", tcpIp: "", mavlinkPort: "", jsonPort: "", missionUdpPort: "", raspiIp: "" },
     ]),
   ) as Record<UAVId, UAVConnectionConfig>;
 }

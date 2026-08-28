@@ -17,7 +17,12 @@ import type {
   TakeoffRequest,
 } from "@/types/control";
 import type { UAVId } from "@/types/telemetry";
-import { uploadMission as uploadMissionRequest } from "@/lib/controlApi";
+import {
+  arm as armRequest,
+  disarm as disarmRequest,
+  setMode as setModeRequest,
+  uploadMission as uploadMissionRequest,
+} from "@/lib/controlApi";
 
 export interface UavControlActions {
   arm: (request?: ArmDisarmRequest) => Promise<CommandAckResponse>;
@@ -34,17 +39,15 @@ export interface UavControlActions {
 const TODO_MESSAGE = "TODO: implement in control feature task";
 
 export function useUavControl(slot: UAVId): UavControlActions {
-  void slot;
-
   return {
-    arm: async () => {
-      throw new Error(TODO_MESSAGE);
+    arm: async (request?: ArmDisarmRequest) => {
+      return armRequest(slot, request);
     },
-    disarm: async () => {
-      throw new Error(TODO_MESSAGE);
+    disarm: async (request?: ArmDisarmRequest) => {
+      return disarmRequest(slot, request);
     },
-    setMode: async () => {
-      throw new Error(TODO_MESSAGE);
+    setMode: async (request: ModeChangeRequest) => {
+      return setModeRequest(slot, request);
     },
     rtl: async () => {
       throw new Error(TODO_MESSAGE);
@@ -58,3 +61,4 @@ export function useUavControl(slot: UAVId): UavControlActions {
     uploadMission: (request) => uploadMissionRequest(slot, request),
   };
 }
+

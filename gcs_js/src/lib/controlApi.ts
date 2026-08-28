@@ -135,27 +135,30 @@ export async function arm(
   slot: UAVId,
   request: ArmDisarmRequest = {},
 ): Promise<CommandAckResponse> {
-  void slot;
-  void request;
-  return notImplemented();
+  return requestJson<CommandAckResponse>(`/api/control/${slot}/arm`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
 }
 
 export async function disarm(
   slot: UAVId,
   request: ArmDisarmRequest = {},
 ): Promise<CommandAckResponse> {
-  void slot;
-  void request;
-  return notImplemented();
+  return requestJson<CommandAckResponse>(`/api/control/${slot}/disarm`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
 }
 
 export async function setMode(
   slot: UAVId,
   request: ModeChangeRequest,
 ): Promise<CommandAckResponse> {
-  void slot;
-  void request;
-  return notImplemented();
+  return requestJson<CommandAckResponse>(`/api/control/${slot}/mode`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
 }
 
 export async function rtl(slot: UAVId): Promise<CommandAckResponse> {

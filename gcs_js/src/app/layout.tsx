@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, IBM_Plex_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import TopBar from "@/components/header/TopBar";
 import EditConnectionModal from "@/components/modal/EditConnectionModal";
 import { GCSProvider } from "@/hooks/useGCSStore";
 import "./globals.css";
 
-const barlowCondensed = Barlow_Condensed({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-display-next",
+  variable: "--font-sans-next",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-data-next",
+  variable: "--font-mono-next",
 });
 
 export const metadata: Metadata = {
-  title: "UAV Ground Station",
+  title: "BIMA Ground Control Station",
   description: "Web-based UAV Ground Station with real-time video and telemetry",
 };
 
@@ -30,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${barlowCondensed.variable} ${ibmPlexMono.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         <GCSProvider>

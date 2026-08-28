@@ -44,6 +44,13 @@ export default function TopBar() {
         >
           Stitching
         </Link>
+        <Link
+          href="/fulldata"
+          className={pathname === "/fulldata" ? "is-active" : ""}
+          aria-current={pathname === "/fulldata" ? "page" : undefined}
+        >
+          Full Data
+        </Link>
       </nav>
 
       <div className="header-info">

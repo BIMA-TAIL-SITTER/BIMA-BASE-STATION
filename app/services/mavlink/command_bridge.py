@@ -60,16 +60,122 @@ class MavlinkCommandBridge:
         self._mission_cache_sink = mission_cache_sink
 
     async def arm(self, slot: int, force: bool = False) -> bool:
-        """Arm one UAV and eventually report whether its ACK was accepted."""
-        raise NotImplementedError("TODO: implement in control feature task")
+        """Arm one UAV and return whether its ACK was accepted."""
+        master = self._require_master(slot)
+        cmd_id = mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM
+
+        def _is_arm_ack(msg: Any) -> bool:
+            return (
+                msg.get_type() == "COMMAND_ACK"
+                and int(msg.command) == cmd_id
+            )
+
+        async with self._router.transaction_lock(slot):
+            ack_future = self._router.expect(
+                slot, {"COMMAND_ACK"}, _is_arm_ack,
+            )
+            master.mav.command_long_send(
+                master.target_system,
+                master.target_component,
+                cmd_id,
+                0,       # confirmation
+                1,       # param1: 1 = arm
+                21196 if force else 0,  # param2: 21196 = force
+                0, 0, 0, 0, 0,
+            )
+            ack = await asyncio.wait_for(ack_future, timeout=5.0)
+
+        result_code = int(ack.result)
+        accepted = result_code == mavutil.mavlink.MAV_RESULT_ACCEPTED
+        result_label = _enum_label("MAV_RESULT", result_code, "MAV_RESULT")
+        logger.info(
+            "ARM slot %d force=%s → %s (%d)",
+            slot, force, result_label, result_code,
+        )
+        return accepted
 
     async def disarm(self, slot: int, force: bool = False) -> bool:
-        """Disarm one UAV and eventually report whether its ACK was accepted."""
-        raise NotImplementedError("TODO: implement in control feature task")
+        """Disarm one UAV and return whether its ACK was accepted."""
+        master = self._require_master(slot)
+        cmd_id = mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM
+
+        def _is_disarm_ack(msg: Any) -> bool:
+            return (
+                msg.get_type() == "COMMAND_ACK"
+                and int(msg.command) == cmd_id
+            )
+
+        async with self._router.transaction_lock(slot):
+            ack_future = self._router.expect(
+                slot, {"COMMAND_ACK"}, _is_disarm_ack,
+            )
+            master.mav.command_long_send(
+                master.target_system,
+                master.target_component,
+                cmd_id,
+                0,       # confirmation
+                0,       # param1: 0 = disarm
+                21196 if force else 0,  # param2: 21196 = force
+                0, 0, 0, 0, 0,
+            )
+            ack = await asyncio.wait_for(ack_future, timeout=5.0)
+
+        result_code = int(ack.result)
+        accepted = result_code == mavutil.mavlink.MAV_RESULT_ACCEPTED
+        result_label = _enum_label("MAV_RESULT", result_code, "MAV_RESULT")
+        logger.info(
+            "DISARM slot %d force=%s → %s (%d)",
+            slot, force, result_label, result_code,
+        )
+        return accepted
 
     async def set_mode(self, slot: int, mode: str) -> bool:
         """Set the requested autopilot flight mode for one UAV."""
-        raise NotImplementedError("TODO: implement in control feature task")
+        master = self._require_master(slot)
+
+        # Resolve mode name → custom_mode number
+        mode_map = master.mode_mapping()
+        if not mode_map:
+            raise ValueError("Could not retrieve mode mapping from autopilot")
+        upper_mode = mode.upper()
+        if upper_mode not in mode_map:
+            raise ValueError(
+                f"Unknown flight mode '{mode}'. "
+                f"Available: {', '.join(sorted(mode_map.keys()))}"
+            )
+        custom_mode = mode_map[upper_mode]
+
+        cmd_id = mavutil.mavlink.MAV_CMD_DO_SET_MODE
+
+        def _is_mode_ack(msg: Any) -> bool:
+            return (
+                msg.get_type() == "COMMAND_ACK"
+                and int(msg.command) == cmd_id
+            )
+
+        async with self._router.transaction_lock(slot):
+            ack_future = self._router.expect(
+                slot, {"COMMAND_ACK"}, _is_mode_ack,
+            )
+            master.mav.command_long_send(
+                master.target_system,
+                master.target_component,
+                cmd_id,
+                0,            # confirmation
+                1,            # param1: MAV_MODE_FLAG_CUSTOM_MODE_ENABLED
+                custom_mode,  # param2: custom_mode number
+                0, 0, 0, 0, 0,
+            )
+            ack = await asyncio.wait_for(ack_future, timeout=5.0)
+
+        result_code = int(ack.result)
+        accepted = result_code == mavutil.mavlink.MAV_RESULT_ACCEPTED
+        result_label = _enum_label("MAV_RESULT", result_code, "MAV_RESULT")
+        logger.info(
+            "SET_MODE slot %d mode=%s (%d) → %s (%d)",
+            slot, mode, custom_mode, result_label, result_code,
+        )
+        return accepted
 
     async def return_to_launch(self, slot: int) -> bool:
         """Request return-to-launch for one UAV."""

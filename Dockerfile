@@ -13,10 +13,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app/ ./app/
+COPY stitching_service/ ./stitching_service/
 
 # Create runtime directories
-RUN mkdir -p logs snapshots
+RUN mkdir -p logs snapshots stitching_service/sessions
 
-EXPOSE 8000 5000/udp
+EXPOSE 8000 5000/udp 5600/udp 5601/udp
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

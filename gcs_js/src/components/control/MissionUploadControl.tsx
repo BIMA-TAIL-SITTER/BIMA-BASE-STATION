@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   type CSSProperties,
 } from "react";
@@ -254,6 +255,91 @@ export function MissionUploadControl() {
       )
     : 0;
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveMission = useCallback(() => {
+    if (!draftMission.length) {
+      setError("No mission items to save.");
+      return;
+    }
+    const items = normalizeSequence(draftMission);
+    const lines = ["QGC WPL 110"];
+    for (const item of items) {
+      lines.push([
+        item.seq,
+        item.current ? 1 : 0,
+        item.frame,
+        item.command,
+        item.param1,
+        item.param2,
+        item.param3,
+        item.param4,
+        item.lat,
+        item.lon,
+        item.alt,
+        item.autocontinue ? 1 : 0,
+      ].join("\t"));
+    }
+    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const filename = `Mission_${agent.shortLabel.replace(/\s/g, "_")}.waypoints`;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    setNotice(`Mission saved as ${filename}`);
+  }, [draftMission, agent]);
+
+  const handleLoadMission = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const text = (evt.target?.result as string).trim();
+        const lines = text.split(/\r?\n/).filter((l) => l.trim() !== "");
+        // Validate header
+        if (!lines[0]?.startsWith("QGC WPL")) {
+          setError("Invalid .waypoints file. Expected header: QGC WPL 110");
+          return;
+        }
+        const items: MissionItem[] = [];
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split("\t");
+          if (cols.length < 12) continue;
+          items.push({
+            seq: parseInt(cols[0], 10),
+            current: cols[1] === "1",
+            frame: parseInt(cols[2], 10),
+            command: parseInt(cols[3], 10),
+            param1: parseFloat(cols[4]),
+            param2: parseFloat(cols[5]),
+            param3: parseFloat(cols[6]),
+            param4: parseFloat(cols[7]),
+            lat: parseFloat(cols[8]),
+            lon: parseFloat(cols[9]),
+            alt: parseFloat(cols[10]),
+            autocontinue: cols[11] === "1",
+          });
+        }
+        if (!items.length) {
+          setError("No valid waypoints found in file.");
+          return;
+        }
+        setDraftMission(normalizeSequence(items));
+        setHasUnuploadedChanges(true);
+        setError(null);
+        setNotice(`Loaded ${items.length} waypoints from ${file.name}.`);
+      } catch {
+        setError("Failed to parse .waypoints file.");
+      }
+    };
+    reader.readAsText(file);
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  }, []);
+
   return (
     <div
       className="mission-workspace"
@@ -268,30 +354,6 @@ export function MissionUploadControl() {
         disabled={isFetching || isUploading}
       />
 
-      <section className="operations-command-bar">
-        <div>
-          <strong>{agent.shortLabel}</strong>
-          <span>{agent.type} MISSION CHANNEL</span>
-        </div>
-        <div className="operations-command-actions">
-          <button
-            type="button"
-            className="operations-button"
-            onClick={handleFetch}
-            disabled={isFetching || isUploading}
-          >
-            {isFetching ? "FETCHING MISSION" : "FETCH MISSION FROM UAV"}
-          </button>
-          <button
-            type="button"
-            className="operations-button is-primary"
-            onClick={handleUpload}
-            disabled={!draftMission.length || isUploading}
-          >
-            {isUploading ? "UPLOADING MISSION" : "UPLOAD MISSION TO UAV"}
-          </button>
-        </div>
-      </section>
 
       {(uploadProgress || uploadResult) && (
         <section
@@ -337,7 +399,27 @@ export function MissionUploadControl() {
                   : "MISSION EDITOR ROUTE"}
               </span>
             </div>
-            <strong>{draftMission.length} WP</strong>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div className="operations-command-actions" style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="operations-button"
+                  onClick={handleFetch}
+                  disabled={isFetching || isUploading}
+                >
+                  {isFetching ? "FETCHING MISSION" : "FETCH MISSION FROM UAV"}
+                </button>
+                <button
+                  type="button"
+                  className="operations-button is-primary"
+                  onClick={handleUpload}
+                  disabled={!draftMission.length || isUploading}
+                >
+                  {isUploading ? "UPLOADING MISSION" : "UPLOAD MISSION TO UAV"}
+                </button>
+              </div>
+              <strong>{draftMission.length} WP</strong>
+            </div>
           </header>
           <MissionMap
             waypoints={draftMission}
@@ -356,8 +438,34 @@ export function MissionUploadControl() {
                   : `FETCHED FROM ${agent.shortLabel}`}
               </span>
             </div>
-            <strong>{draftMission.length} ITEMS</strong>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                type="button"
+                className="operations-button"
+                onClick={() => fileInputRef.current?.click()}
+                style={{ fontSize: '10px', padding: '4px 10px' }}
+              >
+                📂 LOAD FILE
+              </button>
+              <button
+                type="button"
+                className="operations-button"
+                onClick={handleSaveMission}
+                disabled={!draftMission.length}
+                style={{ fontSize: '10px', padding: '4px 10px' }}
+              >
+                💾 SAVE TO FILE
+              </button>
+              <strong>{draftMission.length} ITEMS</strong>
+            </div>
           </header>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".waypoints"
+            style={{ display: 'none' }}
+            onChange={handleLoadMission}
+          />
           <MissionTable
             items={draftMission}
             label={`Mission editor for ${agent.shortLabel}`}

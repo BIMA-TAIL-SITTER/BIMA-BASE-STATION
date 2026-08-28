@@ -58,7 +58,7 @@ export function StitchingEventLog({
 
       {events.length ? (
         <ol className="stitching-event-list" aria-live="polite">
-          {events.map((event) => {
+          {[...events].reverse().map((event) => {
             const description = describeEvent(event);
             return (
               <li key={event.id} className={description.tone}>
