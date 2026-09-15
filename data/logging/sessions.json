@@ -24,5 +24,23 @@
     "duration_s": 9.8,
     "data_count": 9,
     "name": "cek coba agi gtau"
+  },
+  {
+    "id": "3e0bf39a1524",
+    "filename": "3e0bf39a1524.jsonl",
+    "start_time": "2026-09-13T16:57:12+00:00",
+    "end_time": "2026-09-13T16:58:07+00:00",
+    "duration_s": 54.9,
+    "data_count": 54,
+    "name": "SITL SIMULASI 8 SEPTEMBER"
+  },
+  {
+    "id": "a49d8de35642",
+    "filename": "a49d8de35642.jsonl",
+    "start_time": "2026-09-13T17:03:11+00:00",
+    "end_time": "2026-09-13T17:03:38+00:00",
+    "duration_s": 26.9,
+    "data_count": 26,
+    "name": "dummy"
   }
 ]

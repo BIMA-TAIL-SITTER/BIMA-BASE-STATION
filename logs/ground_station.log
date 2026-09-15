@@ -31646,3 +31646,494 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-09-10 15:19:15 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14550
 2026-09-10 15:19:15 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14553
 2026-09-10 15:19:15 [INFO    ] app.main — Ground Station stopped.
+2026-09-13 23:54:33 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-09-13 23:54:33 [INFO    ] app.services.mavlink.swarm_coordinator — APF CSV logging initialized: logs/apf\apf_log_20260913_235433.csv
+2026-09-13 23:54:34 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-13 23:54:34 [INFO    ] app.main —   UAV Ground Station starting up
+2026-09-13 23:54:34 [INFO    ] app.main —   Web  port : 8000
+2026-09-13 23:54:34 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-09-13 23:54:34 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-13 23:54:34 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-09-13 23:54:34 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:54:34 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-13 23:54:34 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-13 23:54:34 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:54:34 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-13 23:54:34 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:54:34 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-13 23:54:34 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-13 23:54:34 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:54:34 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-13 23:54:34 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-13 23:54:34 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:54:34 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-13 23:54:34 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:54:34 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-13 23:54:34 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-13 23:54:34 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14550!
+2026-09-13 23:54:35 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — SUCCESS
+2026-09-13 23:54:46 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-09-13 23:54:46 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-13 23:54:46 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-13 23:54:46 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:54:46 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:54:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:54:46 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-13 23:54:46 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-13 23:54:46 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:54:46 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:54:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:54:46 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:54:46 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:54:48 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:54:50 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:54:52 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:54:54 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:54:56 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:54:58 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:00 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:02 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:04 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:06 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:08 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:10 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:12 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:14 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:16 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:18 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:18 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm batch upload starting: UAV-3=8 items, UAV-4=8 items
+2026-09-13 23:55:18 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:18 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for upload to 127.0.0.1:14561
+2026-09-13 23:55:18 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for upload to 127.0.0.1:14562
+2026-09-13 23:55:20 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:22 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:24 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:26 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:28 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:29 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm batch upload result: One UAV accepted, one failed — retry the failed UAV
+2026-09-13 23:55:29 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:29 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:30 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:31 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm batch upload starting: UAV-3=8 items, UAV-4=8 items
+2026-09-13 23:55:31 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:31 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for upload to 127.0.0.1:14561
+2026-09-13 23:55:31 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for upload to 127.0.0.1:14562
+2026-09-13 23:55:32 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:34 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:36 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm batch upload result: Both missions accepted — ready to start
+2026-09-13 23:55:36 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:36 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:36 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:36 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:36 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:36 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:38 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:38 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:40 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:40 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:42 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:42 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm coordinated start initiated
+2026-09-13 23:55:42 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:42 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for START to 127.0.0.1:14561
+2026-09-13 23:55:42 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for START to 127.0.0.1:14562
+2026-09-13 23:55:42 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:55:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:55:44 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-13 23:55:44 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:55:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:55:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:55:44 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-13 23:55:44 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:55:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:55:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:55:44 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-13 23:55:44 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:55:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-13 23:55:44 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:55:44 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-13 23:55:44 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14550
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14553
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14550!
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — SUCCESS
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-13 23:55:45 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-13 23:55:46 [INFO    ] app.services.mavlink.swarm_coordinator — Start command slot 3: ACCEPTED
+2026-09-13 23:55:46 [INFO    ] app.services.mavlink.swarm_coordinator — Start command slot 4: ACCEPTED
+2026-09-13 23:55:46 [INFO    ] app.services.mavlink.swarm_coordinator — APF monitoring loop started
+2026-09-13 23:55:46 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:46 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: PRECHECK → ARMING (armed)
+2026-09-13 23:55:46 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:47 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: PRECHECK → ARMING (armed)
+2026-09-13 23:55:50 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: ARMING → TAKEOFF (alt=1.0m)
+2026-09-13 23:55:50 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm phase: ARMING → TAKEOFF
+2026-09-13 23:55:50 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:51 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: ARMING → TAKEOFF (alt=1.0m)
+2026-09-13 23:55:51 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: TAKEOFF → HOVER_STABILIZING (alt=3.4m)
+2026-09-13 23:55:52 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: TAKEOFF → HOVER_STABILIZING (alt=3.4m)
+2026-09-13 23:55:52 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm phase: TAKEOFF → HOVER_STABILIZING
+2026-09-13 23:55:52 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:55:56 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: HOVER_STABILIZING → AUTO_RUNNING (mode=AUTO)
+2026-09-13 23:55:57 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: HOVER_STABILIZING → AUTO_RUNNING (mode=AUTO)
+2026-09-13 23:55:57 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm phase: HOVER_STABILIZING → AUTO_RUNNING
+2026-09-13 23:55:57 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-13 23:57:12 [INFO    ] app.services.data_logger — Logging session started: 3e0bf39a1524
+2026-09-13 23:58:07 [INFO    ] app.services.data_logger — Logging session stopped: 3e0bf39a1524 (54 samples)
+2026-09-13 23:58:08 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: AUTO_RUNNING → COMPLETED (landed, mode=LAND)
+2026-09-13 23:58:11 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: AUTO_RUNNING → COMPLETED (landed, mode=LAND)
+2026-09-13 23:58:11 [INFO    ] app.services.mavlink.swarm_coordinator — APF monitoring loop stopped
+2026-09-13 23:58:11 [INFO    ] app.services.mavlink.swarm_coordinator — Both UAVs completed — swarm phase → COMPLETED
+2026-09-13 23:58:11 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm phase: AUTO_RUNNING → COMPLETED
+2026-09-13 23:58:11 [INFO    ] app.services.mavlink.swarm_coordinator — APF loop cancelled
+2026-09-13 23:58:42 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-09-13 23:58:42 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-13 23:58:42 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-13 23:58:42 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:58:42 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:58:42 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:58:42 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-13 23:58:42 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-13 23:58:42 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:58:42 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:58:42 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:59:00 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:59:00 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:59:00 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:59:00 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-13 23:59:00 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:59:00 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:59:00 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:59:00 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:59:00 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:59:00 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:59:00 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-13 23:59:00 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-13 23:59:00 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-13 23:59:00 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-13 23:59:00 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14550
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14553
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14550!
+2026-09-13 23:59:01 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — SUCCESS
+2026-09-13 23:59:03 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-09-13 23:59:03 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-13 23:59:03 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-13 23:59:03 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:59:03 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-13 23:59:03 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-13 23:59:03 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-13 23:59:03 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-13 23:59:03 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-13 23:59:03 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-13 23:59:03 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-14 00:01:25 [INFO    ] app.main — Ground Station shutting down…
+2026-09-14 00:01:25 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14550
+2026-09-14 00:01:25 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14553
+2026-09-14 00:01:25 [INFO    ] app.main — Ground Station stopped.
+2026-09-14 00:01:26 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-09-14 00:01:26 [INFO    ] app.services.mavlink.swarm_coordinator — APF CSV logging initialized: logs/apf\apf_log_20260914_000126.csv
+2026-09-14 00:01:26 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-14 00:01:26 [INFO    ] app.main —   UAV Ground Station starting up
+2026-09-14 00:01:26 [INFO    ] app.main —   Web  port : 8000
+2026-09-14 00:01:26 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-09-14 00:01:26 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-14 00:01:26 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-09-14 00:01:27 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-09-14 00:01:27 [INFO    ] app.services.mavlink.swarm_coordinator — APF CSV logging initialized: logs/apf\apf_log_20260914_000127.csv
+2026-09-14 00:01:27 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-14 00:01:27 [INFO    ] app.main —   UAV Ground Station starting up
+2026-09-14 00:01:27 [INFO    ] app.main —   Web  port : 8000
+2026-09-14 00:01:27 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-09-14 00:01:27 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-14 00:01:27 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-09-14 00:01:48 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:01:48 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:01:50 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:01:52 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:01:54 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:01:56 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:01:58 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:02:00 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:02:02 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:02:04 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:02:06 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-14 00:02:07 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:07 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-14 00:02:07 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-14 00:02:07 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-14 00:02:07 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:07 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-14 00:02:07 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-14 00:02:07 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-14 00:02:07 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:07 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-14 00:02:07 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-14 00:02:07 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:07 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-14 00:02:07 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-14 00:02:07 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-09-14 00:02:07 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-14 00:02:07 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-14 00:02:07 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-14 00:02:07 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-14 00:02:07 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-14 00:02:07 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-14 00:02:08 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-14 00:02:08 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-14 00:02:08 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14550!
+2026-09-14 00:02:08 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — SUCCESS
+2026-09-14 00:02:16 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-09-14 00:02:16 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-14 00:02:16 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-14 00:02:16 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-14 00:02:16 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-14 00:02:16 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-14 00:02:16 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-14 00:02:16 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-14 00:02:16 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-14 00:02:16 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-14 00:02:16 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-14 00:02:35 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm batch upload starting: UAV-3=12 items, UAV-4=12 items
+2026-09-14 00:02:36 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for upload to 127.0.0.1:14561
+2026-09-14 00:02:36 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for upload to 127.0.0.1:14562
+2026-09-14 00:02:40 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm batch upload result: Both missions accepted — ready to start
+2026-09-14 00:02:45 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm coordinated start initiated
+2026-09-14 00:02:45 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for START to 127.0.0.1:14561
+2026-09-14 00:02:45 [INFO    ] app.services.mavlink.swarm_coordinator — Triggering gcs_mission_client for START to 127.0.0.1:14562
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-14 00:02:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:46 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-14 00:02:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:46 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-14 00:02:46 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-09-14 00:02:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-14 00:02:46 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5600 - remaining: 0
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5600
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-09-14 00:02:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-14 00:02:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:46 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-14 00:02:46 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-14 00:02:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-14 00:02:46 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-14 00:02:46 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-14 00:02:46 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14550
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14553
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14550!
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — SUCCESS
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-14 00:02:47 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-14 00:02:48 [INFO    ] app.services.mavlink.swarm_coordinator — Start command slot 4: ACCEPTED
+2026-09-14 00:02:49 [INFO    ] app.services.mavlink.swarm_coordinator — Start command slot 3: ACCEPTED
+2026-09-14 00:02:49 [INFO    ] app.services.mavlink.swarm_coordinator — APF monitoring loop started
+2026-09-14 00:02:49 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: PRECHECK → ARMING (armed)
+2026-09-14 00:02:49 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: PRECHECK → ARMING (armed)
+2026-09-14 00:02:53 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: ARMING → TAKEOFF (alt=1.0m)
+2026-09-14 00:02:53 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm phase: ARMING → TAKEOFF
+2026-09-14 00:02:53 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: ARMING → TAKEOFF (alt=1.0m)
+2026-09-14 00:02:54 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: TAKEOFF → HOVER_STABILIZING (alt=3.4m)
+2026-09-14 00:02:54 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: TAKEOFF → HOVER_STABILIZING (alt=3.4m)
+2026-09-14 00:02:54 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm phase: TAKEOFF → HOVER_STABILIZING
+2026-09-14 00:02:59 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 4: HOVER_STABILIZING → AUTO_RUNNING (mode=AUTO)
+2026-09-14 00:02:59 [INFO    ] app.services.mavlink.swarm_coordinator — Slot 3: HOVER_STABILIZING → AUTO_RUNNING (mode=AUTO)
+2026-09-14 00:02:59 [INFO    ] app.services.mavlink.swarm_coordinator — Swarm phase: HOVER_STABILIZING → AUTO_RUNNING
+2026-09-14 00:03:11 [INFO    ] app.services.data_logger — Logging session started: a49d8de35642
+2026-09-14 00:03:38 [INFO    ] app.services.data_logger — Logging session stopped: a49d8de35642 (26 samples)
+2026-09-15 15:36:12 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-09-15 15:36:12 [INFO    ] app.services.mavlink.swarm_coordinator — APF CSV logging initialized: logs/apf\apf_log_20260915_153612.csv
+2026-09-15 15:36:12 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-15 15:36:12 [INFO    ] app.main —   UAV Ground Station starting up
+2026-09-15 15:36:12 [INFO    ] app.main —   Web  port : 8000
+2026-09-15 15:36:12 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-09-15 15:36:12 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-09-15 15:36:13 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-09-15 15:36:16 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-09-15 15:36:16 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-09-15 15:36:16 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5600
+2026-09-15 15:36:16 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-15 15:36:16 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5600
+2026-09-15 15:36:16 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-15 15:36:16 [INFO    ] app.services.websocket.manager — Video client connected to port 5600 - total: 1
+2026-09-15 15:36:16 [INFO    ] app.services.video.manager — Broadcast loop started for port 5600
+2026-09-15 15:36:16 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-09-15 15:36:16 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-09-15 15:36:16 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-09-15 15:36:16 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-09-15 15:36:16 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-09-15 15:36:16 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-09-15 15:36:16 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-09-15 15:36:16 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-09-15 15:36:16 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-09-15 15:36:17 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-15 15:36:17 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-15 15:36:17 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-15 15:36:17 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-15 15:36:17 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-15 15:36:17 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-15 15:36:18 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-15 15:36:18 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-15 15:36:19 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-09-15 15:36:19 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — FAILED: Heartbeat timeout
+2026-09-15 15:36:25 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-15 15:36:25 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-15 15:36:25 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-15 15:36:25 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14553
+2026-09-15 15:36:25 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-15 15:36:25 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-15 15:36:25 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-15 15:36:25 [INFO    ] app.routers.control — Mission config updated: slot=3 ip=127.0.0.1 port=14561
+2026-09-15 15:36:25 [INFO    ] app.routers.control — Mission config updated: slot=4 ip=127.0.0.1 port=14562
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — starting...
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14550
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — starting...
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.connection — Disconnected from udp:172.21.240.1:14553
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14550...
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:172.21.240.1:14553
+2026-09-15 15:36:26 [INFO    ] app.services.mavlink.connection — Waiting for heartbeat from udp:172.21.240.1:14553...
+2026-09-15 15:36:27 [INFO    ] app.services.mavlink.connection — Heartbeat received from udp:172.21.240.1:14553!
+2026-09-15 15:36:27 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 172.21.240.1:14553 — SUCCESS
+2026-09-15 15:36:27 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-09-15 15:36:27 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — FAILED: Heartbeat timeout
+2026-09-15 15:36:28 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:172.21.240.1:14550: Heartbeat timeout
+2026-09-15 15:36:28 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 172.21.240.1:14550 — FAILED: Heartbeat timeout
