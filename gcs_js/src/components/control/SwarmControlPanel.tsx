@@ -14,7 +14,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { UAV_AGENT_BY_ID } from "@/config/agents";
+import { COPTER_IDS, UAV_AGENT_BY_ID } from "@/config/agents";
 import { createEmptyMissionItem } from "@/config/mission";
 import { useGCSStore } from "@/hooks/useGCSStore";
 import type { MissionItem } from "@/types/control";
@@ -26,6 +26,7 @@ import type {
   SwarmStartResponse,
   SwarmAbortResponse,
 } from "@/types/swarm";
+import type { UAVId } from "@/types/telemetry";
 import {
   fetchSwarmStatus,
   uploadBatchMission,
@@ -33,13 +34,16 @@ import {
   abortSwarmMission,
   resetSwarm,
   generateSwarmMission,
+  SWARM_API_BASE,
 } from "@/lib/swarmApi";
 import dynamic from "next/dynamic";
+import type { SwarmVehicleMarker } from "@/components/map/SwarmSurveyMap";
 
 const SwarmSurveyMap = dynamic(
   () => import("@/components/map/SwarmSurveyMap").then((mod) => mod.SwarmSurveyMap),
   { ssr: false }
 );
+
 
 function normalizeSequence(items: MissionItem[]): MissionItem[] {
   return items.map((item, index) => ({ ...item, seq: index }));
@@ -134,6 +138,59 @@ export function SwarmControlPanel() {
   const agentA = UAV_AGENT_BY_ID[3];
   const agentB = UAV_AGENT_BY_ID[4];
 
+  // --- Vehicle Telemetry for Map Icons ---
+  const MAP_CENTER_LAT = -7.77126;
+  const MAP_CENTER_LON = 110.37765;
+  const [vehicleMarkers, setVehicleMarkers] = useState<SwarmVehicleMarker[]>(() =>
+    COPTER_IDS.map((id, idx) => ({
+      id,
+      lat: MAP_CENTER_LAT + (idx === 0 ? 0.0003 : -0.0003),
+      lon: MAP_CENTER_LON + (idx === 0 ? -0.0003 : 0.0003),
+      heading: 0,
+      altitude: 0,
+      mode: "--",
+    }))
+  );
+
+  // Poll latest telemetry for copter positions
+  useEffect(() => {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    let active = true;
+
+    const fetchVehiclePositions = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/telemetry/latest`);
+        const data = await res.json();
+        if (!active || data.error) return;
+
+        const markers: SwarmVehicleMarker[] = COPTER_IDS.map((id, idx) => {
+          const slot = data[`slot_${id}`] || data[String(id)] || {};
+          const lat = slot.lat ?? slot.latitude ?? null;
+          const lon = slot.lon ?? slot.longitude ?? null;
+          return {
+            id,
+            lat: lat && lat !== 0 ? lat : MAP_CENTER_LAT + (idx === 0 ? 0.0003 : -0.0003),
+            lon: lon && lon !== 0 ? lon : MAP_CENTER_LON + (idx === 0 ? -0.0003 : 0.0003),
+            heading: slot.heading_deg ?? slot.heading ?? 0,
+            altitude: slot.relative_alt_m ?? slot.altitude ?? 0,
+            mode: slot.mode ?? slot.flight_mode ?? "--",
+          };
+        });
+        setVehicleMarkers(markers);
+      } catch {
+        // Silently fail — keep existing markers
+      }
+    };
+
+    void fetchVehiclePositions();
+    const interval = setInterval(fetchVehiclePositions, 2000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+
   // --- Persistence ---
   useEffect(() => {
     const saved = sessionStorage.getItem("bima_swarm_planner_state");
@@ -195,7 +252,7 @@ export function SwarmControlPanel() {
 
   // --- File Handlers ---
   const handleLoadFile = useCallback(
-    (setter: typeof setMissionA) =>
+    (setter: typeof setMissionA, pathSetter: typeof setUav3Path) =>
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -204,7 +261,10 @@ export function SwarmControlPanel() {
           const text = evt.target?.result as string;
           const items = parseWaypointsFile(text);
           if (items) {
-            setter(normalizeSequence(items));
+            const normalized = normalizeSequence(items);
+            setter(normalized);
+            const path = normalized.filter((i) => i.lat !== 0 && i.lon !== 0).map((i) => [i.lat, i.lon]);
+            pathSetter(path);
             setNotice(`Loaded ${items.length} waypoints from ${file.name}`);
             setError(null);
             setPlanningState("DIRTY");
@@ -295,6 +355,12 @@ export function SwarmControlPanel() {
       setUploadResult(result);
       if (result.ready_to_start) {
         setNotice("Both missions accepted — READY TO START");
+        // Publish to main map after a successful upload so the operator sees the plan before starting
+        const p3 = missionA.filter(i => i.lat !== 0 && i.lon !== 0).map(i => [i.lat, i.lon]);
+        const p4 = missionB.filter(i => i.lat !== 0 && i.lon !== 0).map(i => [i.lat, i.lon]);
+        if (p3.length > 0 || p4.length > 0) {
+          setSwarmPaths({ uav3Path: p3, uav4Path: p4 });
+        }
       } else {
         setError(result.message);
       }
@@ -325,8 +391,10 @@ export function SwarmControlPanel() {
       if (result.accepted) {
         setNotice("Coordinated start accepted — mission running");
         // Publish swarm paths to global store for main map display
-        if (uav3Path.length > 0 || uav4Path.length > 0) {
-          setSwarmPaths({ uav3Path, uav4Path });
+        const p3 = missionA.filter(i => i.lat !== 0 && i.lon !== 0).map(i => [i.lat, i.lon]);
+        const p4 = missionB.filter(i => i.lat !== 0 && i.lon !== 0).map(i => [i.lat, i.lon]);
+        if (p3.length > 0 || p4.length > 0) {
+          setSwarmPaths({ uav3Path: p3, uav4Path: p4 });
         }
       } else {
         setError(result.message);
@@ -462,6 +530,7 @@ export function SwarmControlPanel() {
               onPolygonDeleted={() => { setPolygon(null); setPlanningState("EMPTY"); }}
               uav3Path={uav3Path}
               uav4Path={uav4Path}
+              vehicles={vehicleMarkers}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -534,7 +603,7 @@ export function SwarmControlPanel() {
             >
               📂 LOAD .waypoints
             </button>
-            <input ref={fileInputA} type="file" accept=".waypoints" style={{ display: "none" }} onChange={handleLoadFile(setMissionA)} />
+            <input ref={fileInputA} type="file" accept=".waypoints" style={{ display: "none" }} onChange={handleLoadFile(setMissionA, setUav3Path)} />
           </div>
           {missionA.length > 0 && (
             <div className="swarm-wp-list">
@@ -574,7 +643,7 @@ export function SwarmControlPanel() {
             >
               📂 LOAD .waypoints
             </button>
-            <input ref={fileInputB} type="file" accept=".waypoints" style={{ display: "none" }} onChange={handleLoadFile(setMissionB)} />
+            <input ref={fileInputB} type="file" accept=".waypoints" style={{ display: "none" }} onChange={handleLoadFile(setMissionB, setUav4Path)} />
           </div>
           {missionB.length > 0 && (
             <div className="swarm-wp-list">

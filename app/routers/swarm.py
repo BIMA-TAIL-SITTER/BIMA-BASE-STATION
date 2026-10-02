@@ -177,7 +177,17 @@ async def generate_mission(params: SurveyParameters) -> MissionBatchResponse:
         return MissionBatchResponse(success=False, message="Generation failed", error=str(exc))
         
     def build_mission_items(path, alt):
-        items = []
+        items = [
+            MissionItem(
+                seq=0,
+                command=22, # MAV_CMD_NAV_TAKEOFF
+                frame=3,
+                lat=0.0,
+                lon=0.0,
+                alt=alt,
+                autocontinue=True
+            )
+        ]
         for i, (lat, lon) in enumerate(path, start=1):
             items.append(MissionItem(
                 seq=i,

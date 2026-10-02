@@ -109,12 +109,14 @@ export default function MissionMap({
       <MapContainer
         center={center}
         zoom={14}
+        maxZoom={24}
         zoomControl
         style={{ width: "100%", height: "100%" }}
       >
         <TileLayer
           url={`${CONTROL_API_BASE}/api/peta/ubin/{z}/{x}/{y}.png`}
-          maxZoom={19}
+          maxZoom={24}
+          maxNativeZoom={19}
           attribution="Peta Offline MBTiles GCS"
         />
         <MapClickHandler onCoordinatePick={onCoordinatePick} />

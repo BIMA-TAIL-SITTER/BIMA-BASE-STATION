@@ -756,6 +756,11 @@ def gcs_listener_thread(gcs_conn, fc_conn, state, config):
 
             msg_type = msg.get_type()
 
+            # Setiap pesan valid dari GCS memperbarui heartbeat timestamp
+            with state.lock:
+                state.last_gcs_heartbeat = time.time()
+                state.gcs_alive = True
+
             # ── Terima Mission dari GCS ──
             if msg_type == "MISSION_COUNT":
                 count = msg.count
@@ -791,7 +796,7 @@ def gcs_listener_thread(gcs_conn, fc_conn, state, config):
 
             # ── Heartbeat dari GCS (koneksi hidup) ──
             elif msg_type == "HEARTBEAT":
-                pass  # GCS masih aktif, tidak perlu action
+                pass  # Timestamp sudah diperbarui di atas
 
         except Exception as e:
             if not state.stop_event.is_set():
@@ -837,6 +842,9 @@ def _handle_start_command(gcs_conn, fc_conn, state, config):
     # Valid — set running dan kirim ACK
     with state.lock:
         state.mission_running = True
+        state.last_gcs_heartbeat = time.time()
+        state.gcs_alive = True
+        state.gcs_lost = False
 
     gcs_conn.mav.command_ack_send(
         MAV_CMD_USER_1,
@@ -931,7 +939,7 @@ def gcs_heartbeat_watchdog(fc_conn, gcs_conn, state, config):
 
         if last_hb > 0 and (time.time() - last_hb) > timeout:
             # GCS heartbeat lost during flight!
-            if phase in ("AUTO_RUNNING", "HOVER_STABILIZING"):
+            if phase in ("AUTO_RUNNING", "HOVER_STABILIZING", "NAVIGATING", "HOLDING", "TAKEOFF"):
                 print(f"[!] GCS heartbeat lost ({time.time() - last_hb:.1f}s) — switching to LOITER")
                 send_status_to_gcs(gcs_conn, "[!] GCS LOST - LOITER")
                 _set_mode(fc_conn, "LOITER")

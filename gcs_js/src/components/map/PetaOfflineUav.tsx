@@ -181,12 +181,14 @@ export default function PetaOfflineUav({
       <MapContainer
         center={[resolvedVehicles[0].lat, resolvedVehicles[0].lon]}
         zoom={14}
+        maxZoom={24}
         style={{ width: "100%", height: "100%" }}
         zoomControl={false}
       >
         <TileLayer
           url={tileServerUrl}
-          maxZoom={19}
+          maxZoom={24}
+          maxNativeZoom={19}
           attribution="Peta Offline MBTiles GCS"
         />
 

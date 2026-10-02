@@ -83,7 +83,7 @@ def heartbeat_sender(mav_conn, stop_event):
 
 # ─── Status Receiver Thread ──────────────────────────────────────────────
 
-def status_receiver(mav_conn, stop_event, pause_event):
+def status_receiver(mav_conn, stop_event, pause_event, flight_finished_event=None):
     """
     Loop recv_match non-blocking yang mem-print STATUSTEXT dari Raspi.
     Berjalan di thread terpisah supaya tidak mengganggu input() user.
@@ -113,6 +113,11 @@ def status_receiver(mav_conn, stop_event, pause_event):
                 text = msg.text.strip() if hasattr(msg, "text") else str(msg)
                 # Print status dari Raspi langsung ke console
                 print(f"    {text}")
+
+                if flight_finished_event is not None:
+                    upper_text = text.upper()
+                    if any(term in upper_text for term in ["COMPLETED", "FAILED", "SELESAI", "BATAL", "LISTEN MODE"]):
+                        flight_finished_event.set()
 
             elif msg_type == "COMMAND_ACK":
                 cmd = msg.command
@@ -375,6 +380,8 @@ def main():
     parser.add_argument("--ip", type=str, help="IP Raspi (override mission_config.json)")
     parser.add_argument("--port", type=int, help="Port UDP (override mission_config.json)")
     parser.add_argument("--mission-file", type=str, help="Path JSON file untuk upload misi (override control_uav.py)")
+    parser.add_argument("--no-wait", action="store_true", help="Jangan tunggu penerbangan selesai setelah start")
+    parser.add_argument("--timeout", type=float, default=300.0, help="Timeout pemantauan penerbangan (detik, default: 300s)")
     args = parser.parse_args()
 
     # Baca konfigurasi koneksi
@@ -434,6 +441,7 @@ def main():
     # Start threads
     stop_event = threading.Event()
     pause_event = threading.Event()  # Pause status_receiver during mission ops
+    flight_finished_event = threading.Event()
 
     hb_thread = threading.Thread(
         target=heartbeat_sender,
@@ -446,7 +454,7 @@ def main():
 
     status_thread = threading.Thread(
         target=status_receiver,
-        args=(mav_conn, stop_event, pause_event),
+        args=(mav_conn, stop_event, pause_event, flight_finished_event),
         daemon=True,
         name="gcs-status-receiver"
     )
@@ -457,35 +465,34 @@ def main():
     print("[*] Menunggu koneksi stabil (2 detik)...")
     time.sleep(2)
 
-    # Import dan upload mission pertama kali
-    try:
-        mission = []
-        if args and args.mission_file:
-            print(f"[*] Membaca misi dari file {args.mission_file}...")
-            with open(args.mission_file, "r") as f:
-                raw = json.load(f)
-                for item in raw:
-                    mission.append({
-                        "command": item["command"],
-                        "param1": item.get("param1", 0.0),
-                        "param2": item.get("param2", 0.0),
-                        "param3": item.get("param3", 0.0),
-                        "param4": item.get("param4", 0.0),
-                        "x": item.get("lat", 0.0),
-                        "y": item.get("lon", 0.0),
-                        "z": item.get("alt", 0.0)
-                    })
-            print(f"[*] Loaded {len(mission)} waypoint dari {args.mission_file}")
-        else:
-            from control_uav import build_mission
-            mission = build_mission()
-            print(f"[*] Loaded {len(mission)} waypoint dari control_uav.py")
-    except Exception as e:
-        print(f"[-] Gagal load mission: {e}")
-        stop_event.set()
-        sys.exit(1)
-
-
+    # Import dan upload mission pertama kali (jika action bukan start)
+    mission = []
+    if args.action != "start":
+        try:
+            if args and args.mission_file:
+                print(f"[*] Membaca misi dari file {args.mission_file}...")
+                with open(args.mission_file, "r") as f:
+                    raw = json.load(f)
+                    for item in raw:
+                        mission.append({
+                            "command": item["command"],
+                            "param1": item.get("param1", 0.0),
+                            "param2": item.get("param2", 0.0),
+                            "param3": item.get("param3", 0.0),
+                            "param4": item.get("param4", 0.0),
+                            "x": item.get("lat", 0.0),
+                            "y": item.get("lon", 0.0),
+                            "z": item.get("alt", 0.0)
+                        })
+                print(f"[*] Loaded {len(mission)} waypoint dari {args.mission_file}")
+            else:
+                from control_uav import build_mission
+                mission = build_mission()
+                print(f"[*] Loaded {len(mission)} waypoint dari control_uav.py")
+        except Exception as e:
+            print(f"[-] Gagal load mission: {e}")
+            stop_event.set()
+            sys.exit(1)
 
     if args.action == "upload":
         print()
@@ -503,10 +510,28 @@ def main():
         print()
         print("--- Start Mission -------------------------")
         send_start_mission(mav_conn)
-        time.sleep(1.0) # Tunggu ack
-        stop_event.set()
-        print("[+] Start signal terkirim.")
-        sys.exit(0)
+        
+        if args.no_wait:
+            time.sleep(1.0)
+            stop_event.set()
+            print("[+] Start signal terkirim (no-wait).")
+            sys.exit(0)
+        else:
+            print("[*] Memantau penerbangan real-time & menjaga GCS Heartbeat aktif...")
+            print("[*] Tekan Ctrl+C untuk menghentikan pemantauan.")
+            start_time = time.time()
+            try:
+                while not stop_event.is_set() and not flight_finished_event.is_set():
+                    if time.time() - start_time > args.timeout:
+                        print(f"[!] Monitoring timeout ({args.timeout}s) tercapai.")
+                        break
+                    time.sleep(0.5)
+            except KeyboardInterrupt:
+                print("\n[*] Pemantauan dihentikan oleh pengguna.")
+
+            stop_event.set()
+            print("[+] Proses Start Mission selesai.")
+            sys.exit(0)
 
     # CLI loop — interactive mode
     print()

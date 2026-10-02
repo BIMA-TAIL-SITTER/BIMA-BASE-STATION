@@ -1974,7 +1974,8 @@ a {
 
 /* Custom vehicle icons on map */
 .ikon-pesawat-kustom,
-.ikon-waypoint-kustom {
+.ikon-waypoint-kustom,
+.swarm-vehicle-icon {
   background: none !important;
   border: none !important;
 }
