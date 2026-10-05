@@ -56,6 +56,7 @@ function EditConnectionDialog() {
         tcpIp: ip,
         mavlinkPort: mavPort,
         jsonPort: hasVideo ? (values[uavId].jsonPort || "").trim() : "",
+        imagePort: hasVideo ? (values[uavId].imagePort || "").trim() : "",
         missionUdpPort: !hasVideo ? (values[uavId].missionUdpPort || "").trim() : "",
         raspiIp: !hasVideo ? (values[uavId].raspiIp || "").trim() : "",
       });

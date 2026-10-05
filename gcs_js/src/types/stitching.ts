@@ -14,6 +14,12 @@ export interface StitchSessionSummary {
   auto_stitch: boolean;
 }
 
+export interface StitchImageSource {
+  uavId: number;
+  label: string;
+  imagePort: number;
+}
+
 export interface StitchSessionStatus {
   session_id: string;
   image_count: number;
@@ -23,6 +29,7 @@ export interface StitchSessionStatus {
   folder_monitoring_enabled: boolean;
   last_stitch_count: number;
   images_since_last_stitch: number;
+  attached_uav_id: number | null;
 }
 
 export type StitchWsEvent =

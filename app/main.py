@@ -15,6 +15,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config.settings import settings
+from app.services.image.receiver import UAVImageReceiver
 from app.services.video.manager import MultiStreamManager
 from app.services.mavlink.command_bridge import MavlinkCommandBridge
 from app.services.mavlink.message_router import MavlinkMessageRouter
@@ -92,6 +93,9 @@ param_bridge = MavlinkParamBridge(
     message_router=message_router,
     ws_manager=ws_manager,
 )
+# List of active UAVImageReceiver instances
+image_receivers: dict[int, UAVImageReceiver] = {}
+
 
 # Swarm coordinator for dual-copter operations & APF
 from app.services.mavlink.swarm_coordinator import SwarmCoordinator
@@ -139,6 +143,7 @@ async def lifespan(app: FastAPI):
     # Inject service references into routers so they can be accessed
     video.video_manager_instance = video_manager
     video.ws_manager_instance = ws_manager
+    stitching.image_receivers_by_uav = image_receivers
     stitching.video_manager_instance = video_manager
     telemetry.telemetry_generator_instance = telemetry_generator
     telemetry.ws_manager_instance = ws_manager
@@ -151,7 +156,28 @@ async def lifespan(app: FastAPI):
     logging_router.data_logger_instance = data_logger
 
     # Start the single MAVLink receiver before telemetry broadcasting.
+    # start the stitching ingestion listener and engine
     await stitching.startup()
+
+    if settings.IMAGE_RECEIVER_ENABLED:
+        for cfg in settings.image_receiver_uav_config:
+            session = stitching.ensure_uav_session(
+            cfg["session_id"],
+            auto_stitch_threshold=cfg["auto_stitch_threshold"],
+            auto_stitch_enabled=cfg["auto_stitch_enabled"],
+            folder_monitoring_enabled=cfg["folder_monitoring_enabled"],
+            output_name=cfg["output_name"],
+            )
+            receiver = UAVImageReceiver(
+                port=cfg["port"],
+                session_id=cfg["session_id"],
+                save_dir=session.image_folder,
+                on_received=stitching.handle_received_image,
+                loop=asyncio.get_running_loop(),
+            )
+            receiver.start()
+            image_receivers[cfg["slot"]] = receiver
+
     await message_router.start()
     telemetry_task = asyncio.create_task(telemetry_generator.broadcast_loop())
 
@@ -164,6 +190,9 @@ async def lifespan(app: FastAPI):
     await data_logger.shutdown()
     telemetry_task.cancel()
     video_manager.stop_all()
+
+    for receiver in image_receivers.values():
+        receiver.stop()
     await stitching.shutdown()
     await param_bridge.stop()
     await message_router.stop()

@@ -4072,6 +4072,13 @@ a {
   white-space: nowrap;
 }
 
+.stitching-image-attach-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.7fr) minmax(260px, 1fr);
+  align-items: end;
+  gap: var(--space-3);
+}
+
 .stitching-intake-row {
   display: grid;
   grid-template-columns: minmax(320px, 0.8fr) minmax(380px, 1.2fr);
@@ -4345,6 +4352,7 @@ a {
 @media (max-width: 1120px) {
   .stitching-session-select-row,
   .stitching-stream-intake-row,
+  .stitching-image-attach-row,
   .stitching-intake-row {
     grid-template-columns: minmax(0, 1fr);
   }

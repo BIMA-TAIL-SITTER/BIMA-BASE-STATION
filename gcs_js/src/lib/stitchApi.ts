@@ -1,5 +1,6 @@
 import type {
   StitchConfig,
+  StitchImageSource,
   StitchIntermediateList,
   StitchSessionStatus,
   StitchSessionSummary,
@@ -79,6 +80,16 @@ export async function createSession(config: StitchConfig): Promise<{
   return requestJson("/session/create", {
     method: "POST",
     body: JSON.stringify(config),
+  });
+}
+
+export async function attachImageSource(
+  sessionId: string,
+  source: StitchImageSource,
+): Promise<{ uav_id: number; previous_session_id: string | null; attached_session_id: string }> {
+  return requestJson(`/image-receiver/${encodeURIComponent(String(source.uavId))}/attach`, {
+    method: "POST",
+    body: JSON.stringify({ session_id: sessionId }),
   });
 }
 
