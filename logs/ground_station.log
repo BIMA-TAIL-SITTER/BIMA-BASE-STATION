@@ -37987,3 +37987,232 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-10-01 18:25:45 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
 2026-10-01 18:25:45 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
 2026-10-01 18:25:58 [INFO    ] app.services.mavlink.swarm_coordinator — Start command slot 3: ACCEPTED
+2026-10-04 21:35:24 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-10-04 21:35:24 [INFO    ] app.services.mavlink.swarm_coordinator — APF CSV logging initialized: logs/apf/apf_log_20261004_213524.csv
+2026-10-04 21:35:24 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-10-04 21:35:24 [INFO    ] app.main —   UAV Ground Station starting up
+2026-10-04 21:35:24 [INFO    ] app.main —   Web  port : 8000
+2026-10-04 21:35:24 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-10-04 21:35:24 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-10-04 21:35:24 [INFO    ] app.services.image.receiver — UavImageReceiver listening on 0.0.0.0:6001 for session uav_1
+2026-10-04 21:35:24 [INFO    ] app.services.image.receiver — UavImageReceiver listening on 0.0.0.0:6002 for session uav_2
+2026-10-04 21:35:24 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-10-04 21:35:39 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-10-04 21:35:39 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-10-04 21:35:39 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-10-04 21:35:39 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-10-04 21:35:39 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-10-04 21:35:39 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-10-04 21:35:39 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 - total: 1
+2026-10-04 21:35:39 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-10-04 21:35:39 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-10-04 21:35:39 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-10-04 21:35:39 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-10-04 21:35:39 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-10-04 21:35:39 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-10-04 21:35:39 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-10-04 21:35:39 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-10-04 21:35:39 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-10-04 21:35:39 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-10-04 21:35:40 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — starting...
+2026-10-04 21:35:40 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.10:5761
+2026-10-04 21:35:40 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.10:5761: [Errno 99] Cannot assign requested address
+2026-10-04 21:35:40 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-04 21:35:43 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-10-04 21:35:43 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 - remaining: 0
+2026-10-04 21:35:43 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-10-04 21:35:43 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-10-04 21:35:43 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-10-04 21:35:43 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-10-04 21:35:43 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-10-04 21:35:43 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-10-04 21:35:43 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-10-04 21:35:43 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-10-04 21:35:43 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-10-04 21:36:50 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-10-04 21:36:51 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-10-04 21:38:40 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:38:43 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-04 21:38:43 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-10-04 21:38:43 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-10-04 21:38:43 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-10-04 21:38:43 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-10-04 21:38:43 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-10-04 21:38:43 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-10-04 21:38:43 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 - total: 1
+2026-10-04 21:38:43 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-10-04 21:38:43 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 - remaining: 0
+2026-10-04 21:38:43 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-10-04 21:38:43 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-10-04 21:38:43 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-10-04 21:38:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-10-04 21:38:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-10-04 21:38:44 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-10-04 21:38:44 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-10-04 21:38:44 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-10-04 21:38:44 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 - total: 1
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-10-04 21:38:44 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-10-04 21:38:44 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-10-04 21:38:44 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-10-04 21:38:44 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-10-04 21:38:44 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-10-04 21:38:44 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:38:44 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 - remaining: 0
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-10-04 21:38:44 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-10-04 21:38:44 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-10-04 21:38:45 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-10-04 21:38:45 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-10-04 21:38:45 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-10-04 21:38:45 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-10-04 21:38:45 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-10-04 21:38:45 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-10-04 21:38:45 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-04 21:38:45 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:38:53 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-04 21:40:48 [INFO    ] app.main — Ground Station shutting down…
+2026-10-04 21:40:49 [INFO    ] app.services.image.receiver — UavImageReceiver on port 6001 stopped for session uav_1
+2026-10-04 21:40:49 [INFO    ] app.services.image.receiver — UavImageReceiver on port 6002 stopped for session uav_2
+2026-10-04 21:40:49 [INFO    ] app.main — Ground Station stopped.
+2026-10-04 21:40:49 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-10-04 21:40:49 [INFO    ] app.services.mavlink.swarm_coordinator — APF CSV logging initialized: logs/apf/apf_log_20261004_214049.csv
+2026-10-04 21:40:49 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-10-04 21:40:49 [INFO    ] app.main —   UAV Ground Station starting up
+2026-10-04 21:40:49 [INFO    ] app.main —   Web  port : 8000
+2026-10-04 21:40:49 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-10-04 21:40:49 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-10-04 21:40:49 [INFO    ] app.services.image.receiver — UavImageReceiver listening on 0.0.0.0:6001 for session uav_1
+2026-10-04 21:40:49 [INFO    ] app.services.image.receiver — UavImageReceiver listening on 0.0.0.0:6002 for session uav_2
+2026-10-04 21:40:49 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-10-04 21:49:19 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-10-04 21:49:20 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-10-04 21:49:20 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:49:20 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-04 21:49:20 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-10-04 21:49:20 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-10-04 21:49:22 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-10-04 21:49:24 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-10-04 21:49:26 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-10-04 21:49:28 [WARNING ] app.services.mavlink.swarm_coordinator — Takeoff positions are identical (0.0m). Assuming SITL without offsets; bypassing interlock.
+2026-10-04 21:49:28 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:49:28 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-04 21:49:29 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:49:32 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-04 21:58:05 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:58:11 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-04 21:58:11 [INFO    ] app.services.websocket.manager — Control client connected to slot 2 - total: 1
+2026-10-04 21:58:12 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 2 - remaining: 0
+2026-10-04 21:58:12 [INFO    ] app.services.websocket.manager — Control client connected to slot 3 - total: 1
+2026-10-04 21:58:12 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 3 - remaining: 0
+2026-10-04 21:58:12 [INFO    ] app.services.websocket.manager — Control client connected to slot 2 - total: 1
+2026-10-04 21:58:13 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 2 - remaining: 0
+2026-10-04 21:58:13 [INFO    ] app.services.websocket.manager — Control client connected to slot 4 - total: 1
+2026-10-04 21:58:14 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 4 - remaining: 0
+2026-10-04 21:58:14 [INFO    ] app.services.websocket.manager — Control client connected to slot 1 - total: 1
+2026-10-04 21:58:22 [INFO    ] app.services.websocket.manager — Control client disconnected from slot 1 - remaining: 0
+2026-10-05 00:01:20 [INFO    ] app.main — Ground Station shutting down…
+2026-10-05 00:01:20 [INFO    ] app.services.image.receiver — UavImageReceiver on port 6001 stopped for session uav_1
+2026-10-05 00:01:20 [INFO    ] app.services.image.receiver — UavImageReceiver on port 6002 stopped for session uav_2
+2026-10-05 00:01:20 [INFO    ] app.main — Ground Station stopped.
+2026-10-05 10:26:36 [INFO    ] app.services.video.manager — MultiStreamManager ready (fps_limit=30, jpeg_quality=80)
+2026-10-05 10:26:36 [INFO    ] app.services.mavlink.swarm_coordinator — APF CSV logging initialized: logs/apf/apf_log_20261005_102636.csv
+2026-10-05 10:26:36 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-10-05 10:26:36 [INFO    ] app.main —   UAV Ground Station starting up
+2026-10-05 10:26:36 [INFO    ] app.main —   Web  port : 8000
+2026-10-05 10:26:36 [INFO    ] app.main —   Host      : 0.0.0.0
+2026-10-05 10:26:36 [INFO    ] app.main — ═══════════════════════════════════════════
+2026-10-05 10:26:36 [INFO    ] app.services.image.receiver — UavImageReceiver listening on 0.0.0.0:6001 for session uav_1
+2026-10-05 10:26:36 [INFO    ] app.services.image.receiver — UavImageReceiver listening on 0.0.0.0:6002 for session uav_2
+2026-10-05 10:26:36 [INFO    ] app.main — Ground Station ready — open http://0.0.0.0:8000
+2026-10-05 10:26:42 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5001
+2026-10-05 10:26:42 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5001
+2026-10-05 10:26:42 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5000
+2026-10-05 10:26:42 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-10-05 10:26:42 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5000
+2026-10-05 10:26:42 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-10-05 10:26:42 [INFO    ] app.services.websocket.manager — Video client connected to port 5000 - total: 1
+2026-10-05 10:26:42 [INFO    ] app.services.video.manager — Broadcast loop started for port 5000
+2026-10-05 10:26:42 [INFO    ] app.services.video.manager — Starting new UdpTelemetryReceiver for JSON port 5002
+2026-10-05 10:26:42 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver listening on 0.0.0.0:5002
+2026-10-05 10:26:42 [INFO    ] app.services.video.manager — Starting new VideoReceiver for port 5601
+2026-10-05 10:26:42 [INFO    ] app.services.video.receiver — VideoReceiver created (Source: UDP)
+2026-10-05 10:26:42 [INFO    ] app.services.video.receiver — VideoReceiver listening on UDP port 5601
+2026-10-05 10:26:42 [INFO    ] app.services.video.receiver — VideoReceiver thread started for udp
+2026-10-05 10:26:42 [INFO    ] app.services.websocket.manager — Video client connected to port 5601 - total: 1
+2026-10-05 10:26:42 [INFO    ] app.services.video.manager — Broadcast loop started for port 5601
+2026-10-05 10:26:42 [INFO    ] app.services.websocket.manager — Telemetry client connected - total: 1
+2026-10-05 10:26:43 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — starting...
+2026-10-05 10:26:43 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.10:5761
+2026-10-05 10:26:43 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.10:5761: [Errno 99] Cannot assign requested address
+2026-10-05 10:26:43 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:26:45 [INFO    ] app.services.websocket.manager — Telemetry client disconnected - remaining: 0
+2026-10-05 10:26:45 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5000 - remaining: 0
+2026-10-05 10:26:45 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5000
+2026-10-05 10:26:45 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-10-05 10:26:45 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5001
+2026-10-05 10:26:45 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-10-05 10:26:45 [INFO    ] app.services.websocket.manager — Video client disconnected from port 5601 - remaining: 0
+2026-10-05 10:26:45 [INFO    ] app.services.video.manager — Stopping VideoReceiver for port 5601
+2026-10-05 10:26:45 [INFO    ] app.services.video.receiver — VideoReceiver stopped
+2026-10-05 10:26:45 [INFO    ] app.services.video.manager — Stopping UdpTelemetryReceiver for JSON port 5002
+2026-10-05 10:26:46 [INFO    ] app.services.telemetry.udp_telemetry — UdpTelemetryReceiver stopped.
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — starting...
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.10:5761
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 2 → 192.168.1.11:5762 — starting...
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 192.168.1.12:5763 — starting...
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.12:5763
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 192.168.1.13:5764 — starting...
+2026-10-05 10:32:03 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.10:5761: [Errno 99] Cannot assign requested address
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [Errno 99] Cannot assign requested address
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 2 → 192.168.1.11:5762 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:32:03 [INFO    ] app.routers.control — Mission config updated: slot=3 ip=192.168.1.12 port=14560
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.12:5763: [Errno 99] Cannot assign requested address
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 192.168.1.12:5763 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:32:03 [INFO    ] app.routers.control — Mission config updated: slot=4 ip=192.168.1.13 port=14561
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [Errno 99] Cannot assign requested address
+2026-10-05 10:32:03 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 192.168.1.13:5764 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — starting...
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.10:5761
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 2 → 192.168.1.11:5762 — starting...
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 192.168.1.12:5763 — starting...
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.12:5763
+2026-10-05 10:33:12 [INFO    ] app.routers.control — Mission config updated: slot=3 ip=192.168.1.12 port=14560
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.10:5761: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 192.168.1.13:5764 — starting...
+2026-10-05 10:33:12 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 2 → 192.168.1.11:5762 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [INFO    ] app.routers.control — Mission config updated: slot=4 ip=192.168.1.13 port=14561
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.12:5763: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 192.168.1.12:5763 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [Errno 99] Cannot assign requested address
+2026-10-05 10:33:12 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 192.168.1.13:5764 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [INFO    ] app.routers.control — Mission config updated: slot=3 ip=192.168.1.12 port=14560
+2026-10-05 10:39:17 [INFO    ] app.routers.control — Mission config updated: slot=4 ip=192.168.1.13 port=14561
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — starting...
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.10:5761
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 192.168.1.12:5763 — starting...
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.12:5763
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 2 → 192.168.1.11:5762 — starting...
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.11:5762
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 192.168.1.13:5764 — starting...
+2026-10-05 10:39:17 [INFO    ] app.services.mavlink.connection — Connecting to MAVLink at udp:192.168.1.13:5764
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.10:5761: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 1 → 192.168.1.10:5761 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.12:5763: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 3 → 192.168.1.12:5763 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.11:5762: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 2 → 192.168.1.11:5762 — FAILED: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.connection — Failed to connect to udp:192.168.1.13:5764: [Errno 99] Cannot assign requested address
+2026-10-05 10:39:17 [ERROR   ] app.services.mavlink.telemetry_bridge — connect_slot 4 → 192.168.1.13:5764 — FAILED: [Errno 99] Cannot assign requested address

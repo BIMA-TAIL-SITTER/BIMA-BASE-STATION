@@ -6,6 +6,7 @@ import { useGCSStore } from "@/hooks/useGCSStore";
 import { useStitchWebSocket } from "@/hooks/useStitchWebSocket";
 import {
   captureStreamImage,
+  attachImageSource,
   createSession,
   getSessionStatus,
   listIntermediates,
@@ -18,6 +19,7 @@ import {
 import type {
   StitchConfig,
   StitchEventRecord,
+  StitchImageSource,
   StitchSessionStatus,
   StitchSessionSummary,
   StitchStreamSource,
@@ -65,6 +67,18 @@ export function StitchingPanel() {
           ? jsonPort
           : undefined,
       }];
+    })
+  ), [uavs]);
+
+  // image stream port sources 
+  const imageSources: StitchImageSource[] = useMemo(() => (
+    UAV_IDS.flatMap((uavId) => {
+      const connection = uavs[uavId];
+      const port = Number.parseInt(connection?.imagePort ?? "", 10);
+      if (!Number.isInteger(port) || port < 1 || port > 65_535) return [];
+      return [{
+        uavId, label: UAV_AGENT_BY_ID[uavId].label, imagePort: port,
+      }]
     })
   ), [uavs]);
 
@@ -244,6 +258,15 @@ export function StitchingPanel() {
     });
   };
 
+  const handleAttachSource = async (source: StitchImageSource) => {
+    if (!selectedSessionId) return;
+    await runAction("attach-source", async () => {
+      await attachImageSource(selectedSessionId, source);
+      await refreshSessionDetails(selectedSessionId);
+      setNotice(`${source.label} attached to session ${selectedSessionId}.`);
+    })
+  }
+
   const handleTrigger = async () => {
     if (!selectedSessionId) return;
     await runAction("stitch", async () => {
@@ -291,6 +314,8 @@ export function StitchingPanel() {
             onUpload={handleUpload}
             streamSources={streamSources}
             onCaptureStream={handleCaptureStream}
+            imageSources={imageSources}
+            onAttachSource={handleAttachSource}
           />
 
           <div className="stitching-output-grid">

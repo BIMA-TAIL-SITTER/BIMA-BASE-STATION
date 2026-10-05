@@ -65,6 +65,7 @@ export const CONNECTION_FIELDS: readonly ConnectionFieldDefinition[] = [
   { key: "tcpIp", label: "UDP IP", type: "text", icon: serverIcon },
   { key: "mavlinkPort", label: "MAVLINK PORT", type: "number", icon: portIcon },
   { key: "jsonPort", label: "JSON PORT", type: "number", icon: codeIcon },
+  { key: "imagePort", label: "IMAGE PORT",  type: "number", icon: portIcon },
 ];
 
 const raspiIcon = (
@@ -83,7 +84,7 @@ const MISSION_FIELDS: readonly ConnectionFieldDefinition[] = [
 ];
 
 const COPTER_BASE_FIELDS = CONNECTION_FIELDS.filter(
-  (field) => field.key !== "streamPort" && field.key !== "jsonPort",
+  (field) => field.key !== "streamPort" && field.key !== "jsonPort" && field.key !== "imagePort",
 );
 
 export function connectionFieldsFor(hasVideo: boolean): readonly ConnectionFieldDefinition[] {

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type {
   StitchConfig,
+  StitchImageSource,
   StitchSessionStatus,
   StitchSessionSummary,
   StitchStreamSource,
@@ -20,6 +21,8 @@ interface StitchingSessionControlProps {
   onUpload: (files: File[]) => Promise<void>;
   streamSources: StitchStreamSource[];
   onCaptureStream: (source: StitchStreamSource) => Promise<void>;
+  imageSources: StitchImageSource[];
+  onAttachSource: (source: StitchImageSource) => Promise<void>;
 }
 
 function streamSourceKey(source: StitchStreamSource): string {
@@ -38,11 +41,14 @@ export function StitchingSessionControl({
   onUpload,
   streamSources,
   onCaptureStream,
+  imageSources,
+  onAttachSource,
 }: StitchingSessionControlProps) {
   const [sessionName, setSessionName] = useState("");
   const [threshold, setThreshold] = useState(5);
   const [files, setFiles] = useState<File[]>([]);
   const [selectedStreamKey, setSelectedStreamKey] = useState("");
+  const [selectedImageUavId, setSelectedImageUavId] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,8 +60,20 @@ export function StitchingSessionControl({
     });
   }, [streamSources]);
 
+  useEffect(() => {
+    setSelectedImageUavId((current) => {
+      if (current && imageSources.some((s) => String(s.uavId) === current)) {
+        return current;
+      }
+      return imageSources[0] ? String(imageSources[0].uavId) : "";
+    })
+  }, [imageSources])
+
   const selectedStream = streamSources.find(
     (source) => streamSourceKey(source) === selectedStreamKey,
+  );
+  const selectedImageSource = imageSources.find(
+    (source) => String(source.uavId) === selectedImageUavId,
   );
 
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
@@ -197,6 +215,47 @@ export function StitchingSessionControl({
               }
             >
               {pendingAction === "capture-stream" ? "Capturing" : "Capture Frame"}
+            </button>
+          </div>
+        </div>
+        
+        <div className="stitching-image-attach-row">
+            <label className="operations-field">
+            <span>Image stream port</span>
+            <select
+              value={selectedImageUavId}
+              onChange={(event) => setSelectedImageUavId(event.target.value)}
+              disabled={!imageSources.length || Boolean(pendingAction)}
+            >
+              {!imageSources.length && (
+                <option value="">No configured image ports</option>
+              )}
+              {imageSources.map((source) => (
+                <option key={source.uavId} value={source.uavId}>
+                  {source.label} - UDP {source.imagePort}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="stitching-stream-action">
+            <span>
+              {status?.attached_uav_id
+                ? `Attached · UAV ${status.attached_uav_id}`
+                : "Not attached"}
+            </span>
+            <button
+              type="button"
+              className="operations-button is-primary"
+              onClick={() => {
+                if (selectedImageSource) void onAttachSource(selectedImageSource);
+              }}
+              disabled={
+                !selectedSessionId
+                || !selectedImageSource
+                || Boolean(pendingAction)
+              }
+            >
+              {pendingAction === "attach-source" ? "Attaching" : "Attach Source"}
             </button>
           </div>
         </div>

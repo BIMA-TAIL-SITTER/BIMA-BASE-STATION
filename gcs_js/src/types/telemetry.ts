@@ -75,6 +75,7 @@ export interface UAVConnectionConfig {
   tcpIp: string;
   mavlinkPort: string;
   jsonPort: string;
+  imagePort: string;        // Port UDP untuk image stream GCS↔Raspi
   missionUdpPort: string;   // Port UDP untuk mission protocol GCS↔Raspi
   raspiIp: string;          // IP Raspi (Tailscale) untuk mission upload (udpout)
 }
