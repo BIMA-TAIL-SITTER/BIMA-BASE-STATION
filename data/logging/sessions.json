@@ -42,5 +42,86 @@
     "duration_s": 26.9,
     "data_count": 26,
     "name": "dummy"
+  },
+  {
+    "id": "cc06f52ac7c8",
+    "filename": "cc06f52ac7c8.jsonl",
+    "start_time": "2026-10-07T03:54:02+00:00",
+    "end_time": "2026-10-07T03:57:22+00:00",
+    "duration_s": 200.4,
+    "data_count": 159,
+    "name": "terbang 1 pancas"
+  },
+  {
+    "id": "b95ae254f5a1",
+    "filename": "b95ae254f5a1.jsonl",
+    "start_time": "2026-10-07T03:59:49+00:00",
+    "end_time": "2026-10-07T04:01:23+00:00",
+    "duration_s": 94.1,
+    "data_count": 79,
+    "name": "terbang 2 gagal"
+  },
+  {
+    "id": "c549c257a376",
+    "filename": "c549c257a376.jsonl",
+    "start_time": "2026-10-07T04:01:58+00:00",
+    "end_time": "2026-10-07T04:12:45+00:00",
+    "duration_s": 646.7,
+    "data_count": 529,
+    "name": "terbagn 3"
+  },
+  {
+    "id": "bdbcf9d07353",
+    "filename": "bdbcf9d07353.jsonl",
+    "start_time": "2026-10-07T05:06:37+00:00",
+    "end_time": "2026-10-07T05:08:53+00:00",
+    "duration_s": 136.0,
+    "data_count": 134,
+    "name": "terbang 4 berhasil"
+  },
+  {
+    "id": "c8d2620f1a5b",
+    "filename": "c8d2620f1a5b.jsonl",
+    "start_time": "2026-10-08T11:42:44+00:00",
+    "end_time": "2026-10-08T11:42:52+00:00",
+    "duration_s": 7.7,
+    "data_count": 7,
+    "name": "cek coba"
+  },
+  {
+    "id": "ab48d2cac06c",
+    "filename": "ab48d2cac06c.jsonl",
+    "start_time": "2026-10-15T05:28:08+00:00",
+    "end_time": "2026-10-15T05:34:28+00:00",
+    "duration_s": 379.9,
+    "data_count": 376,
+    "name": "gagal kamis 13 okt"
+  },
+  {
+    "id": "340d73c5e28b",
+    "filename": "340d73c5e28b.jsonl",
+    "start_time": "2026-10-15T05:35:08+00:00",
+    "end_time": "2026-10-15T05:36:36+00:00",
+    "duration_s": 87.5,
+    "data_count": 86,
+    "name": "gagal lagi"
+  },
+  {
+    "id": "b5a39d6f090b",
+    "filename": "b5a39d6f090b.jsonl",
+    "start_time": "2026-10-15T05:38:09+00:00",
+    "end_time": "2026-10-15T05:49:33+00:00",
+    "duration_s": 683.7,
+    "data_count": 679,
+    "name": "gagal"
+  },
+  {
+    "id": "c7b143805027",
+    "filename": "c7b143805027.jsonl",
+    "start_time": "2026-10-15T07:04:28+00:00",
+    "end_time": "2026-10-15T07:13:31+00:00",
+    "duration_s": 543.2,
+    "data_count": 538,
+    "name": "berhasil"
   }
 ]

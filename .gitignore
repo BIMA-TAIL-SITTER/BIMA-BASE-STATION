@@ -79,3 +79,5 @@ swarm-companion-state*.json*
 # Scratch and runtime output (not source).
 /tmp/
 /logs/apf/
+/dump_trash/
+/data/logging/*.jsonl
