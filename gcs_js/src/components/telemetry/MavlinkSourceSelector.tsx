@@ -78,7 +78,7 @@ export function MavlinkSourceSelector({ panelId, onConnect, onDisconnect }: Mavl
       await fetch(`${API_BASE}/api/telemetry/connect`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot: panelId, ip: selectedSource, port }),
+        body: JSON.stringify({ slot: panelId, ip: selectedSource, port, force: true }),
       });
       console.log(`[telemetry] Connected slot ${panelId} to ${selectedSource}:${port}`);
       if (onConnect) onConnect(selectedSource, port);

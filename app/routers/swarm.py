@@ -31,6 +31,16 @@ router = APIRouter(prefix="/api/swarm", tags=["swarm"])
 
 # Injected by app.main during application startup.
 swarm_coordinator_instance = None
+dispatcher_instance = None
+
+
+def _require_legacy():
+    from app.config.settings import settings
+    if not settings.SWARM_LEGACY_ENABLED:
+        raise HTTPException(409, "Legacy swarm is disabled by configuration")
+    if dispatcher_instance and dispatcher_instance.owns_copters():
+        raise HTTPException(409, "Nearest-waypoint mission owns the copters; use dashboard mission controls")
+    return _require_coordinator()
 
 
 def _require_coordinator():
@@ -63,7 +73,7 @@ async def upload_batch(
     Each UAV's upload runs as an independent transaction with its own
     timeout, retry, and ACK tracking.
     """
-    coord = _require_coordinator()
+    coord = _require_legacy()
 
     # Convert schema MissionItems to internal MissionItems
     items_a = [
@@ -125,7 +135,7 @@ async def start_mission(
       - All safety interlocks pass
       - confirmation == "CONFIRM_START" (double-click protection)
     """
-    coord = _require_coordinator()
+    coord = _require_legacy()
     return await coord.start_mission(
         request.confirmation,
         ip_3=request.ip_3,
@@ -147,7 +157,7 @@ async def abort_mission(
     If airborne: switches to LOITER (never disarms in flight).
     If on ground: disarms.
     """
-    coord = _require_coordinator()
+    coord = _require_legacy()
     return await coord.abort(request.reason)
 
 
@@ -156,7 +166,7 @@ async def abort_mission(
 @router.post("/reset", response_model=SwarmStatusResponse)
 async def reset_swarm() -> SwarmStatusResponse:
     """Reset swarm state to IDLE for a fresh operation cycle."""
-    coord = _require_coordinator()
+    coord = _require_legacy()
     return await coord.reset()
 
 

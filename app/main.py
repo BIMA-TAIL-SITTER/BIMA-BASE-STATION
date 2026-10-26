@@ -23,6 +23,7 @@ from app.services.mavlink.telemetry_bridge import MavlinkTelemetryBridge
 from app.services.websocket.manager import WebSocketManager
 from app.services.data_logger import DataLoggingService
 from app.routers import control, video, telemetry, system, stitching, swarm
+from app.routers import waypoint_dispatch
 from app.routers import logging as logging_router
 
 # ─── Logging Setup ────────────────────────────────────────────────
@@ -104,6 +105,9 @@ apf_config = APFConfig(
     k_rep=settings.APF_K_REP,
     max_lateral_offset_m=settings.APF_MAX_OFFSET,
     tick_rate_hz=settings.APF_TICK_RATE_HZ,
+    hysteresis_enter_m=settings.APF_ENTER_M,
+    hysteresis_exit_m=settings.APF_EXIT_M,
+    prediction_horizon=settings.APF_PREDICTION_HORIZON_S,
 )
 
 swarm_coordinator = SwarmCoordinator(
@@ -147,6 +151,13 @@ async def lifespan(app: FastAPI):
     control.param_bridge_instance = param_bridge
     control.ws_manager_instance = ws_manager
     swarm.swarm_coordinator_instance = swarm_coordinator
+    from app.services.mavlink.swarm_link import SwarmLink
+    from app.services.mission.waypoint_scheduler import WaypointScheduler
+    dispatcher = WaypointScheduler(SwarmLink(settings.SWARM_LINK_KEY, settings.SWARM_ACK_TIMEOUT_S), settings, swarm_coordinator)
+    waypoint_dispatch.scheduler_instance = dispatcher
+    swarm.dispatcher_instance = dispatcher
+    control.dispatcher_instance = dispatcher
+    await dispatcher.start()
     system.ws_manager_instance = ws_manager
     logging_router.data_logger_instance = data_logger
 
@@ -161,6 +172,10 @@ async def lifespan(app: FastAPI):
 
     # ─── Shutdown ──────────────────────────────────────────────────
     logger.info("Ground Station shutting down…")
+    await dispatcher.close()
+    waypoint_dispatch.scheduler_instance = None
+    swarm.dispatcher_instance = None
+    control.dispatcher_instance = None
     await data_logger.shutdown()
     telemetry_task.cancel()
     video_manager.stop_all()
@@ -210,6 +225,7 @@ app.include_router(system.api_router)
 app.include_router(control.api_router)
 app.include_router(stitching.api_router)
 app.include_router(swarm.router)
+app.include_router(waypoint_dispatch.router)
 app.include_router(peta_router)
 app.include_router(logging_router.router)
 

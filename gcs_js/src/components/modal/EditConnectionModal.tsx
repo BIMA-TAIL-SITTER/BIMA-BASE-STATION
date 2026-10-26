@@ -67,7 +67,7 @@ function EditConnectionDialog() {
           fetch(`${apiBase}/api/telemetry/connect`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ slot: uavId, ip, port: portNum }),
+            body: JSON.stringify({ slot: uavId, ip, port: portNum, force: true }),
           }).catch((e) =>
             console.error(`[edit-modal] Reconnect slot ${uavId} failed:`, e),
           );

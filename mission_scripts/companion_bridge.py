@@ -60,6 +60,9 @@ def parse_args():
     parser.add_argument("--hover-vz-threshold", type=float, default=DEFAULT_HOVER_VZ_THRESHOLD, help="Hover vertical speed threshold (m/s)")
     parser.add_argument("--hover-min-duration", type=float, default=DEFAULT_HOVER_MIN_DURATION, help="Hover stabilization min duration (s)")
     parser.add_argument("--gcs-heartbeat-timeout", type=float, default=DEFAULT_GCS_HEARTBEAT_TIMEOUT, help="GCS heartbeat timeout before failsafe (s)")
+    parser.add_argument("--mission-mode", choices=("legacy", "swarm"), default="legacy")
+    parser.add_argument("--swarm-safety", help="JSON site safety configuration (required in swarm mode)")
+    parser.add_argument("--swarm-journal", default="swarm-companion-state.json")
     return parser.parse_args()
 
 
@@ -756,6 +759,11 @@ def gcs_listener_thread(gcs_conn, fc_conn, state, config):
 
             msg_type = msg.get_type()
 
+            # Capability probes from the assignment-only client must not keep
+            # a legacy flight alive after its actual GCS has disconnected.
+            if msg_type == "TUNNEL":
+                continue
+
             # Setiap pesan valid dari GCS memperbarui heartbeat timestamp
             with state.lock:
                 state.last_gcs_heartbeat = time.time()
@@ -1015,6 +1023,7 @@ def main():
 
     # ── Koneksi FC (serial/udp) ──
     print(f"[*] Menghubungkan ke FC: {fc_connection}")
+    hb = None
     try:
         kwargs = {
             "source_system": 1,
@@ -1048,6 +1057,22 @@ def main():
     print()
 
     fc_conn.expected_system = args.fc_system_id or getattr(fc_conn, "expected_system", None)
+
+    if args.mission_mode == "swarm":
+        # Swarm has a single FC reader and does not start legacy listener/watchdog
+        # threads. Its own non-blocking engine preserves GCS/FC failsafe handling.
+        import json
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+        from mission_scripts.swarm_companion import SwarmCompanion
+        if not args.swarm_safety or hb is None or not fc_conn.target_system or not fc_conn.target_component:
+            raise SystemExit("Swarm requires --swarm-safety and an identified FC heartbeat")
+        if hb.autopilot != mavutil.mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA or hb.type not in (2, 3, 4, 13, 14, 15, 29, 35):
+            raise SystemExit("Swarm GUIDED engine requires an ArduPilot copter autopilot")
+        safety = json.loads(Path(args.swarm_safety).read_text())
+        SwarmCompanion(fc_conn, gcs_conn, args.uav_id, os.environ.get("SWARM_LINK_KEY", ""),
+                       safety, args.swarm_journal, config).run()
+        return
 
     # ── Start threads ──
     hb_gcs = threading.Thread(

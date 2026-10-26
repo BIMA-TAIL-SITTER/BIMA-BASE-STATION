@@ -32,13 +32,6 @@ export default function TopBar() {
           Mission
         </Link>
         <Link
-          href="/swarm"
-          className={pathname === "/swarm" ? "is-active" : ""}
-          aria-current={pathname === "/swarm" ? "page" : undefined}
-        >
-          Swarm
-        </Link>
-        <Link
           href="/params"
           className={pathname === "/params" ? "is-active" : ""}
           aria-current={pathname === "/params" ? "page" : undefined}

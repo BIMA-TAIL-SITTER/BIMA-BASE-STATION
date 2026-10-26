@@ -71,12 +71,15 @@ class ConnectRequest(BaseModel):
     slot: int = Field(ge=1, le=4)
     ip: str
     port: int
+    force: bool = False
 
 @api_router.post("/connect")
 async def connect_mavlink(req: ConnectRequest):
     if telemetry_generator_instance is None:
         return {"error": "not initialised"}
-    success = await telemetry_generator_instance.connect_slot(req.slot, req.ip, req.port)
+    success = await telemetry_generator_instance.connect_slot(
+        req.slot, req.ip, req.port, force=req.force,
+    )
     return {"success": success}
 
 class DisconnectRequest(BaseModel):

@@ -1,6 +1,16 @@
 {
   "gcs": {
-    "raspi_ip": "127.0.0.1",
-    "mission_udp_port": 14562
+    "raspi_ip": "100.88.43.109",
+    "mission_udp_port": 15562
+  },
+  "uavs": {
+    "3": {
+      "raspi_ip": "100.76.49.111",
+      "mission_udp_port": 15561
+    },
+    "4": {
+      "raspi_ip": "100.88.43.109",
+      "mission_udp_port": 15562
+    }
   }
 }

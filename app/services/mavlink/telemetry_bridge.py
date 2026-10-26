@@ -37,6 +37,7 @@ class MavlinkTelemetryBridge(MAVLinkTelemetryBridge):
         self._connect_tokens: Dict[int, int] = {
             slot: 0 for slot in UAV_SLOTS
         }
+        self._connect_locks = {slot: asyncio.Lock() for slot in UAV_SLOTS}
         self._missions: Dict[int, list[dict]] = {
             slot: [] for slot in UAV_SLOTS
         }
@@ -65,40 +66,58 @@ class MavlinkTelemetryBridge(MAVLinkTelemetryBridge):
             16: "POSHOLD",
         }
 
-    async def connect_slot(self, slot: int, ip: str, port: int) -> bool:
+    async def connect_slot(
+        self, slot: int, ip: str, port: int, *, force: bool = False,
+    ) -> bool:
         if slot not in self.connections:
             logger.warning("connect_slot: invalid slot %s (valid: %s)", slot, list(self.connections.keys()))
             return False
 
+        ip = ip.strip()
         # Skip connection if ip is 0, 0.0.0.0, or port is 0
         if not ip or ip in ["0", "0.0.0.0"] or port == 0:
             logger.info("Skipping connection for slot %d — unconfigured IP/Port: %s:%d", slot, ip, port)
             return False
 
-        logger.info("connect_slot %d → %s:%d — starting...", slot, ip, port)
-
-        self._connect_tokens[slot] += 1
         token = self._connect_tokens[slot]
-
-        current = self.connections[slot]
-        self.connections[slot] = None
-        if current is not None:
-            await current.disconnect()
-
-        connection = MavlinkTCPConnection(ip, port)
-        try:
-            await connection.connect()
+        # Serialize attempts per slot, so duplicate requests also reuse a link
+        # whose initial handshake is still in progress. Other slots stay independent.
+        async with self._connect_locks[slot]:
             if self._connect_tokens[slot] != token:
-                logger.info("Discarding stale connection for slot %d", slot)
+                return False
+
+            current = self.connections[slot]
+            if (
+                not force
+                and current is not None
+                and current.ip == ip
+                and current.port == port
+                and current.is_connected()
+            ):
+                return True
+
+            logger.info("connect_slot %d → %s:%d — starting...", slot, ip, port)
+            self.connections[slot] = None
+            if current is not None:
+                await current.disconnect()
+
+            connection = MavlinkTCPConnection(ip, port)
+            try:
+                await connection.connect()
+                if self._connect_tokens[slot] != token:
+                    logger.info("Discarding stale connection for slot %d", slot)
+                    await connection.disconnect()
+                    return False
+                self.connections[slot] = connection
+                logger.info("connect_slot %d → %s:%d — SUCCESS", slot, ip, port)
+                return True
+            except asyncio.CancelledError:
+                await connection.disconnect()
+                raise
+            except Exception as exc:
+                logger.error("connect_slot %d → %s:%d — FAILED: %s", slot, ip, port, exc)
                 await connection.disconnect()
                 return False
-            self.connections[slot] = connection
-            logger.info("connect_slot %d → %s:%d — SUCCESS", slot, ip, port)
-            return True
-        except Exception as exc:
-            logger.error("connect_slot %d → %s:%d — FAILED: %s", slot, ip, port, exc)
-            await connection.disconnect()
-            return False
 
     async def disconnect_slot(self, slot: int) -> None:
         if slot not in self.connections:

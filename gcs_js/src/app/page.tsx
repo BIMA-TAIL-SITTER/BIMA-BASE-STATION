@@ -12,6 +12,9 @@ import {
 import { UAV_IDS } from "@/config/agents";
 import ConnectionSetupModal from "@/components/modal/ConnectionSetupModal";
 import { CopterTelemetryPanel } from "@/components/telemetry/CopterTelemetryPanel";
+import { SwarmStatusOverlay } from "@/components/telemetry/SwarmStatusOverlay";
+import { SwarmMissionProvider } from "@/components/swarm/SwarmMissionContext";
+import { SwarmMissionPanel } from "@/components/swarm/SwarmMissionPanel";
 import { MavlinkHeader } from "@/components/telemetry/MavlinkHeader";
 import { TelemetryStats } from "@/components/telemetry/TelemetryStats";
 import VideoPanel from "@/components/video/VideoPanel";
@@ -20,7 +23,6 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 import type {
   MavlinkStatus,
   TelemetryData,
-  UAVId,
   UAVRecord,
 } from "@/types/telemetry";
 
@@ -108,7 +110,7 @@ function MonitoringRow({ children, onCardWidthChange }: MonitoringRowProps) {
 }
 
 function GCSDashboard() {
-  const { config, setConfig, isConfigured, uavs } = useGCSStore();
+  const { config, setConfig, isConfigured } = useGCSStore();
   const [telemetry, setTelemetry] = useState<UAVRecord<TelemetryData | null>>(
     EMPTY_TELEMETRY,
   );
@@ -365,39 +367,6 @@ function GCSDashboard() {
     enabled: Boolean(telemetryUrl),
   });
 
-  useEffect(() => {
-    if (!isConfigured) return;
-
-    const connectUAV = async (uavId: UAVId) => {
-      const connection = uavs[uavId];
-      if (!connection?.tcpIp || !connection.mavlinkPort) return;
-
-      const ip = connection.tcpIp.trim();
-      const port = Number.parseInt(connection.mavlinkPort, 10);
-
-      // Skip unconfigured / placeholder addresses
-      if (!ip || ip === "0" || ip === "0.0.0.0" || !port || port <= 0) return;
-
-      try {
-        const response = await fetch(`${API_BASE}/api/telemetry/connect`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slot: uavId, ip, port }),
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-      } catch (error) {
-        console.error(`[telemetry] Failed to connect UAV ${uavId}:`, error);
-      }
-    };
-
-    const timer = window.setTimeout(() => {
-      void Promise.all(UAV_IDS.map(connectUAV));
-    }, 800);
-    return () => window.clearTimeout(timer);
-  }, [isConfigured, uavs]);
-
   if (!isConfigured) return <ConnectionSetupModal />;
 
   const mapVehicles = {
@@ -464,7 +433,7 @@ function GCSDashboard() {
   };
 
   return (
-    <>
+    <SwarmMissionProvider>
       <main
         id="main-content-peta"
         style={{
@@ -560,9 +529,15 @@ function GCSDashboard() {
             telemetry={telemetry[4]}
             mavlinkStatus={mavlinkStatuses[4]}
           />
+          <SwarmStatusOverlay
+            telemetry3={telemetry[3]}
+            telemetry4={telemetry[4]}
+            mavlinkStatus3={mavlinkStatuses[3]}
+            mavlinkStatus4={mavlinkStatuses[4]}
+          ><SwarmMissionPanel /></SwarmStatusOverlay>
         </aside>
       </main>
-    </>
+    </SwarmMissionProvider>
   );
 }
 

@@ -36,11 +36,11 @@ async def video_ws(websocket: WebSocket, port: int, json_port: int = None):
         await websocket.close(code=1011)
         return
 
-    # Ensure the UDP receiver for this port is running
-    video_manager_instance.ensure_stream(port, json_port)
-    
-    await ws_manager_instance.connect_video(websocket, port)
     try:
+        await ws_manager_instance.connect_video(websocket, port)
+        # Receivers belong to the backend session, not to this page subscription.
+        # Reuse them across navigation/reloads without rebinding the UDP sockets.
+        video_manager_instance.ensure_stream(port, json_port)
         while True:
             # Keep the connection alive; client sends pings or nothing
             await websocket.receive_bytes()
@@ -50,10 +50,6 @@ async def video_ws(websocket: WebSocket, port: int, json_port: int = None):
         logger.debug("Video WebSocket error on port %d: %s", port, exc)
     finally:
         ws_manager_instance.disconnect_video(websocket, port)
-        
-        # If no more clients are watching this port, stop the receiver to save resources
-        if not ws_manager_instance.has_video_clients(port):
-            video_manager_instance.stop_stream(port)
 
 
 # ─── REST ─────────────────────────────────────────────────────────

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SwarmControlPanel } from "@/components/control/SwarmControlPanel";
 
 export const metadata: Metadata = {
-  title: "Swarm Control | BIMA Base Station",
+  title: "Legacy Swarm Control | BIMA Base Station",
   description:
     "Dual-copter swarm orchestration with APF collision avoidance.",
 };

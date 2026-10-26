@@ -16,6 +16,7 @@ export interface TelemetryData {
   pitch_deg?: number;
   yaw_deg?: number;
   satellites_visible?: number;
+  gps_fix?: number;
   hdop?: number;
   flight_mode?: string;
   mission_state?: string;

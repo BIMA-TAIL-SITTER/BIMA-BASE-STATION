@@ -18,11 +18,14 @@ function isValidHost(value: string): boolean {
   return /^(\d{1,3}\.){3}\d{1,3}$|^[a-zA-Z0-9.-]+$/.test(value);
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function ConnectionSetupModal() {
   const { markConfigured, setUAVConfig } = useGCSStore();
   const [values, setValues] = useState(createEmptyConnectionRecord);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [validationMsg, setValidationMsg] = useState("");
+  const [connecting, setConnecting] = useState(false);
 
   const handleChange = useCallback(
     (uavId: UAVId, key: ConnectionFieldKey, value: string) => {
@@ -37,7 +40,8 @@ export default function ConnectionSetupModal() {
     [],
   );
 
-  const handleConnect = useCallback(() => {
+  const handleConnect = useCallback(async () => {
+    if (connecting) return;
     const newErrors: Record<string, boolean> = {};
     const validUAVs: UAVId[] = [];
     let firstError = "";
@@ -103,8 +107,34 @@ export default function ConnectionSetupModal() {
       setUAVConfig(uavId, config);
     }
 
-    markConfigured();
-  }, [markConfigured, setUAVConfig, values]);
+    // Connecting is a user action, never a side effect of opening the dashboard.
+    setConnecting(true);
+    try {
+      const results = await Promise.all(validUAVs.map(async (slot) => {
+        const ip = values[slot].tcpIp.trim();
+        const port = Number.parseInt(values[slot].mavlinkPort, 10);
+        if (ip === "0" || ip === "0.0.0.0") return true;
+        try {
+          const response = await fetch(`${API_BASE}/api/telemetry/connect`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slot, ip, port }),
+          });
+          return response.ok && (await response.json()).success === true;
+        } catch {
+          return false;
+        }
+      }));
+      const failedSlots = validUAVs.filter((_, index) => !results[index]);
+      if (failedSlots.length) {
+        setValidationMsg(`Failed to connect UAV ${failedSlots.join(", ")}. Check the links and retry.`);
+        return;
+      }
+      markConfigured();
+    } finally {
+      setConnecting(false);
+    }
+  }, [connecting, markConfigured, setUAVConfig, values]);
 
   return (
     <div className="setup-overlay">
@@ -142,12 +172,12 @@ export default function ConnectionSetupModal() {
         )}
 
         <div className="setup-actions">
-          <button className="setup-btn-primary" onClick={handleConnect}>
+          <button className="setup-btn-primary" onClick={handleConnect} disabled={connecting}>
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M5 12h14" />
               <path d="M12 5l7 7-7 7" />
             </svg>
-            CONNECT &amp; ENTER
+            {connecting ? "CONNECTING..." : "CONNECT & ENTER"}
           </button>
         </div>
 

@@ -20,6 +20,8 @@ import { getColoredIcon } from "@/lib/coloredSvgIcon";
 import { AttitudeIndicator } from "@/components/telemetry/AttitudeIndicator";
 import { useGCSStore } from "@/hooks/useGCSStore";
 import type { MavlinkStatus, UAVId, UAVRecord } from "@/types/telemetry";
+import { SwarmWaypointLayer } from "./SwarmWaypointLayer";
+import { useSwarmMission } from "@/components/swarm/SwarmMissionContext";
 
 export interface UAVMapTelemetry {
   id: UAVId;
@@ -52,12 +54,6 @@ interface Waypoint {
 
 const DEFAULT_LAT = -7.7956;
 const DEFAULT_LON = 110.3695;
-const DEFAULT_OFFSETS: UAVRecord<[number, number]> = {
-  1: [0, 0],
-  2: [0.003, 0.003],
-  3: [-0.0025, 0.003],
-  4: [0.0025, -0.003],
-};
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 function formatSatellites(value: number | undefined): string {
@@ -73,6 +69,7 @@ export default function PetaOfflineUav({
   mavlinkStatuses,
 }: PetaOfflineUavProps) {
   const { swarmPaths } = useGCSStore();
+  const swarmMission = useSwarmMission();
   const [missions, setMissions] = useState<Partial<Record<UAVId, Waypoint[]>>>({});
   const [visibleMissions, setVisibleMissions] = useState<UAVRecord<boolean>>({
     1: false,
@@ -137,13 +134,21 @@ export default function PetaOfflineUav({
 
   const resolvedVehicles = UAV_IDS.map((uavId) => {
     const vehicle = vehicles[uavId];
-    const [latOffset, lonOffset] = DEFAULT_OFFSETS[uavId];
+    const companion = swarmMission.state?.drones.find(d => d.drone_id === uavId);
+    const useCompanion = Boolean(swarmMission.state?.plan.mission_id && companion?.lat != null);
     return {
       ...vehicle,
-      lat: vehicle.lat ?? DEFAULT_LAT + latOffset,
-      lon: vehicle.lon ?? DEFAULT_LON + lonOffset,
+      lat: useCompanion ? companion!.lat! : vehicle.lat,
+      lon: useCompanion ? companion!.lon! : vehicle.lon,
+      altitude: useCompanion ? companion?.alt_m ?? vehicle.altitude : vehicle.altitude,
+      heading: useCompanion ? companion?.heading_deg ?? vehicle.heading : vehicle.heading,
+      mode: useCompanion ? companion?.mode : vehicle.mode,
+      stale: useCompanion ? !swarmMission.connected || !companion?.connected || (companion.position_age_s ?? Infinity) > 2 : mavlinkStatuses[uavId] === "DISCONNECTED",
+      age: useCompanion ? companion?.position_age_s : null,
     };
-  });
+  }).filter((vehicle): vehicle is typeof vehicle & { lat: number; lon: number } =>
+    vehicle.lat !== null && vehicle.lon !== null && Number.isFinite(vehicle.lat) && Number.isFinite(vehicle.lon)
+    && Math.abs(vehicle.lat) <= 90 && Math.abs(vehicle.lon) <= 180 && (vehicle.lat !== 0 || vehicle.lon !== 0));
 
   const createVehicleIcon = (vehicle: UAVMapTelemetry, iconSource: string) => {
     const agent = UAV_AGENT_BY_ID[vehicle.id];
@@ -179,7 +184,7 @@ export default function PetaOfflineUav({
   return (
     <div className="uav-map-shell">
       <MapContainer
-        center={[resolvedVehicles[0].lat, resolvedVehicles[0].lon]}
+        center={[resolvedVehicles[0]?.lat ?? DEFAULT_LAT, resolvedVehicles[0]?.lon ?? DEFAULT_LON]}
         zoom={14}
         maxZoom={24}
         style={{ width: "100%", height: "100%" }}
@@ -191,6 +196,7 @@ export default function PetaOfflineUav({
           maxNativeZoom={19}
           attribution="Peta Offline MBTiles GCS"
         />
+        <SwarmWaypointLayer />
 
         {UAV_AGENTS.map((agent) => {
           const mission = missions[agent.id] ?? [];
@@ -224,10 +230,12 @@ export default function PetaOfflineUav({
               key={`uav-marker-${vehicle.id}`}
               position={[vehicle.lat, vehicle.lon]}
               icon={createVehicleIcon(vehicle, iconSource)}
+              opacity={vehicle.stale ? 0.45 : 1}
             >
               <Tooltip direction="top" offset={[0, -20]} className="uav-marker-tooltip">
                 <strong style={{ color: agent.color }}>{agent.shortLabel}</strong>
                 <span>{agent.type}</span>
+                <span>{vehicle.stale ? "STALE POSITION" : "LIVE"}{vehicle.age != null ? ` · ${vehicle.age.toFixed(1)} s` : ""}</span>
                 <span>MODE: {vehicle.mode || "--"}</span>
                 <span>ALT: {Number.isFinite(vehicle.altitude) ? `${vehicle.altitude.toFixed(1)} m` : "--"}</span>
               </Tooltip>
@@ -236,7 +244,7 @@ export default function PetaOfflineUav({
         })}
 
         {/* ─── Swarm Mission Paths ─── */}
-        {swarmPaths?.uav3Path && swarmPaths.uav3Path.length > 0 && (
+        {!swarmMission.state?.plan.mission_id && swarmPaths?.uav3Path && swarmPaths.uav3Path.length > 0 && (
           <>
             <Polyline
               positions={swarmPaths.uav3Path as [number, number][]}
@@ -251,7 +259,7 @@ export default function PetaOfflineUav({
             ))}
           </>
         )}
-        {swarmPaths?.uav4Path && swarmPaths.uav4Path.length > 0 && (
+        {!swarmMission.state?.plan.mission_id && swarmPaths?.uav4Path && swarmPaths.uav4Path.length > 0 && (
           <>
             <Polyline
               positions={swarmPaths.uav4Path as [number, number][]}

@@ -1,6 +1,5 @@
 /** Swarm orchestration types matching the backend schemas. */
 
-import type { UAVId } from "@/types/telemetry";
 import type { MissionItem } from "@/types/control";
 
 // ─── Enums ────────────────────────────────────────────────────────
@@ -68,6 +67,10 @@ export interface MissionBatchUploadResponse {
 
 export interface SwarmStartRequest {
   confirmation: string;
+  ip_3?: string;
+  port_3?: number;
+  ip_4?: string;
+  port_4?: number;
 }
 
 export interface SwarmStartResponse {

@@ -371,7 +371,7 @@ class SwarmCoordinator:
                 message=f"Cannot start in phase {self._phase.value}",
             )
             
-        interlocks = self._check_interlocks()
+        interlocks = self._check_interlocks(log_warnings=True)
         if interlocks:
             return SwarmStartResponse(
                 phase=self._phase,
@@ -560,10 +560,11 @@ class SwarmCoordinator:
 
     # ─── Safety Interlocks ────────────────────────────────────────
 
-    def _check_interlocks(self) -> list[str]:
+    def _check_interlocks(self, *, log_warnings: bool = False) -> list[str]:
         """
         Evaluate all safety interlocks.
         Returns a list of failure descriptions (empty = all passed).
+        Status polling is silent; start requests opt in to bypass warnings.
         """
         failures = []
 
@@ -605,11 +606,14 @@ class SwarmCoordinator:
             from app.services.mavlink.apf_coordinator import haversine_distance_m
             dist = haversine_distance_m(p3.lat, p3.lon, p4.lat, p4.lon)
             if dist < 0.1:
-                logger.warning("Takeoff positions are identical (%.1fm). Assuming SITL without offsets; bypassing interlock.", dist)
+                if log_warnings:
+                    logger.warning("Takeoff positions are identical (%.1fm). Assuming SITL without offsets; bypassing interlock.", dist)
             elif dist < self._apf.config.d_safe:
-                logger.warning(
-                    f"Takeoff positions too close ({dist:.1f}m < {self._apf.config.d_safe}m). Safety bypassed."
-                )
+                if log_warnings:
+                    logger.warning(
+                        "Takeoff positions too close (%.1fm < %sm). Safety bypassed.",
+                        dist, self._apf.config.d_safe,
+                    )
                 # failures.append(
                 #     f"Takeoff positions too close ({dist:.1f}m < {self._apf.config.d_safe}m)"
                 # )

@@ -1,10 +1,9 @@
 "use client";
 
-import { memo, useState, useCallback, type CSSProperties } from "react";
+import { memo, useState, type CSSProperties } from "react";
 import { UAV_AGENT_BY_ID } from "@/config/agents";
 import type { MavlinkStatus, TelemetryData, UAVId } from "@/types/telemetry";
 import { MavlinkHeader } from "./MavlinkHeader";
-import { useUavControl } from "@/hooks/useUavControl";
 
 import { ModeSelector, COPTER_FLIGHT_MODES } from "./ModeSelector";
 interface CopterTelemetryPanelProps {
@@ -13,7 +12,7 @@ interface CopterTelemetryPanelProps {
   mavlinkStatus: MavlinkStatus;
 }
 
-import { formatNumber, formatCoordinate, formatDistance, formatMetricValue } from "@/utils/telemetryFormatters";
+import { formatNumber, formatMetricValue } from "@/utils/telemetryFormatters";
 
 function CopterCompass({
   heading,
@@ -96,8 +95,7 @@ function CopterTelemetryPanelInner({
 }: CopterTelemetryPanelProps) {
   const agent = UAV_AGENT_BY_ID[panelId];
   const heading = telemetry?.heading_deg ?? telemetry?.yaw_deg;
-  const isArmed = telemetry?.armed;
-  const { uavs, uavMetrics, setUAVMetrics } = useGCSStore();
+  const { uavMetrics, setUAVMetrics } = useGCSStore();
   const panelStyle = {
     "--agent-accent": agent.color,
     "--agent-accent-rgb": agent.colorRgb,
@@ -281,75 +279,6 @@ function CopterTelemetryPanelInner({
           </div>
         </div>
       )}
-
-      <div className="copter-mission-actions" style={{ display: "flex", gap: "8px", marginTop: "12px", flexDirection: "column" }}>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            className="operations-button is-secondary"
-            onClick={async (e) => {
-              const uavConfig = uavs[panelId];
-              if (!uavConfig?.raspiIp || !uavConfig?.missionUdpPort) {
-                alert(`Please configure the Raspi IP and Mission UDP Port for UAV ${panelId} in Edit Connection first!`);
-                return;
-              }
-              const btn = e.currentTarget;
-              const originalText = btn.textContent;
-              btn.textContent = "UPLOADING...";
-              btn.disabled = true;
-              try {
-                const apiBase = window.location.origin.replace(/:\d+$/, ":8000");
-                const res = await fetch(`${apiBase}/api/control/companion/upload`, { 
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ ip: uavConfig.raspiIp, port: parseInt(uavConfig.missionUdpPort) || 14560 })
-                });
-                const data = await res.json();
-                alert(data.message + "\n\n" + (data.output || ""));
-              } catch (err) {
-                alert("Request failed.");
-              } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-              }
-            }}
-            style={{ flex: 1, padding: "8px", fontSize: "11px" }}
-          >
-            UPLOAD MISSION
-          </button>
-          <button
-            className="operations-button is-primary"
-            onClick={async (e) => {
-              const uavConfig = uavs[panelId];
-              if (!uavConfig?.raspiIp || !uavConfig?.missionUdpPort) {
-                alert(`Please configure the Raspi IP and Mission UDP Port for UAV ${panelId} in Edit Connection first!`);
-                return;
-              }
-              const btn = e.currentTarget;
-              const originalText = btn.textContent;
-              btn.textContent = "STARTING...";
-              btn.disabled = true;
-              try {
-                const apiBase = window.location.origin.replace(/:\d+$/, ":8000");
-                const res = await fetch(`${apiBase}/api/control/companion/start`, { 
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ ip: uavConfig.raspiIp, port: parseInt(uavConfig.missionUdpPort) || 14560 })
-                });
-                const data = await res.json();
-                alert(data.message + "\n\n" + (data.output || ""));
-              } catch (err) {
-                alert("Request failed.");
-              } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-              }
-            }}
-            style={{ flex: 1, padding: "8px", fontSize: "11px", backgroundColor: "var(--agent-accent)", color: "#000" }}
-          >
-            START MISSION
-          </button>
-        </div>
-      </div>
     </section>
   );
 }

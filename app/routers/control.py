@@ -38,6 +38,12 @@ api_router = APIRouter(prefix="/api/control", tags=["control"])
 
 # Path to the shared mission config file read by standalone Python scripts
 _MISSION_CONFIG_PATH = FilePath("mission_config.json")
+dispatcher_instance = None
+
+
+def _guard_dispatch(slot=None):
+    if slot in (None, 3, 4) and dispatcher_instance and dispatcher_instance.owns_copters():
+        raise HTTPException(409, "Swarm dispatcher owns these copters; use mission Hold/Abort first")
 
 
 class MissionConfigRequest(BaseModel):
@@ -66,6 +72,7 @@ async def save_mission_config(req: MissionConfigRequest):
     This file is read by the standalone gcs_mission_client.py 
     so it picks up port changes made from the web UI Edit Connection page.
     """
+    _guard_dispatch(req.slot)
     # Read existing config or create defaults
     try:
         config = json.loads(_MISSION_CONFIG_PATH.read_text(encoding="utf-8"))
@@ -79,6 +86,7 @@ async def save_mission_config(req: MissionConfigRequest):
         "raspi_ip": req.raspi_ip,
         "mission_udp_port": req.mission_udp_port,
     }
+    config.setdefault("uavs", {})[str(req.slot)] = dict(config["gcs"])
 
     # Write back
     _MISSION_CONFIG_PATH.write_text(
@@ -126,6 +134,7 @@ def run_subprocess_and_stream(cmd, cwd):
 @api_router.post("/companion/upload")
 async def companion_upload(req: CompanionActionRequest):
     """Trigger gcs_mission_client.py to upload mission via UDP for specific IP and port."""
+    _guard_dispatch()
     try:
         script_path = FilePath("mission_scripts/gcs_mission_client.py").absolute()
         print(f"\n[*] === Menjalankan Upload Mission (IP: {req.ip}, Port: {req.port}) ===", flush=True)
@@ -148,6 +157,7 @@ async def companion_upload(req: CompanionActionRequest):
 @api_router.post("/companion/start")
 async def companion_start(req: CompanionActionRequest):
     """Trigger gcs_mission_client.py to start mission via UDP for specific IP and port."""
+    _guard_dispatch()
     try:
         script_path = FilePath("mission_scripts/gcs_mission_client.py").absolute()
         print(f"\n[*] === Menjalankan Start Mission (IP: {req.ip}, Port: {req.port}) ===", flush=True)
@@ -186,6 +196,7 @@ async def arm(
     slot: int = Path(ge=1, le=4),
 ) -> CommandAckResponse:
     """Send MAV_CMD_COMPONENT_ARM_DISARM (arm) to one UAV."""
+    _guard_dispatch(slot)
     if command_bridge_instance is None:
         raise _service_unavailable("MAVLink command bridge")
 
@@ -225,6 +236,7 @@ async def disarm(
     slot: int = Path(ge=1, le=4),
 ) -> CommandAckResponse:
     """Send MAV_CMD_COMPONENT_ARM_DISARM (disarm) to one UAV."""
+    _guard_dispatch(slot)
     if command_bridge_instance is None:
         raise _service_unavailable("MAVLink command bridge")
 
@@ -264,6 +276,8 @@ async def set_mode(
     slot: int = Path(ge=1, le=4),
 ) -> CommandAckResponse:
     """Send MAV_CMD_DO_SET_MODE to one UAV."""
+    if request.mode.upper() not in ("LOITER", "RTL", "LAND"):
+        _guard_dispatch(slot)
     if command_bridge_instance is None:
         raise _service_unavailable("MAVLink command bridge")
 
@@ -337,6 +351,7 @@ async def upload_mission(
     slot: int = Path(ge=1, le=4),
 ) -> MissionUploadResponse:
     """Upload an ordered mission with the full MAVLink mission protocol."""
+    _guard_dispatch(slot)
     if command_bridge_instance is None:
         raise _service_unavailable("MAVLink command bridge")
 
@@ -472,16 +487,18 @@ async def control_ws(
         await websocket.close(code=1011)
         return
 
-    await ws_manager_instance.connect_control(websocket, slot)
-    if param_bridge_instance is not None:
-        snapshot = param_bridge_instance.snapshot(slot)
-        await websocket.send_json(
-            {
-                "type": "param_snapshot",
-                **snapshot.model_dump(),
-            },
-        )
     try:
+        await ws_manager_instance.connect_control(websocket, slot)
+        # The browser can leave the page immediately after acceptance, including
+        # while the initial snapshot is being sent. Cover startup with cleanup too.
+        if param_bridge_instance is not None:
+            snapshot = param_bridge_instance.snapshot(slot)
+            await websocket.send_json(
+                {
+                    "type": "param_snapshot",
+                    **snapshot.model_dump(),
+                },
+            )
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:

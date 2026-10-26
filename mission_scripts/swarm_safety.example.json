@@ -1,0 +1,20 @@
+{
+  "center_lat": null,
+  "center_lon": null,
+  "radius_m": 200,
+  "min_alt_m": 2,
+  "max_alt_m": 50,
+  "takeoff_alt_m": 5,
+  "min_battery_pct": 25,
+  "min_separation_m": 10,
+  "apf": {
+    "d_influence": 30,
+    "k_att": 1,
+    "k_rep": 100,
+    "max_lateral_offset_m": 20,
+    "tick_rate_hz": 5,
+    "hysteresis_enter_m": 15,
+    "hysteresis_exit_m": 20,
+    "prediction_horizon": 4
+  }
+}

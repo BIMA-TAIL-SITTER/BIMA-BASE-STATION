@@ -4,6 +4,7 @@ import TopBar from "@/components/header/TopBar";
 import EditConnectionModal from "@/components/modal/EditConnectionModal";
 import { GCSProvider } from "@/hooks/useGCSStore";
 import "./globals.css";
+import "./swarm-mission.css";
 
 const inter = Inter({
   subsets: ["latin"],

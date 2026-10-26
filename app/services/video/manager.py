@@ -35,7 +35,10 @@ _ENCODE_PARAMS = [cv2.IMWRITE_JPEG_QUALITY, settings.VIDEO_JPEG_QUALITY]
 
 class MultiStreamManager:
     """
-    Manages multiple VideoReceivers dynamically based on WebSocket client connections.
+    Start receivers on demand and retain them for the backend session.
+
+    WebSocket clients are subscribers: leaving a page must not stop UDP ingestion
+    or reset frame/telemetry state. stop_stream/stop_all own receiver teardown.
     """
 
     def __init__(
@@ -65,7 +68,7 @@ class MultiStreamManager:
     # ─── Public ───────────────────────────────────────────────────
 
     def ensure_stream(self, port: int, json_port: Optional[int] = None) -> None:
-        """Ensure a VideoReceiver and broadcast loop are running for the given port."""
+        """Start once per port; later subscribers reuse the receiver and loop."""
         if json_port:
             self._video_to_telemetry[port] = json_port
             if json_port not in self._telemetry_receivers:
