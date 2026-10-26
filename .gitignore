@@ -75,3 +75,7 @@ yolo_debug.log
 # Durable local swarm journals (contain live operational state).
 /data/swarm.sqlite3*
 swarm-companion-state*.json*
+
+# Scratch and runtime output (not source).
+/tmp/
+/logs/apf/
